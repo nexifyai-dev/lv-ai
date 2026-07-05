@@ -42,7 +42,7 @@ async function SidebarShell({
   user,
 }: {
   children: React.ReactNode;
-  user: { id: string; email?: string | null; type: string };
+  user: { id: string; email?: string | null; type: "guest" | "regular" };
 }) {
   const cookieStore = await cookies();
   const isCollapsed = cookieStore.get("sidebar_state")?.value !== "true";
