@@ -37,6 +37,12 @@ const FileSchema = z.object({
     ),
 });
 
+// ─── Storage-Strategie ───────────────────────────────────────────────────────
+// Produktion: Vercel Blob (BLOB_READ_WRITE_TOKEN gesetzt).
+// Entwicklung/ohne Token: lokales Dateisystem unter public/uploads/lv-ai/.
+// URL-Schema identisch: Route gibt immer { url, pathname, contentType } zurück.
+const USE_LOCAL_STORAGE = !process.env.BLOB_READ_WRITE_TOKEN;
+
 export async function POST(request: Request) {
   const session = await auth();
 
@@ -48,47 +54,99 @@ export async function POST(request: Request) {
     return new Response("Request Body ist leer", { status: 400 });
   }
 
+  let formData: FormData;
   try {
-    const formData = await request.formData();
-    const file = formData.get("file") as Blob;
-
-    if (!file) {
-      return NextResponse.json(
-        { error: "Keine Datei hochgeladen" },
-        { status: 400 }
-      );
-    }
-
-    const validatedFile = FileSchema.safeParse({ file });
-
-    if (!validatedFile.success) {
-      const errorMessage = validatedFile.error.errors
-        .map((error) => error.message)
-        .join(", ");
-
-      return NextResponse.json({ error: errorMessage }, { status: 400 });
-    }
-
-    const filename = (formData.get("file") as File).name;
-    const safeName = filename.replace(/[^a-zA-Z0-9._-]/g, "_");
-    const fileBuffer = await file.arrayBuffer();
-
-    try {
-      const data = await put(`lv-ai/${safeName}`, fileBuffer, {
-        access: "public",
-      });
-
-      return NextResponse.json(data);
-    } catch (_error) {
-      return NextResponse.json(
-        { error: "Upload fehlgeschlagen" },
-        { status: 500 }
-      );
-    }
-  } catch (_error) {
+    formData = await request.formData();
+  } catch {
     return NextResponse.json(
       { error: "Anfrage konnte nicht verarbeitet werden" },
       { status: 500 }
     );
   }
+
+  const file = formData.get("file") as Blob | null;
+
+  if (!file) {
+    return NextResponse.json(
+      { error: "Keine Datei hochgeladen" },
+      { status: 400 }
+    );
+  }
+
+  const validatedFile = FileSchema.safeParse({ file });
+
+  if (!validatedFile.success) {
+    const errorMessage = validatedFile.error.errors
+      .map((error) => error.message)
+      .join(", ");
+
+    return NextResponse.json({ error: errorMessage }, { status: 400 });
+  }
+
+  const originalName = (formData.get("file") as File).name;
+  const safeName = originalName.replace(/[^a-zA-Z0-9._-]/g, "_");
+  // Dateinamen um Timestamp ergänzen, um Kollisionen zu vermeiden
+  const uniqueName = `${Date.now()}-${safeName}`;
+  const fileBuffer = await file.arrayBuffer();
+
+  // ─── Lokaler Storage (Dev-Fallback) ──────────────────────────────────────
+  if (USE_LOCAL_STORAGE) {
+    try {
+      const path = await storeLocal(uniqueName, fileBuffer);
+      return NextResponse.json({
+        url: path,
+        pathname: originalName,
+        contentType: file.type,
+      });
+    } catch (err) {
+      return NextResponse.json(
+        {
+          error:
+            err instanceof Error
+              ? err.message
+              : "Lokaler Upload fehlgeschlagen",
+        },
+        { status: 500 }
+      );
+    }
+  }
+
+  // ─── Vercel Blob (Produktion) ────────────────────────────────────────────
+  try {
+    const data = await put(`lv-ai/${uniqueName}`, fileBuffer, {
+      access: "public",
+      contentType: file.type || undefined,
+    });
+
+    return NextResponse.json({
+      url: data.url,
+      pathname: originalName,
+      contentType: file.type,
+    });
+  } catch {
+    return NextResponse.json(
+      { error: "Upload fehlgeschlagen (Vercel Blob)" },
+      { status: 500 }
+    );
+  }
+}
+
+// ─── Lokaler Storage-Helper ──────────────────────────────────────────────────
+// Schreibt in public/uploads/lv-ai/<uniqueName> und gibt die öffentliche URL
+// relativ zur App-Root zurück. In Dev wird /uploads/... direkt von Next
+// statisch aus public/ ausgeliefert.
+async function storeLocal(
+  uniqueName: string,
+  buffer: ArrayBuffer
+): Promise<string> {
+  const fs = await import("node:fs/promises");
+  const path = await import("node:path");
+
+  const uploadDir = path.join(process.cwd(), "public", "uploads", "lv-ai");
+  await fs.mkdir(uploadDir, { recursive: true });
+
+  const filePath = path.join(uploadDir, uniqueName);
+  await fs.writeFile(filePath, Buffer.from(buffer));
+
+  return `/uploads/lv-ai/${uniqueName}`;
 }

@@ -510,7 +510,9 @@ function PureMultimodalInput({
             }
           }}
           placeholder={
-            editingMessage ? "Nachricht bearbeiten..." : "Fragen Sie mich alles zu LV, Ausschreibung, Vergabe..."
+            editingMessage
+              ? "Nachricht bearbeiten..."
+              : "Fragen Sie mich alles zu LV, Ausschreibung, Vergabe..."
           }
           ref={textareaRef}
           value={input}
@@ -601,7 +603,11 @@ function PureAttachmentsButton({
 
   const caps: Record<string, ModelCapabilities> | undefined =
     modelsResponse?.capabilities ?? modelsResponse;
-  const hasVision = caps?.[selectedModelId]?.vision ?? false;
+  // Optimistic default: solange Capabilities nicht geladen sind, erlauben
+  // wir Upload. In lib/ai/models.ts haben alle MiMo-Modelle vision=true,
+  // daher ist "false" hier ein lästiges UX-Problem, das den Upload-Button
+  // deaktiviert erscheinen lässt, bis SWR fertig ist.
+  const hasVision = caps?.[selectedModelId]?.vision ?? true;
 
   return (
     <Button
