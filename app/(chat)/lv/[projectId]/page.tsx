@@ -1,4 +1,9 @@
-import { ArrowLeftIcon, FileTextIcon } from "lucide-react";
+import {
+  ArrowLeftIcon,
+  DownloadIcon,
+  FileSpreadsheetIcon,
+  FileTextIcon,
+} from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
@@ -59,7 +64,14 @@ export default async function LvProjectPage({ params }: PageProps) {
             Leistungsverzeichnis · Projekt {projectId.slice(0, 8)}
           </h1>
         </div>
-        <div className="ml-auto">
+        <div className="ml-auto flex items-center gap-2">
+          <Link
+            className="inline-flex items-center gap-1.5 rounded-md border border-border/60 px-3 py-1.5 text-sm transition-colors hover:bg-accent"
+            href={`/lv/${projectId}/preisspiegel`}
+          >
+            <FileSpreadsheetIcon className="size-3.5" />
+            Preisspiegel
+          </Link>
           <CreateLvDocumentButton projectId={projectId} />
         </div>
       </header>
@@ -74,6 +86,7 @@ export default async function LvProjectPage({ params }: PageProps) {
                 document={doc}
                 formatEuro={formatEuro}
                 key={doc.id}
+                projectId={projectId}
               />
             ))}
           </div>
@@ -86,6 +99,7 @@ export default async function LvProjectPage({ params }: PageProps) {
 async function DocumentSection({
   document,
   formatEuro,
+  projectId,
 }: {
   document: Awaited<ReturnType<typeof getLvDocumentById>> & {
     id: string;
@@ -96,6 +110,7 @@ async function DocumentSection({
     createdAt: Date;
   };
   formatEuro: (value: number) => string;
+  projectId: string;
 }) {
   const positions = await getLvPositionsByDocument(document.id).catch(() => []);
   const sum = await getLvDocumentSum(document.id).catch(() => 0);
@@ -123,6 +138,15 @@ async function DocumentSection({
               {formatEuro(sum)}
             </div>
           </div>
+          {positions.length > 0 && (
+            <Link
+              className="inline-flex items-center gap-1.5 rounded-md border border-border/60 px-3 py-1.5 text-sm transition-colors hover:bg-accent"
+              href={`/lv/${projectId}/export?documentId=${document.id}&format=X83`}
+            >
+              <DownloadIcon className="size-3.5" />
+              GAEB X83
+            </Link>
+          )}
           <PositionEditor lvDocumentId={document.id} />
         </div>
       </div>
@@ -170,10 +194,7 @@ async function DocumentSection({
                     {pos.gesamtpreis ?? "—"}
                   </TableCell>
                   <TableCell className="flex items-center gap-1">
-                    <PositionEditor
-                      lvDocumentId={document.id}
-                      position={pos}
-                    />
+                    <PositionEditor lvDocumentId={document.id} position={pos} />
                     <DeletePositionButton positionId={pos.id} />
                   </TableCell>
                 </TableRow>
