@@ -10,7 +10,7 @@ export async function proxy(request: NextRequest) {
   }
 
   // Auth-Routen sind immer erlaubt
-  if (pathname.startsWith("/api/auth")) {
+  if (pathname.startsWith("/api/auth") || pathname.startsWith("/api/login")) {
     return NextResponse.next();
   }
 
