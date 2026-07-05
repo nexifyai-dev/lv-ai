@@ -1,4 +1,4 @@
-import Form from "next/form";
+"use client";
 
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -7,13 +7,11 @@ export function AuthForm({
   action,
   children,
 }: {
-  action: NonNullable<
-    string | ((formData: FormData) => void | Promise<void>) | undefined
-  >;
+  action: (formData: FormData) => void;
   children: React.ReactNode;
 }) {
   return (
-    <Form action={action} className="flex flex-col gap-4">
+    <form action={action} className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
         <Label className="font-normal text-muted-foreground" htmlFor="password">
           Zugangspasswort
@@ -30,6 +28,6 @@ export function AuthForm({
       </div>
 
       {children}
-    </Form>
+    </form>
   );
 }
