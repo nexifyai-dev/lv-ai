@@ -80,7 +80,7 @@ LV.AI ist ein chat-basierter KI-Experte für das gesamte AVA-Geschäft im Bauwes
 |-------|--------|--------------|
 | 0 – Fundament | ✅ Abgeschlossen | Template, Schema, mem0, Auth, GAEB-Parser, D/A/CH-Compliance |
 | 1 – LV-Kern | 🚧 In Arbeit | LV-Editor ✅, Positionen ✅, PDF ⏳ |
-| 2 – GAEB-Engine | ✅ Abgeschlossen | GAEB DA XML Export (X81/X83/X84), Import-Action, Text-Parser, Download-Route |
+| 2 – GAEB-Engine | ✅ Abgeschlossen | GAEB DA XML Export (X81–X86) ✅, Import-Action ✅, Text-Parser ✅, Download-Route ✅ |
 | 3 – Vergabe | ✅ Abgeschlossen | Preisspiegel-Engine ✅, Preisspiegel-UI ✅, Bieterauswertung ✅ (T33) |
 | 4 – Zeichnungen | ⏳ Offen | SVG/PDF Plan-Generator |
 | 5 – Proaktivität | ⏳ Offen | Cron, Erinnerungen |
