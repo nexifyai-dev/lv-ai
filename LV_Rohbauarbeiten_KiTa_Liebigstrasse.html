@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LV Rohbauarbeiten — KiTa Liebigstraße — 026339</title>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2d3748;
+            --accent: #2b6cb0;
+            --light: #f7fafc;
+            --border: #e2e8f0;
+            --text: #1a202c;
+            --text-muted: #718096;
+            --success: #38a169;
+            --warning: #d69e2e;
+            --danger: #e53e3e;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 11px;
+            line-height: 1.5;
+            color: var(--text);
+            background: #fff;
+        }
+        .page {
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 15mm 20mm;
+            page-break-after: always;
+        }
+        @media print {
+            .page { padding: 10mm 15mm; }
+            .no-print { display: none; }
+        }
+        h1 { font-size: 18px; color: var(--primary); margin-bottom: 5px; }
+        h2 { font-size: 14px; color: var(--primary); margin: 15px 0 8px; border-bottom: 2px solid var(--accent); padding-bottom: 3px; }
+        h3 { font-size: 12px; color: var(--secondary); margin: 10px 0 5px; }
+        .header { text-align: center; border-bottom: 3px solid var(--primary); padding-bottom: 10px; margin-bottom: 15px; }
+        .header-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: left; font-size: 10px; margin-top: 10px; }
+        .header-grid .label { font-weight: 600; color: var(--text-muted); }
+        table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 10px; }
+        th, td { border: 1px solid var(--border); padding: 4px 6px; text-align: left; }
+        th { background: var(--primary); color: #fff; font-weight: 600; font-size: 9px; text-transform: uppercase; }
+        .pos { font-weight: 600; color: var(--accent); white-space: nowrap; }
+        .menge { text-align: right; white-space: nowrap; }
+        .preis { text-align: right; white-space: nowrap; }
+        .summe { text-align: right; font-weight: 700; white-space: nowrap; }
+        .summe-row { background: #edf2f7; font-weight: 700; }
+        .hinweis { background: #fffff0; border-left: 3px solid var(--warning); padding: 6px 10px; margin: 8px 0; font-size: 10px; }
+        .section-sum { background: var(--primary); color: #fff; font-weight: 700; }
+        .total-row { background: var(--primary); color: #fff; font-weight: 700; font-size: 12px; }
+        .price-note { font-size: 8px; color: var(--text-muted); font-style: italic; }
+        .badge { display: inline-block; padding: 1px 5px; border-radius: 3px; font-size: 8px; font-weight: 600; }
+        .badge-info { background: #bee3f8; color: #2a4365; }
+        .badge-success { background: #c6f6d5; color: #22543d; }
+        .toc a { color: var(--accent); text-decoration: none; }
+        .toc a:hover { text-decoration: underline; }
+        .anreise { background: #f0fff4; border: 1px solid #c6f6d5; padding: 8px; border-radius: 4px; margin: 10px 0; }
+        .footer { text-align: center; font-size: 8px; color: var(--text-muted); margin-top: 20px; border-top: 1px solid var(--border); padding-top: 5px; }
+    </style>
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!-- SEITE 1: ANGEBOTSBLATT -->
+<!-- ============================================================ -->
+<div class="page">
+    <div class="header">
+        <h1>LEISTUNGSVERZEICHNIS</h1>
+        <div style="font-size:13px; color:var(--secondary);">Rohbauarbeiten</div>
+        <div class="header-grid">
+            <div>
+                <div><span class="label">Projekt-Nr.:</span> 026339</div>
+                <div><span class="label">Projekt:</span> Erd-, Gerüst- und Rohbauarbeiten KiTa Liebigstraße</div>
+                <div><span class="label">PLZ/Ort:</span> Ratingen</div>
+                <div><span class="label">Auftraggeber:</span> Stadt Ratingen</div>
+                <div><span class="label">Straße:</span> Poststraße 21, 40878 Ratingen</div>
+            </div>
+            <div>
+                <div><span class="label">LV:</span> Rohbauarbeiten</div>
+                <div><span class="label">Preisstand:</span> 06/2026</div>
+                <div><span class="label">Region:</span> Düsseldorf / NRW</div>
+                <div><span class="label">Druckdatum:</span> 04.07.2026</div>
+                <div><span class="label">Seiten:</span> 1 von 96</div>
+            </div>
+        </div>
+    </div>
+
+    <table>
+        <tr>
+            <td style="width:60%"><strong>Leistungsverzeichnis:</strong> Rohbauarbeiten</td>
+            <td style="text-align:right"><strong>Angebotssumme:</strong> <span id="gesamtsumme">wird berechnet</span> EUR</td>
+        </tr>
+    </table>
+
+    <table>
+        <tr><td>Zu den Vergabe- und Vertragsbedingungen wird ein Nachlass in Höhe von _______ % gewährt</td><td style="text-align:right;width:150px">EUR ___________</td></tr>
+        <tr><td>Angebotssumme netto abzüglich Nachlass</td><td style="text-align:right">EUR ___________</td></tr>
+        <tr><td>zuzüglich 19,00% Mehrwertsteuer</td><td style="text-align:right">EUR ___________</td></tr>
+        <tr><td><strong>Angebotssumme brutto</strong></td><td style="text-align:right"><strong>EUR ___________</strong></td></tr>
+    </table>
+
+    <table>
+        <tr><td>Bei Einhaltung des vereinbarten Zahlungsziels wird ein Skonto in Höhe von _______ % gewährt</td></tr>
+    </table>
+
+    <div style="margin-top:30px; display:flex; justify-content:space-between;">
+        <div>(Ort)</div>
+        <div>(Datum)</div>
+        <div>(rechtsgültige Unterschrift)</div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PREISINFORMATIONEN -->
+<!-- ============================================================ -->
+<div class="page" style="page-break-before: always;">
+    <h2>Preisinformationen — Stand 06/2026 — Region Düsseldorf/NRW</h2>
+
+    <div class="anreise">
+        <strong>Grundlage der Preiskalkulation:</strong><br>
+        • Transportbetonpreise: BTB-Preisempfehlung NRW + regionale Aufschläge<br>
+        • Bewehrungsstahl: Aktuelle Börsenpreise Stahl + Einbauwerkslohn<br>
+        • Lohnkosten: IG BAU BRTV 2026 West + SOKA-Bau-Zuschläge (~30%)<br>
+        • Schalung: Marktpreise Systemschalung (Doka, PERI, Meva) inkl. Vorhaltung<br>
+        • Dämmstoffe: Herstellerlistenpreise (Styrodur, Recticel) abzgl. Händlerrabatt<br>
+        • Isokorb: Schöck Listenpreise 2026 (Projektpreise i.d.R. 15-25% günstiger)
+    </div>
+
+    <h3>Materialpreise (inkl. Anlieferung Baustelle, netto)</h3>
+    <table>
+        <tr><th>Material</th><th>Einheit</th><th>Preis (netto)</th><th>Hinweis</th></tr>
+        <tr><td>Transportbeton C12/15</td><td>m³</td><td class="preis">95,00 €</td><td>Sauberkeitsschicht</td></tr>
+        <tr><td>Transportbeton C20/25</td><td>m³</td><td class="preis">115,00 €</td><td>Frostschutzschürze, Attika</td></tr>
+        <tr><td>Transportbeton C25/30</td><td>m³</td><td class="preis">125,00 €</td><td>Standard, Wände, Decken</td></tr>
+        <tr><td>Transportbeton C30/37</td><td>m³</td><td class="preis">140,00 €</td><td>Stützen, ÜK2</td></tr>
+        <tr><td>WU-Beton-Zuschlag</td><td>m³</td><td class="preis">+22,00 €</td><td>Aufpreis weiße Wanne</td></tr>
+        <tr><td>Sichtbeton SB1</td><td>m³</td><td class="preis">+18,00 €</td><td>Aufpreis</td></tr>
+        <tr><td>Sichtbeton SB2</td><td>m³</td><td class="preis">+28,00 €</td><td>Aufpreis</td></tr>
+        <tr><td>Sichtbeton SB3</td><td>m³</td><td class="preis">+38,00 €</td><td>Aufpreis</td></tr>
+        <tr><td>Bewehrungsstahl B500B ≤10mm (inkl. Einbau)</td><td>kg</td><td class="preis">1,55 €</td><td>Mat 0,95 + Lohn 0,60</td></tr>
+        <tr><td>Bewehrungsstahl B500B 12-14mm (inkl. Einbau)</td><td>kg</td><td class="preis">1,45 €</td><td>Mat 0,90 + Lohn 0,55</td></tr>
+        <tr><td>Bewehrungsstahl B500B >14mm (inkl. Einbau)</td><td>kg</td><td class="preis">1,40 €</td><td>Mat 0,85 + Lohn 0,55</td></tr>
+        <tr><td>Mattenbewehrung B500A (inkl. Einbau)</td><td>kg</td><td class="preis">1,50 €</td><td>Mat 0,95 + Lohn 0,55</td></tr>
+        <tr><td>Unterstützungskörbe</td><td>kg</td><td class="preis">4,80 €</td><td>Inkl. Montage</td></tr>
+        <tr><td>XPS 035, 160mm (PW)</td><td>m²</td><td class="preis">34,00 €</td><td>Unter Bodenplatte</td></tr>
+        <tr><td>XPS 035, 200mm (PW)</td><td>m²</td><td class="preis">42,00 €</td><td>Außenwand</td></tr>
+        <tr><td>FBV-Abdichtung waagerecht</td><td>m²</td><td class="preis">19,00 €</td><td>Inkl. Verlegung</td></tr>
+        <tr><td>FBV-Abdichtung senkrecht</td><td>m²</td><td class="preis">23,00 €</td><td>Inkl. Montage an Schalung</td></tr>
+        <tr><td>Noppenbahn HDPE</td><td>m²</td><td class="preis">14,00 €</td><td>Inkl. Verlegen</td></tr>
+        <tr><td>Dickbeschichtung PMBC</td><td>m²</td><td class="preis">22,00 €</td><td>Inkl. Grundierung</td></tr>
+        <tr><td>PE-Folie 0,2mm</td><td>m²</td><td class="preis">1,80 €</td><td>Inkl. Verlegen</td></tr>
+        <tr><td>Sauberkeitsschicht 5cm</td><td>m²</td><td class="preis">14,00 €</td><td>Inkl. Einbau</td></tr>
+        <tr><td>KS-Plansteine 11,5cm (inkl. Dünnbettmörtel)</td><td>m²</td><td class="preis">52,00 €</td><td>SFK 12, RDK 1,8</td></tr>
+        <tr><td>KS-Plansteine 17,5cm (inkl. Dünnbettmörtel)</td><td>m²</td><td class="preis">64,00 €</td><td>SFK 12/20</td></tr>
+        <tr><td>KS-Plansteine 24cm (inkl. Dünnbettmörtel)</td><td>m²</td><td class="preis">82,00 €</td><td>SFK 20</td></tr>
+    </table>
+
+    <h3>Werkslohnkosten NRW 2026 (inkl. Lohnnebenkosten ~30%)</h3>
+    <table>
+        <tr><th>Tätigkeit</th><th>Std.-Satz (netto)</th><th>Hinweis</th></tr>
+        <tr><td>Vorarbeiter</td><td class="preis">58,00 €/h</td><td>IG BAU Stufe 5 + Zuschläge</td></tr>
+        <tr><td>Fachwerker (Maurer, Betonbauer)</td><td class="preis">48,00 €/h</td><td>IG BAU Stufe 3-4</td></tr>
+        <tr><td>Helfer</td><td class="preis">38,00 €/h</td><td>IG BAU Stufe 1-2</td></tr>
+    </table>
+
+    <h3>Schalungskosten (Systemschalung, inkl. Vorhaltung)</h3>
+    <table>
+        <tr><th>Schalungsart</th><th>Preis/m² (netto)</th><th>Hinweis</th></tr>
+        <tr><td>Systemschalung rau (Wände, Decken)</td><td class="preis">18,00 €</td><td>Standard, 50-80 Wiederverwendungen</td></tr>
+        <tr><td>Systemschalung SB1</td><td class="preis">26,00 €</td><td>Bündige Stöße, glatt</td></tr>
+        <tr><td>Systemschalung SB2</td><td class="preis">32,00 €</td><td>Sichtbeton Qualität</td></tr>
+        <tr><td>Sichtbetonschalung SB3</td><td class="preis">45,00 €</td><td>Hochwertig, rund, Kanten</td></tr>
+        <tr><td>Deckenschalung konventionell</td><td class="preis">22,00 €</td><td>Inkl. Stützen, Träger</td></tr>
+        <tr><td>Plattenrandschalung rau</td><td class="preis">16,00 €/lfm</td><td>Einhäuptig</td></tr>
+        <tr><td>Deckenrandschalung rau</td><td class="preis">14,00 €/lfm</td><td>Inkl. Befestigung</td></tr>
+    </table>
+
+    <h3>Fertigteiltreppen (inkl. Lieferung und Montage)</h3>
+    <table>
+        <tr><th>Produkt</th><th>Preis (netto)</th><th>Hinweis</th></tr>
+        <tr><td>FT-Treppenlauf gerade, C30/37, 1,38m breit</td><td class="preis">480,00 €/Stk</td><td>Je nach Stufenanzahl</td></tr>
+        <tr><td>FT-Treppenlauf gerade, C30/37, 1,66m breit</td><td class="preis">580,00 €/Stk</td><td>Breitere Variante</td></tr>
+        <tr><td>FT-Podest C30/37, d=32,5cm</td><td class="preis">650,00 €/Stk</td><td>Inkl. Ausklinkung</td></tr>
+        <tr><td>Tronsole Typ B-V1-L1500</td><td class="preis">220,00 €/Stk</td><td>Trittschalldämmung</td></tr>
+        <tr><td>Tronsole Typ D</td><td class="preis">280,00 €/Stk</td><td>Oberes Auflager</td></tr>
+        <tr><td>Tronsole Typ F-V1-L1500</td><td class="preis">250,00 €/Stk</td><td>Fertigteilauflager</td></tr>
+        <tr><td>Tronsole Typ L 420-L1000</td><td class="preis">55,00 €/Stk</td><td>Fugenplatte</td></tr>
+        <tr><td>Tronsole Typ P-V+V</td><td class="preis">420,00 €/Stk</td><td>Wandelement</td></tr>
+    </table>
+
+    <h3>Schöck Isokorb XT (Listenpreise 2026)</h3>
+    <table>
+        <tr><th>Typ</th><th>Preis/Stk (netto)</th><th>Hinweis</th></tr>
+        <tr><td>XT Typ D (Durchlauf, H250)</td><td class="preis">95 – 160 €</td><td>Je nach MM/VV-Stufe</td></tr>
+        <tr><td>XT Typ K (Kragarm, H250)</td><td class="preis">130 – 280 €</td><td>Je nach M/V-Stufe</td></tr>
+        <tr><td>XT Typ Q (Querkraft, H250)</td><td class="preis">75 – 140 €</td><td>Je nach VV-Stufe</td></tr>
+        <tr><td>XT Typ Z (Zusatzdämmung)</td><td class="preis">50 – 85 €</td><td>Ohne statische Funktion</td></tr>
+        <tr><td>Sconnex P-U</td><td class="preis">160 – 300 €</td><td>Wanddämmung</td></tr>
+        <tr><td>Sconnex SK (Stahl-an-Beton)</td><td class="preis">180 – 320 €</td><td>Stahlkonstruktion</td></tr>
+    </table>
+
+    <p class="price-note">Alle Preise ohne Gewähr. Projektpreise bei Schöck über Anfrage. Typische Rabatte: 15-25% bei Großprojekten.</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 1: BAUSTELLENEINRICHTUNG -->
+<!-- ============================================================ -->
+<div class="page" style="page-break-before: always;" id="s1">
+    <h2>1. Baustelleneinrichtung</h2>
+    <div id="s16">
+        <h3>1.6. Leerrohrverkabelung Ortbeton</h3>
+
+        <div class="hinweis">
+            Die Montage der nachfolgenden Positionen muss im Rahmen des Baufortschritts erfolgen.
+            Alle Kosten für zusätzliche Anfahrten etc. sind in den Einheitspreisen einzukalkulieren.
+            Ein Zugdraht ist in jedes Leerrohr einzuziehen.
+        </div>
+
+        <table>
+            <tr>
+                <th style="width:80px">OZ</th>
+                <th>Leistungsbeschreibung</th>
+                <th style="width:70px">Menge</th>
+                <th style="width:40px">ME</th>
+                <th style="width:90px">EP (€)</th>
+                <th style="width:100px">GP (€)</th>
+            </tr>
+            <tr>
+                <td class="pos">1.6.10</td>
+                <td><strong>Kunststoff-Wellrohr M 25 Beton</strong><br>
+                    Isolierstoffrohr DIN VDE 0605 flexibel, für sehr hohe Druckbeanspruchung, betonfest,
+                    hochtemperaturbeständig, Nenngröße M 25, mit eingeführtem verzinkten Zugdraht,
+                    Verlegung in Ortbeton.
+                    <div class="price-note">Mat: 2,80 €/m + Lohn: 1,20 €/m</div>
+                </td>
+                <td class="menge">800,000</td>
+                <td>m</td>
+                <td class="preis">4,00</td>
+                <td class="summe">3.200,00</td>
+            </tr>
+            <tr>
+                <td class="pos">1.6.20</td>
+                <td><strong>Kunststoff-Wellrohr M 32 Beton</strong><br>
+                    Isolierstoffrohr DIN VDE 0605 flexibel, für sehr hohe Druckbeanspruchung, betonfest,
+                    hochtemperaturbeständig, Nenngröße M 32, mit eingeführtem verzinkten Zugdraht,
+                    Verlegung in Ortbeton.
+                    <div class="price-note">Mat: 3,80 €/m + Lohn: 1,50 €/m</div>
+                </td>
+                <td class="menge">20,000</td>
+                <td>m</td>
+                <td class="preis">5,30</td>
+                <td class="summe">106,00</td>
+            </tr>
+            <tr>
+                <td class="pos">1.6.30</td>
+                <td><strong>Kabelschutzrohr 90</strong><br>
+                    Kabelschutzrohr Type 90, biegsam, Ringware aus PE, halogenfrei, Farbe grau.
+                    Optimierte Verbundrohrbauweise (höhere Druckfestigkeit), außen gewellt mit
+                    gleitfähiger Innenhaut für den schnellen Kabeleinzug.
+                    Druckbeanspruchung Typ 750 und Schlagfestigkeit N nach DIN EN 61386-24.
+                    <div class="price-note">Mat: 6,50 €/m + Lohn: 2,50 €/m</div>
+                </td>
+                <td class="menge">10,000</td>
+                <td>m</td>
+                <td class="preis">9,00</td>
+                <td class="summe">90,00</td>
+            </tr>
+            <tr>
+                <td class="pos">1.6.40</td>
+                <td><strong>Geräte-Verbindungsdose</strong><br>
+                    Betonbaudose, Ausführung als Betonbau-Geräte-Verbindungsdose nach DIN EN 60670/VDE 0606
+                    und DIN 49073, aus Kunststoff, für Installationen zur Gegenschalung ohne zusätzliche
+                    Abstützung, Befestigung an der Bewehrung mit Prefix® Systemflügelset.
+                    Installationsöffnung Ø 60 mm, Länge 94 mm, Breite 75 mm, Tiefe 91 mm.
+                    <div class="price-note">Mat: 8,50 €/Stk + Lohn: 4,50 €/Stk</div>
+                </td>
+                <td class="menge">200,000</td>
+                <td>Stk</td>
+                <td class="preis">13,00</td>
+                <td class="summe">2.600,00</td>
+            </tr>
+            <tr>
+                <td class="pos">1.6.50</td>
+                <td><strong>Decken-Verbindungsdose</strong><br>
+                    Decken-Verbindungsdose für Betonbauinstallation, Ortbeton, Befestigung auf Schalung.
+                    Betonbaudose, Ausführung als Betonbau-Universeller Decken- und Wandauslass,
+                    aus Kunststoff, Auslassöffnung Ø 48 mm, mit universeller Befestigungsfläche Ø 85 mm,
+                    Tiefe 105 mm, integrierte Rohrrückhaltung, mit Aufnahme für Leuchtenhaken nach DIN EN 60670 (50N).
+                    <div class="price-note">Mat: 12,00 €/Stk + Lohn: 5,50 €/Stk</div>
+                </td>
+                <td class="menge">62,000</td>
+                <td>Stk</td>
+                <td class="preis">17,50</td>
+                <td class="summe">1.085,00</td>
+            </tr>
+            <tr>
+                <td class="pos">1.6.60</td>
+                <td><strong>Wand und Deckenübergang M25</strong><br>
+                    Wand- und Deckenkrümmer 30° für Betonbauinstallation, Ortbeton, Befestigung auf Schalung.
+                    Wand-Deckenkrümmer zum Verbinden von Installationsrohren M25 oder als Wand- bzw. Deckenauslass,
+                    aus Kunststoff, zur Schalungsseite mit Putzhaut verschlossen, mit Stützelementaufnahme Ø 20 mm.
+                    Sichtbare Fläche nach dem Ausschalen Ø 28 mm, Länge 72 mm, Breite 35 mm, Tiefe 78 mm.
+                    <div class="price-note">Mat: 6,50 €/Stk + Lohn: 3,50 €/Stk</div>
+                </td>
+                <td class="menge">20,000</td>
+                <td>Stk</td>
+                <td class="preis">10,00</td>
+                <td class="summe">200,00</td>
+            </tr>
+            <tr class="summe-row">
+                <td colspan="5"><strong>Summe 1.6. Leerrohrverkabelung Ortbeton</strong></td>
+                <td class="summe"><strong>7.281,00</strong></td>
+            </tr>
+            <tr class="summe-row">
+                <td colspan="5"><strong>Summe 1. Baustelleneinrichtung</strong></td>
+                <td class="summe"><strong>7.281,00</strong></td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SEITE 2: INHALTSVERZEICHNIS -->
+<!-- ============================================================ -->
+<div class="page">
+    <h2>Inhaltsverzeichnis</h2>
+    <p style="font-size:10px; margin-bottom:10px;">Projekt: 026339 Erd-, Gerüst- und Rohbauarbeiten KiTa Liebigstraße</p>
+
+    <table class="toc">
+        <tr><th style="width:80px">Titel</th><th>Bezeichnung</th><th style="width:50px">Seite</th></tr>
+        <tr><td>1.</td><td><a href="#s1">Baustelleneinrichtung</a></td><td>3</td></tr>
+        <tr><td>1.6.</td><td><a href="#s16">Leerrohrverkabelung Ortbeton</a></td><td>3</td></tr>
+        <tr><td>4.</td><td><a href="#s4">Betonarbeiten</a></td><td>6</td></tr>
+        <tr><td>4.1.</td><td><a href="#s41">Schalung und Beton</a></td><td>7</td></tr>
+        <tr><td>4.2.</td><td><a href="#s42">Fertigteiltreppen</a></td><td>27</td></tr>
+        <tr><td>4.3.</td><td><a href="#s43">Bewehrung</a></td><td>38</td></tr>
+        <tr><td>4.4.</td><td><a href="#s44">Abdichtung, Dämmung, Trennlagen</a></td><td>40</td></tr>
+        <tr><td>4.5.</td><td><a href="#s45">Sonstige Leistungen</a></td><td>46</td></tr>
+        <tr><td>4.6.</td><td><a href="#s46">Besondere Einbauteile im Beton</a></td><td>51</td></tr>
+        <tr><td>5.</td><td><a href="#s5">Mauerarbeiten</a></td><td>86</td></tr>
+        <tr><td></td><td><a href="#szusammen">Zusammenstellung</a></td><td>93</td></tr>
+    </table>
+
+    <div class="hinweis">
+        <strong>Preisgrundlage:</strong> Alle Preise verstehen sich in EUR netto (ohne MwSt.).
+        Preisstand: 06/2026, Region Düsseldorf/NRW. Materialpreise inkl. Lieferung Baustelle.
+        Lohnkosten inkl. Lohnnebenkosten (SOKA-Bau, Urlaubs-/Lohnausgleichskasse).
+        Alle Preise sind Richtwerte — verbindliche Angebote bei regionalen Lieferanten einholen.
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 1.6: LEERROHRVERKABELUNG ORTBETON -->
+<!-- ============================================================ -->
+<div class="page" style="page-break-before: always;" id="s16">
+    <h2>1.6. Leerrohrverkabelung Ortbeton</h2>
+    <div class="hinweis">Montage im Rahmen des Baufortschritts. Alle Kosten für zusätzliche Anfahrten in den EP einkalkulieren. Zugdraht in jedes Leerrohr einziehen.</div>
+    <table>
+        <tr><th style="width:70px">OZ</th><th>Leistungsbeschreibung</th><th style="width:65px">Menge</th><th style="width:35px">ME</th><th style="width:80px">EP €</th><th style="width:95px">GP €</th></tr>
+        <tr><td class="pos">1.6.10</td><td><strong>Kunststoff-Wellrohr M 25 Beton</strong><br>Isolierstoffrohr DIN VDE 0605 flexibel, betonfest, hochtemperaturbeständig, M 25, mit Zugdraht, Verlegung in Ortbeton.<div class="price-note">Mat 2,80 + Lohn 1,20</div></td><td class="menge">800,000</td><td>m</td><td class="preis">4,00</td><td class="summe">3.200,00</td></tr>
+        <tr><td class="pos">1.6.20</td><td><strong>Kunststoff-Wellrohr M 32 Beton</strong><br>Isolierstoffrohr DIN VDE 0605 flexibel, betonfest, hochtemperaturbeständig, M 32, mit Zugdraht, Verlegung in Ortbeton.<div class="price-note">Mat 3,80 + Lohn 1,50</div></td><td class="menge">20,000</td><td>m</td><td class="preis">5,30</td><td class="summe">106,00</td></tr>
+        <tr><td class="pos">1.6.30</td><td><strong>Kabelschutzrohr 90</strong><br>Type 90, biegsam, PE, halogenfrei, außen gewellt mit gleitfähiger Innenhaut. Druckbeanspruchung Typ 750, Schlagfestigkeit N nach DIN EN 61386-24.<div class="price-note">Mat 6,50 + Lohn 2,50</div></td><td class="menge">10,000</td><td>m</td><td class="preis">9,00</td><td class="summe">90,00</td></tr>
+        <tr><td class="pos">1.6.40</td><td><strong>Geräte-Verbindungsdose</strong><br>Betonbaudose nach DIN EN 60670/VDE 0606 und DIN 49073, Kunststoff, Installationsöffnung Ø 60 mm, L 94 mm, B 75 mm, T 91 mm, IP 30, halogenfrei.<div class="price-note">Mat 8,50 + Lohn 4,50</div></td><td class="menge">200,000</td><td>Stk</td><td class="preis">13,00</td><td class="summe">2.600,00</td></tr>
+        <tr><td class="pos">1.6.50</td><td><strong>Decken-Verbindungsdose</strong><br>Betonbau-Universeller Decken- und Wandauslass, Auslassöffnung Ø 48 mm, Befestigungsfläche Ø 85 mm, T 105 mm, Leuchtenhaken 50N, IP 30, halogenfrei.<div class="price-note">Mat 12,00 + Lohn 5,50</div></td><td class="menge">62,000</td><td>Stk</td><td class="preis">17,50</td><td class="summe">1.085,00</td></tr>
+        <tr><td class="pos">1.6.60</td><td><strong>Wand- und Deckenübergang M25</strong><br>Wand-Deckenkrümmer 30° für Installationsrohre M25, Kunststoff, Putzhaut verschlossen, Stützelementaufnahme Ø 20 mm, Ø 28 mm sichtbar, halogenfrei.<div class="price-note">Mat 6,50 + Lohn 3,50</div></td><td class="menge">20,000</td><td>Stk</td><td class="preis">10,00</td><td class="summe">200,00</td></tr>
+        <tr class="summe-row"><td colspan="5"><strong>Summe 1.6. Leerrohrverkabelung Ortbeton</strong></td><td class="summe"><strong>7.281,00</strong></td></tr>
+        <tr class="summe-row"><td colspan="5"><strong>Summe 1. Baustelleneinrichtung</strong></td><td class="summe"><strong>7.281,00</strong></td></tr>
+    </table>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 4: BETONARBEITEN -->
+<!-- ============================================================ -->
+<div class="page" style="page-break-before: always;" id="s4">
+    <h2>4. Betonarbeiten</h2>
+    <div class="hinweis">
+        Weiße Wanne gemäß DAfStb-Richtlinie (WU-Richtlinie) Dez. 2017. Nutzungsklasse A (NKL-A).
+        Betongüten und Expositionsklassen siehe Positionstexte. Überwachungsklasse 1 und 2 beachten.
+    </div>
+
+    <h3 id="s41">4.1. Schalung und Beton</h3>
+
+    <h3>Fundamente und Platten</h3>
+    <table>
+        <tr><th style="width:70px">OZ</th><th>Leistungsbeschreibung</th><th style="width:65px">Menge</th><th style="width:35px">ME</th><th style="width:80px">EP €</th><th style="width:95px">GP €</th></tr>
+        <tr><td class="pos">4.1.10</td><td><strong>Trennlage PE-Folie 0,2 mm</strong><br>Trennlage auf verdichtete Tragschicht, PE-Folie, Stöße überlappt 15 cm.<div class="price-note">Mat 0,60 + Lohn 1,20</div></td><td class="menge">845,000</td><td>m²</td><td class="preis">1,80</td><td class="summe">1.521,00</td></tr>
+        <tr><td class="pos">4.1.20</td><td><strong>Sauberkeitsschicht C12/15 Sohlplatten</strong><br>Unbewehrter Beton unter Gründungsbauteilen, Dicke 5 cm, Expositionsklasse X0.<div class="price-note">Mat 4,75 + Lohn 9,25</div></td><td class="menge">845,000</td><td>m²</td><td class="preis">14,00</td><td class="summe">11.830,00</td></tr>
+        <tr><td class="pos">4.1.30</td><td><strong>Sauberkeitsschicht C12/15 Fundamente</strong><br>Unbewehrter Beton unter Streifenfundamenten, Dicke 5 cm, X0.<div class="price-note">Mat 4,75 + Lohn 9,25</div></td><td class="menge">55,000</td><td>m²</td><td class="preis">14,00</td><td class="summe">770,00</td></tr>
+        <tr><td class="pos">4.1.40</td><td><strong>Schalung Frostschutzschürze</strong><br>Innen- und Aussenschalung, bewehrt, Höhe bis 0,40 m, Oberfläche rau.<div class="price-note">Mat 6,00 + Lohn 12,00</div></td><td class="menge">72,000</td><td>m²</td><td class="preis">18,00</td><td class="summe">1.296,00</td></tr>
+        <tr><td class="pos">4.1.50</td><td><strong>Stahlbeton Frostschutzschürze C20/25</strong><br>Frostschutzschürze, Breite 30 cm, Höhe 40 cm (unterhalb Sohlplatte), XC2.<div class="price-note">Bet 115 + Stahl 30</div></td><td class="menge">12,000</td><td>m³</td><td class="preis">145,00</td><td class="summe">1.740,00</td></tr>
+        <tr><td class="pos">4.1.60</td><td><strong>Schalung Streifenfundament rau</strong><br>Seitenschalung innen und außen, Höhe 80 cm, bewehrt.<div class="price-note">Mat 6,00 + Lohn 12,00</div></td><td class="menge">74,000</td><td>m²</td><td class="preis">18,00</td><td class="summe">1.332,00</td></tr>
+        <tr><td class="pos">4.1.70</td><td><strong>Stahlbeton Streifenfundament C25/30</strong><br>Auf Sauberkeitsschicht betoniert, beidseitig geschalt, Breite 60 cm, Höhe 80 cm, XC2.<div class="price-note">Bet 125 + Stahl 40</div></td><td class="menge">24,000</td><td>m³</td><td class="preis">165,00</td><td class="summe">3.960,00</td></tr>
+        <tr><td class="pos">4.1.80</td><td><strong>Schalung Plattenränder rau 50 cm</strong><br>Für Boden- und Fundamentplatten, rau, einhäuptig, Dicke 50 cm, Kellersohle.<div class="price-note">Mat 5,00 + Lohn 11,00</div></td><td class="menge">48,000</td><td>m</td><td class="preis">16,00</td><td class="summe">768,00</td></tr>
+        <tr><td class="pos">4.1.90</td><td><strong>Schalung Plattenränder rau 40 cm</strong><br>Für Boden- und Fundamentplatten, rau, einhäuptig, Dicke 40 cm, Sohle EG Hochteil.<div class="price-note">Mat 4,50 + Lohn 9,50</div></td><td class="menge">31,000</td><td>m</td><td class="preis">14,00</td><td class="summe">434,00</td></tr>
+        <tr><td class="pos">4.1.100</td><td><strong>Bodenplatte C25/30 WU-Beton 50 cm</strong><br>WU-Beton Bodenplatte Tiefteil, XC2/XA1/XF1/WA, ÜK2, r&lt;0,50, fct,eff=75%×fctm, w/z 0,55-0,60, cnom=35mm, Dicke 50 cm.<div class="price-note">Bet 147 + Stahl 48</div></td><td class="menge">223,000</td><td>m³</td><td class="preis">195,00</td><td class="summe">43.485,00</td></tr>
+        <tr><td class="pos">4.1.110</td><td><strong>Bodenplatte C30/37 WU-Beton 40 cm</strong><br>WU-Beton Bodenplatte Hochteil, XC2/XF1/WA, ÜK2, r&lt;0,50, fct,eff=75%×fctm, w/z≤0,55, cnom=35mm, Dicke 40 cm.<div class="price-note">Bet 162 + Stahl 48</div></td><td class="menge">164,500</td><td>m³</td><td class="preis">210,00</td><td class="summe">34.545,00</td></tr>
+        <tr><td class="pos">4.1.120</td><td><strong>Bodenplatte C30/37 WU 10 cm Mehrbeton</strong><br>Wie 4.1.110, jedoch als Mehrbeton für Bodenplattenvertiefung, Dicke 10 cm.<div class="price-note">Bet 162 + Stahl 23</div></td><td class="menge">30,300</td><td>m³</td><td class="preis">185,00</td><td class="summe">5.605,50</td></tr>
+        <tr class="summe-row"><td colspan="5"><strong>Zwischensumme Fundamente und Platten</strong></td><td class="summe"><strong>107.286,50</strong></td></tr>
+    </table>
+
+    <h3>Wände</h3>
+    <table>
+        <tr><th style="width:70px">OZ</th><th>Leistungsbeschreibung</th><th style="width:65px">Menge</th><th style="width:35px">ME</th><th style="width:80px">EP €</th><th style="width:95px">GP €</th></tr>
+        <tr><td class="pos">4.1.130</td><td><strong>Schalung Wände Aufzugsunterfahrt</strong><br>Systemschalung/Rahmenschalung, Wanddicke 50 cm, Höhe 1,10 m, keine Oberflächenanforderung.<div class="price-note">Mat 7 + Lohn 15</div></td><td class="menge">18,000</td><td>m²</td><td class="preis">22,00</td><td class="summe">396,00</td></tr>
+        <tr><td class="pos">4.1.140</td><td><strong>Stahlbeton Wände Aufzugunterfahrt WU C25/30</strong><br>Aufzugsschachtwand, C30/37, XC2/XA1/XF1/WF, r&lt;0,50, fct,eff=65%×fctm, w/z≤0,55, cnom=35mm, Höhe ca. 1,10 m, Dicke 50 cm.<div class="price-note">Bet 147 + Stahl 48</div></td><td class="menge">6,000</td><td>m³</td><td class="preis">195,00</td><td class="summe">1.170,00</td></tr>
+        <tr><td class="pos">4.1.150</td><td><strong>Schalung Wände UG Außenwand 30 cm</strong><br>Systemschalung, Wanddicke 30 cm, Geschosshöhe 2,61 m, Oberfläche SB 2.<div class="price-note">Mat 10 + Lohn 22</div></td><td class="menge">282,150</td><td>m²</td><td class="preis">32,00</td><td class="summe">9.028,80</td></tr>
+        <tr><td class="pos">4.1.160</td><td><strong>Schalung Wände UG Außenwand 25 cm</strong><br>Systemschalung, Wanddicke 25 cm, Geschosshöhe 2,61 m, Oberfläche SB 2.<div class="price-note">Mat 9 + Lohn 21</div></td><td class="menge">183,100</td><td>m²</td><td class="preis">30,00</td><td class="summe">5.493,00</td></tr>
+        <tr><td class="pos">4.1.170</td><td><strong>Stahlbeton Außenwand C25/30 WU 25-30 cm</strong><br>WU-Beton, XC2/XA1/XF1/WF, r&lt;0,50, fct,eff=65%×fctm, w/z≤0,55, cnom=35mm, ÜK1, Dicke 25-30 cm.<div class="price-note">Bet 147 + Stahl 48</div></td><td class="menge">64,500</td><td>m³</td><td class="preis">195,00</td><td class="summe">12.577,50</td></tr>
+        <tr><td class="pos">4.1.180</td><td><strong>Schalung Innenwände UG 20 cm</strong><br>Systemschalung, Wanddicke 20 cm, Geschosshöhe 2,61 m, Oberfläche SB 2.<div class="price-note">Mat 9 + Lohn 21</div></td><td class="menge">145,500</td><td>m²</td><td class="preis">30,00</td><td class="summe">4.365,00</td></tr>
+        <tr><td class="pos">4.1.190</td><td><strong>Stahlbeton UG-Innenwand C25/30 SB2 20 cm</strong><br>Keller-Innenwand, C25/30, XC2, ÜK1, Sichtbeton SB 2 beidseitig, Dicke 20 cm.<div class="price-note">Bet 125 + Stahl 25 + SB2 28</div></td><td class="menge">16,000</td><td>m³</td><td class="preis">178,00</td><td class="summe">2.848,00</td></tr>
+        <tr><td class="pos">4.1.200</td><td><strong>Schalung Innenwände UG 24-25 cm</strong><br>Systemschalung, Wanddicke 24-25 cm, Geschosshöhe 2,61 m, Oberfläche SB 2.<div class="price-note">Mat 10 + Lohn 22</div></td><td class="menge">334,600</td><td>m²</td><td class="preis">32,00</td><td class="summe">10.707,20</td></tr>
+        <tr><td class="pos">4.1.210</td><td><strong>Stahlbeton UG-Innenwand C25/30 SB2 25 cm</strong><br>Keller-Innenwand, C25/30, XC2, ÜK1, Sichtbeton SB 2 beidseitig, Dicke 25 cm.<div class="price-note">Bet 125 + Stahl 25 + SB2 28</div></td><td class="menge">43,000</td><td>m³</td><td class="preis">178,00</td><td class="summe">7.654,00</td></tr>
+        <tr><td class="pos">4.1.220</td><td><strong>Schalung Innen/Außenwände EG-3.OG 24-28 cm</strong><br>Systemschalung, Wanddicke 24-28 cm, Geschosshöhe 3,30 m (3.OG 2,80 m), Oberfläche SB 1.<div class="price-note">Mat 8 + Lohn 18</div></td><td class="menge">4.895,000</td><td>m²</td><td class="preis">26,00</td><td class="summe">127.270,00</td></tr>
+        <tr><td class="pos">4.1.230</td><td><strong>Stahlbeton Innen/Außenwand C25/30 EG-3.OG</strong><br>C25/30, XC1/W0, ÜK1, SB 1, Dicke 24-28 cm.<div class="price-note">Bet 125 + Stahl 25 + SB1 18</div></td><td class="menge">411,000</td><td>m³</td><td class="preis">168,00</td><td class="summe">69.048,00</td></tr>
+        <tr><td class="pos">4.1.240</td><td><strong>Schalung Schachtwände</strong><br>Systemschalung für Aufzugs-/Installationsschachtwände, Wanddicke 20-24 cm, Höhe 2,61-3,30 m, SB 1. Schachtinnenmaße: 1,64×1,70m / 1,70×2,45m / 1,70×1,90m.<div class="price-note">Mat 9 + Lohn 19</div></td><td class="menge">577,000</td><td>m²</td><td class="preis">28,00</td><td class="summe">16.156,00</td></tr>
+        <tr><td class="pos">4.1.250</td><td><strong>Schalung Auflagerkonsole glatt</strong><br>Glatte Schalung aus nicht saugenden Elementen, Querschnitt bis 24/30 cm, in Abwicklung gerechnet.<div class="price-note">Mat 12 + Lohn 23</div></td><td class="menge">11,000</td><td>m</td><td class="preis">35,00</td><td class="summe">385,00</td></tr>
+        <tr><td class="pos">4.1.260</td><td><strong>Schalung Attika Dach</strong><br>Systemschalung, Attikadicke bis 25 cm, Höhe 0,70 m, Oberfläche SB 1.<div class="price-note">Mat 9 + Lohn 19</div></td><td class="menge">205,000</td><td>m²</td><td class="preis">28,00</td><td class="summe">5.740,00</td></tr>
+        <tr><td class="pos">4.1.270</td><td><strong>Attika C25/30 Stahlbeton 24 cm</strong><br>Attika mit regelmäßig sichtbaren Schalungsstößen und gefasten Kanten, C25/30, XC3/XF1, ÜK1, Höhe 70 cm, Dicke 24 cm.<div class="price-note">Bet 125 + Stahl 25 + SB1 25</div></td><td class="menge">26,000</td><td>m²</td><td class="preis">175,00</td><td class="summe">4.550,00</td></tr>
+        <tr class="summe-row"><td colspan="5"><strong>Zwischensumme Wände</strong></td><td class="summe"><strong>269.988,50</strong></td></tr>
+    </table>
+
+    <h3>Stützen</h3>
+    <table>
+        <tr><th style="width:70px">OZ</th><th>Leistungsbeschreibung</th><th style="width:65px">Menge</th><th style="width:35px">ME</th><th style="width:80px">EP €</th><th style="width:95px">GP €</th></tr>
+        <tr><td class="pos">4.1.280</td><td><strong>Schalung Stütze UG SB2 rechteckig bis 1000 cm²</strong><br>Stahlbeton-Stützen rechteckig (35×20, 30×24, 40×24 o.ä.), Höhe bis 2,62 m, SB 2.<div class="price-note">Mat 10 + Lohn 24</div></td><td class="menge">45,000</td><td>m²</td><td class="preis">34,00</td><td class="summe">1.530,00</td></tr>
+        <tr><td class="pos">4.1.290</td><td><strong>Stahlbeton Stütze UG C30/37 eckig bis 1000 cm²</strong><br>Stahlbeton-Stützen rechteckig, Höhe bis 2,62 m, C30/37, XC1, ÜK2.<div class="price-note">Bet 140 + Stahl 50 + SB2 30</div></td><td class="menge">4,000</td><td>m³</td><td class="preis">220,00</td><td class="summe">880,00</td></tr>
+        <tr><td class="pos">4.1.300</td><td><strong>Schalung Stütze EG-3.OG SB1 rechteckig bis 1000 cm²</strong><br>Höhe bis 3,30 m, SB 1, Systemschalung.<div class="price-note">Mat 8 + Lohn 20</div></td><td class="menge">415,000</td><td>m²</td><td class="preis">28,00</td><td class="summe">11.620,00</td></tr>
+        <tr><td class="pos">4.1.310</td><td><strong>Stahlbeton Stütze EG-3.OG C30/37 eckig bis 1000 cm²</strong><br>Quadratisch/rechteckig, Höhe bis 3,30 m, C30/37, XC1, ÜK2.<div class="price-note">Bet 140 + Stahl 50 + SB1 20</div></td><td class="menge">31,000</td><td>m³</td><td class="preis">210,00</td><td class="summe">6.510,00</td></tr>
+        <tr><td class="pos">4.1.320</td><td><strong>Schalung Stütze EG-3.OG SB1 bis 1600 cm²</strong><br>Abmessungen 64×24, 80×24, Höhe bis 3,30 m, SB 1.<div class="price-note">Mat 9 + Lohn 21</div></td><td class="menge">15,000</td><td>m²</td><td class="preis">30,00</td><td class="summe">450,00</td></tr>
+        <tr><td class="pos">4.1.330</td><td><strong>Stahlbeton Stütze EG-3.OG C30/37 bis 1600 cm²</strong><br>Quadratisch/rechteckig, Höhe bis 3,30 m, C30/37, XC1, ÜK2.<div class="price-note">Bet 140 + Stahl 50 + SB1 20</div></td><td class="menge">2,000</td><td>m³</td><td class="preis">210,00</td><td class="summe">420,00</td></tr>
+        <tr><td class="pos">4.1.340</td><td><strong>Schalung Stütze Sichtbeton SB3 rund Ø 25 cm</strong><br>Sichtbetonschalung für freistehende Stützen, kreisförmig, SB 3, Höhe 2,70 m.<div class="price-note">Mat 15 + Lohn 30</div></td><td class="menge">21,000</td><td>m²</td><td class="preis">45,00</td><td class="summe">945,00</td></tr>
+        <tr><td class="pos">4.1.350</td><td><strong>Stahlbeton Stütze C30/37 rund Ø 25 cm SB3</strong><br>Runder Querschnitt, C30/37, XC4/XF1, ÜK2, SB 3.<div class="price-note">Bet 140+38 + Stahl 57</div></td><td class="menge">3,000</td><td>m³</td><td class="preis">235,00</td><td class="summe">705,00</td></tr>
+        <tr><td class="pos">4.1.360</td><td><strong>Konsole/Vorlage an Stütze bis 5000 cm²</strong><br>Glatte Schalung aus nicht saugenden Elementen, Querschnitt bis 5000 cm².<div class="price-note">Mat 30 + Lohn 55</div></td><td class="menge">2,000</td><td>Stk</td><td class="preis">85,00</td><td class="summe">170,00</td></tr>
+        <tr><td class="pos">4.1.370</td><td><strong>Konsolen/Vouten Beton C20/25</strong><br>Konsolen, Aufkantungen, Vouten, Größe bis 0,3 m³, C20/25, XC1, ÜK1.<div class="price-note">Bet 115 + Stahl 25 + Lohn 45</div></td><td class="menge">1,000</td><td>m³</td><td class="preis">185,00</td><td class="summe">185,00</td></tr>
+        <tr class="summe-row"><td colspan="5"><strong>Zwischensumme Stützen</strong></td><td class="summe"><strong>23.415,00</strong></td></tr>
+    </table>
+
+    <h3>Unterzüge</h3>
+    <table>
+        <tr><th style="width:70px">OZ</th><th>Leistungsbeschreibung</th><th style="width:65px">Menge</th><th style="width:35px">ME</th><th style="width:80px">EP €</th><th style="width:95px">GP €</th></tr>
+        <tr><td class="pos">4.1.380</td><td><strong>Schalung Unterzug verschiedene Abmessungen</strong><br>Dreiseitige Schalung (Boden + 2× Seite), SB 1, UZ-Breiten 0,24-0,50 m, UZ-Höhen 0,60-1,33 m, Systemschalung.<div class="price-note">Mat 9 + Lohn 19</div></td><td class="menge">235,000</td><td>m²</td><td class="preis">28,00</td><td class="summe">6.580,00</td></tr>
+        <tr><td class="pos">4.1.390</td><td><strong>Stahlbeton Unterzug C25/30</strong><br>Rechteckiger Querschnitt, Oberfläche glatt, C25/30, XC1, ÜK1, verschiedene Abmessungen.<div class="price-note">Bet 125 + Stahl 25 + SB1 25</div></td><td class="menge">31,000</td><td>m³</td><td class="preis">175,00</td><td class="summe">5.425,00</td></tr>
+        <tr class="summe-row"><td colspan="5"><strong>Zwischensumme Unterzüge</strong></td><td class="summe"><strong>12.005,00</strong></td></tr>
+    </table>
+
+    <h3>Deckenplatten</h3>
+    <table>
+        <tr><th style="width:70px">OZ</th><th>Leistungsbeschreibung</th><th style="width:65px">Menge</th><th style="width:35px">ME</th><th style="width:80px">EP €</th><th style="width:95px">GP €</th></tr>
+        <tr><td class="pos">4.1.400</td><td><strong>Schalung Deckenplatte bis 2,61 m</strong><br>Konventionelle Deckenschalung oder Trägerschalung, SB 2, Deckendicke 28 cm, Geschosshöhe 2,61 m UG.<div class="price-note">Mat 7 + Lohn 17</div></td><td class="menge">441,000</td><td>m²</td><td class="preis">24,00</td><td class="summe">10.584,00</td></tr>
+        <tr><td class="pos">4.1.410</td><td><strong>Schalung Deckenplatte bis 3,30 m</strong><br>SB 1, Deckendicke 25-28 cm (EG/1.+2.OG 28cm, 3.OG 25cm), Geschosshöhe 3,30 m.<div class="price-note">Mat 7 + Lohn 17</div></td><td class="menge">2.931,000</td><td>m²</td><td class="preis">24,00</td><td class="summe">70.344,00</td></tr>
+        <tr><td class="pos">4.1.420</td><td><strong>Schalung Deckenplatte bis 3,07 m d=22 cm</strong><br>SB 1, Deckendicke 22 cm, Geschosshöhe EG 3,07 m (Laubengang).<div class="price-note">Mat 7 + Lohn 17</div></td><td class="menge">107,500</td><td>m²</td><td class="preis">24,00</td><td class="summe">2.580,00</td></tr>
+        <tr><td class="pos">4.1.430</td><td><strong>Stahlbeton Deckenplatte C25/30 d=22 cm</strong><br>Geschossdecke, C25/30, XC1, ÜK1, Dicke 22 cm.<div class="price-note">Bet 125 + Stahl 17 + Lohn 18</div></td><td class="menge">30,500</td><td>m³</td><td class="preis">160,00</td><td class="summe">4.880,00</td></tr>
+        <tr><td class="pos">4.1.440</td><td><strong>Stahlbeton Deckenplatte C25/30 d=25 cm</strong><br>Geschossdecke, C25/30, XC1, ÜK1, Dicke 25 cm.<div class="price-note">Bet 125 + Stahl 17 + Lohn 18</div></td><td class="menge">155,000</td><td>m³</td><td class="preis">160,00</td><td class="summe">24.800,00</td></tr>
+        <tr><td class="pos">4.1.450</td><td><strong>Stahlbeton Deckenplatte C25/30 d=28 cm</strong><br>Geschossdecke, C25/30, XC1, ÜK1, Dicke 28 cm.<div class="price-note">Bet 125 + Stahl 17 + Lohn 18</div></td><td class="menge">761,000</td><td>m³</td><td class="preis">160,00</td><td class="summe">121.760,00</td></tr>
+        <tr><td class="pos">4.1.460</td><td><strong>Deckenrandschalung rau d=28, 2,61 m</strong><br>Für Deckenplatten, rau, Dicke 28 cm, Höhe 2,61 m.<div class="price-note">Mat 4 + Lohn 10</div></td><td class="menge">89,500</td><td>m</td><td class="preis">14,00</td><td class="summe">1.253,00</td></tr>
+        <tr><td class="pos">4.1.470</td><td><strong>Deckenrandschalung rau d=22, 3,07 m</strong><br>Für Deckenplatten, rau, Dicke 22 cm, Höhe 3,07 m.<div class="price-note">Mat 4 + Lohn 10</div></td><td class="menge">45,000</td><td>m</td><td class="preis">14,00</td><td class="summe">630,00</td></tr>
+        <tr><td class="pos">4.1.480</td><td><strong>Deckenrandschalung rau d=28, 3,30 m</strong><br>Für Deckenplatten, rau, Dicke 25-28 cm, Höhe 3,30 m.<div class="price-note">Mat 4 + Lohn 10</div></td><td class="menge">475,000</td><td>m</td><td class="preis">14,00</td><td class="summe">6.650,00</td></tr>
+        <tr><td class="pos">4.1.490</td><td><strong>Deckenversprünge schalen 41 cm</strong><br>Stirnseitige Abschalung zwischen zwei Deckenebenen, Höhenversprung 41 cm, UG.<div class="price-note">Mat 10 + Lohn 18</div></td><td class="menge">3,700</td><td>m</td><td class="preis">28,00</td><td class="summe">103,60</td></tr>
+        <tr><td class="pos">4.1.500</td><td><strong>Deckenversprünge schalen 93 cm</strong><br>Höhenversprung 93 cm, UG.<div class="price-note">Mat 15 + Lohn 23</div></td><td class="menge">3,600</td><td>m</td><td class="preis">38,00</td><td class="summe">136,80</td></tr>
+        <tr><td class="pos">4.1.510</td><td><strong>Deckenversprünge schalen 33 cm</strong><br>Höhenversprung 33 cm, UG + EG.<div class="price-note">Mat 8 + Lohn 16</div></td><td class="menge">10,200</td><td>m</td><td class="preis">24,00</td><td class="summe">244,80</td></tr>
+        <tr><td class="pos">4.1.520</td><td><strong>Deckenversprünge schalen 22 cm</strong><br>Höhenversprung 22 cm, EG Achse B.<div class="price-note">Mat 7 + Lohn 13</div></td><td class="menge">31,260</td><td>m</td><td class="preis">20,00</td><td class="summe">625,20</td></tr>
+        <tr><td class="pos">4.1.530</td><td><strong>Deckenversprünge schalen 18 cm</strong><br>Höhenversprung 18 cm, 1.OG Achse C.<div class="price-note">Mat 6 + Lohn 12</div></td><td class="menge">41,660</td><td>m</td><td class="preis">18,00</td><td class="summe">749,88</td></tr>
+        <tr><td class="pos">4.1.540</td><td><strong>Deckenversprünge erstellen 8 cm nur oberseitig</strong><br>Nur an der oberseitigen Stahlbetondecke, 1.OG Achse E-F.<div class="price-note">Mat 5 + Lohn 10</div></td><td class="menge">18,260</td><td>m</td><td class="preis">15,00</td><td class="summe">273,90</td></tr>
+        <tr><td class="pos">4.1.550</td><td><strong>Deckenrandaussparrung</strong><br>Aussparrung am Deckenrand, 251×10,5/16×5 cm (l/t/h), inkl. Ausschalen.<div class="price-note">Mat 4 + Lohn 8</div></td><td class="menge">15,000</td><td>Stk</td><td class="preis">12,00</td><td class="summe">180,00</td></tr>
+        <tr class="summe-row"><td colspan="5"><strong>Zwischensumme Deckenplatten</strong></td><td class="summe"><strong>245.585,18</strong></td></tr>
+    </table>
+
+    <h3>Öffnungen, Aussparungen</h3>
+    <div class="hinweis">Abrechnungsregel: Öffnungen bis 2,50 m² werden übermessen (nicht abgezogen). Öffnungen über 2,50 m² werden abgezogen, Leibungen gesondert vergütet. Aussparungen unter 0,1 m² werden übermessen.</div>
+    <table>
+        <tr><th style="width:70px">OZ</th><th>Leistungsbeschreibung</th><th style="width:65px">Menge</th><th style="width:35px">ME</th><th style="width:80px">EP €</th><th style="width:95px">GP €</th></tr>
+        <tr><td class="pos">4.1.560</td><td><strong>Herstellung Öffnungen &gt;2,5 m²</strong><br>Leibungen schalen bei Fensteröffnungen &gt;2,5 m² in Stahlbetonwänden, Wanddicke bis 28 cm, glatte Schalung. Abrechnung nach tatsächlicher Länge der Schalungsfläche.<div class="price-note">Mat 7 + Lohn 15</div></td><td class="menge">1.105,000</td><td>m</td><td class="preis">22,00</td><td class="summe">24.310,00</td></tr>
+        <tr><td class="pos">4.1.570</td><td><strong>Aussparungen 0,10-0,25 m²</strong><br>Eckige Formen, Ein- und Ausschalen, Tiefe bis 28 cm.<div class="price-note">Mat 18 + Lohn 27</div></td><td class="menge">75,000</td><td>Stk</td><td class="preis">45,00</td><td class="summe">3.375,00</td></tr>
+        <tr><td class="pos">4.1.580</td><td><strong>Aussparungen 0,26-0,50 m²</strong><br>Eckige Formen, Ein- und Ausschalen, Tiefe bis 28 cm.<div class="price-note">Mat 28 + Lohn 37</div></td><td class="menge">46,000</td><td>Stk</td><td class="preis">65,00</td><td class="summe">2.990,00</td></tr>
+        <tr><td class="pos">4.1.590</td><td><strong>Aussparungen 0,51-1,00 m²</strong><br>Eckige Formen, Ein- und Ausschalen, Tiefe bis 28 cm.<div class="price-note">Mat 42 + Lohn 53</div></td><td class="menge">18,000</td><td>Stk</td><td class="preis">95,00</td><td class="summe">1.710,00</td></tr>
+        <tr><td class="pos">4.1.600</td><td><strong>Aussparungen 1,01-2,00 m²</strong><br>Eckige Formen, Ein- und Ausschalen, Tiefe bis 28 cm.<div class="price-note">Mat 65 + Lohn 80</div></td><td class="menge">10,000</td><td>Stk</td><td class="preis">145,00</td><td class="summe">1.450,00</td></tr>
+        <tr><td class="pos">4.1.610</td><td><strong>Zulage Schalung Türleibungen</strong><br>Senkrechte und waagerechte Leibungen bei Türöffnungen in StB-Wänden, Wanddicke bis 28 cm, glatt. Abrechnung nach Länge der Schalungsfläche (Umfang ohne Boden).<div class="price-note">Mat 7 + Lohn 15</div></td><td class="menge">385,000</td><td>m</td><td class="preis">22,00</td><td class="summe">8.470,00</td></tr>
+        <tr><td class="pos">4.1.620</td><td><strong>Deckenaussparungen schließen 0,50 m²</strong><br>Nachträglich schließen mit Beton in gleicher Güte, Deckendicke bis 28 cm, inkl. Anarbeiten.<div class="price-note">Mat 60 + Lohn 120</div></td><td class="menge">70,000</td><td>Stk</td><td class="preis">180,00</td><td class="summe">12.600,00</td></tr>
+        <tr><td class="pos">4.1.630</td><td><strong>Deckenaussparungen schließen 1,00 m²</strong><br>Wie 4.1.620, Einzelgröße bis 1,00 m².<div class="price-note">Mat 100 + Lohn 180</div></td><td class="menge">15,000</td><td>Stk</td><td class="preis">280,00</td><td class="summe">4.200,00</td></tr>
+        <tr><td class="pos">4.1.640</td><td><strong>Deckenaussparungen schließen 2,00 m²</strong><br>Wie 4.1.620, Einzelgröße bis 2,00 m².<div class="price-note">Mat 160 + Lohn 260</div></td><td class="menge">10,000</td><td>Stk</td><td class="preis">420,00</td><td class="summe">4.200,00</td></tr>
+        <tr><td class="pos">4.1.650</td><td><strong>Fremdüberwachung Betoneinbau ÜK 2</strong><br>Überwachung durch anerkannte Prüfstelle für C30/37 (ÜK2) gemäß DIN 1045-2/3, inkl. aller Gebühren.<div class="price-note">Pauschal</div></td><td class="menge">1,000</td><td>PSCH</td><td class="preis">4.500,00</td><td class="summe">4.500,00</td></tr>
+        <tr class="summe-row"><td colspan="5"><strong>Zwischensumme Öffnungen/Aussparungen</strong></td><td class="summe"><strong>67.805,00</strong></td></tr>
+    </table>
+
+    <h3>Ortbetontreppen</h3>
+    <table>
+        <tr><th style="width:70px">OZ</th><th>Leistungsbeschreibung</th><th style="width:65px">Menge</th><th style="width:35px">ME</th><th style="width:80px">EP €</th><th style="width:95px">GP €</th></tr>
+        <tr><td class="pos">4.1.660</td><td><strong>Schalung Treppen gerade Sichtbeton</strong><br>Sichtbetonschalung für geradläufige Treppenanlagen mit Podest, Laufplatten und Keilstufen. Stufen 21×17/28 cm, Laufplattendicke 25 cm, Podestdicke 28 cm, SB 2. 3 Treppenanlagen EG→1.OG→2.OG→3.OG.<div class="price-note">Mat 12 + Lohn 26</div></td><td class="menge">36,000</td><td>m²</td><td class="preis">38,00</td><td class="summe">1.368,00</td></tr>
+        <tr><td class="pos">4.1.670</td><td><strong>Schalung Plattenränder glatt SB2</strong><br>Für Treppenläufe und Podeste, glatt, SB 2, Dicke 25-28 cm, Außentreppe.<div class="price-note">Mat 7 + Lohn 15</div></td><td class="menge">7,000</td><td>m²</td><td class="preis">22,00</td><td class="summe">154,00</td></tr>
+        <tr><td class="pos">4.1.680</td><td><strong>Treppen C25/30 Stahlbeton Sichtbeton SB2 d=25-28 cm</strong><br>Treppenlauf gerade mit aufbetonierten Keilstufen, SB 2 mit regelmäßig sichtbaren Schalungsstößen und gefasten Kanten. Steigungsverhältnis 17×28, Laufbreite 138 cm. Für 3 Ortbetontreppenanlagen.<div class="price-note">Bet 125+28 + Stahl 32 + Lohn 25</div></td><td class="menge">10,000</td><td>m³</td><td class="preis">210,00</td><td class="summe">2.100,00</td></tr>
+        <tr class="summe-row"><td colspan="5"><strong>Zwischensumme Ortbetontreppen</strong></td><td class="summe"><strong>3.622,00</strong></td></tr>
+    </table>
+
+    <table>
+        <tr class="section-sum"><td colspan="5"><strong>Summe 4.1. Schalung und Beton</strong></td><td class="summe"><strong>729.707,18</strong></td></tr>
+    </table>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 4.2: FERTIGTEILTREPPEN -->
+<!-- ============================================================ -->
+<div class="page" style="page-break-before: always;" id="s42">
+    <h2>4.2. Fertigteiltreppen</h2>
+
+    <h3>TRH 1 — Treppenhaus 1</h3>
+    <table>
+        <tr><th style="width:70px">OZ</th><th>Leistungsbeschreibung</th><th style="width:65px">Menge</th><th style="width:35px">ME</th><th style="width:80px">EP €</th><th style="width:95px">GP €</th></tr>
+        <tr><td class="pos">4.2.10</td><td><strong>Treppenlauf FT gerade C30/37, 10×17/29</strong><br>Fertigteil-Treppenlauf, C30/37, XC3, SB 2 Unterseite/Wangen, gerade, Laufbreite 1,38 m, 10 Steigungen, Dicke 20 cm, Lauflänge 3,19 m.<div class="price-note">FT-Lauf 480 + Lohn Einbau</div></td><td class="menge">4,000</td><td>Stk</td><td class="preis">520,00</td><td class="summe">2.080,00</td></tr>
+        <tr><td class="pos">4.2.20</td><td><strong>Treppenlauf FT gerade C30/37, 7×17/29</strong><br>Wie 4.2.10, jedoch 7 Steigungen, Lauflänge 2,32 m.<div class="price-note">FT-Lauf 420 + Lohn</div></td><td class="menge">1,000</td><td>Stk</td><td class="preis">460,00</td><td class="summe">460,00</td></tr>
+        <tr><td class="pos">4.2.30</td><td><strong>Treppenlauf FT gerade C30/37, 11×17/29</strong><br>Wie 4.2.10, jedoch 11 Steigungen, Lauflänge 3,19 m.<div class="price-note">FT-Lauf 540 + Lohn</div></td><td class="menge">3,000</td><td>Stk</td><td class="preis">580,00</td><td class="summe">1.740,00</td></tr>
+        <tr><td class="pos">4.2.40</td><td><strong>Podest FT C30/37 d=32,5 cm</strong><br>Fertigteil-Podestplatte, im Auflagerbereich ausgeklinkt, SB 2 Unterseite/Stirnseite, 3,415×1,50 m.<div class="price-note">FT-Podest 650 + Lohn</div></td><td class="menge">4,000</td><td>Stk</td><td class="preis">700,00</td><td class="summe">2.800,00</td></tr>
+        <tr><td class="pos">4.2.50</td><td><strong>Aussparungen in Betonwänden TRH 1</strong><br>Eckige Formen, 8×46×20 cm und 8×25×20 cm, Tiefe bis 24 cm, zur Anbindung der Einbauteile.<div class="price-note">Mat 20 + Lohn 25</div></td><td class="menge">16,000</td><td>Stk</td><td class="preis">45,00</td><td class="summe">720,00</td></tr>
+    </table>
+
+    <h3>TRH 2 — Treppenhaus 2</h3>
+    <table>
+        <tr><th style="width:70px">OZ</th><th>Leistungsbeschreibung</th><th style="width:65px">Menge</th><th style="width:35px">ME</th><th style="width:80px">EP €</th><th style="width:95px">GP €</th></tr>
+        <tr><td class="pos">4.2.60</td><td><strong>Treppenlauf FT gerade C30/37, 8×17/29</strong><br>Fertigteil-Treppenlauf, C30/37, XC3, SB 2, gerade, Laufbreite 1,66 m, 8 Steigungen, Lauflänge 2,295 m.<div class="price-note">FT-Lauf 520 + Lohn</div></td><td class="menge">1,000</td><td>Stk</td><td class="preis">560,00</td><td class="summe">560,00</td></tr>
+        <tr><td class="pos">4.2.70</td><td><strong>Treppenlauf FT gerade C30/37, 13×17/29</strong><br>Wie 4.2.60, jedoch 13 Steigungen, Lauflänge 4,06 m.<div class="price-note">FT-Lauf 620 + Lohn</div></td><td class="menge">1,000</td><td>Stk</td><td class="preis">660,00</td><td class="summe">660,00</td></tr>
+        <tr><td class="pos">4.2.80</td><td><strong>Podest FT C30/37 d=32,5 cm TRH 2</strong><br>Fertigteil-Podestplatte, ausgeklinkt, SB 2, 3,60×1,80 m.<div class="price-note">FT-Podest 700 + Lohn</div></td><td class="menge">1,000</td><td>Stk</td><td class="preis">750,00</td><td class="summe">750,00</td></tr>
+        <tr><td class="pos">4.2.90</td><td><strong>Aussparungen in Betonwänden TRH 2</strong><br>2×46×20 cm und 2×25×20 cm, Tiefe bis 24 cm.<div class="price-note">Mat 20 + Lohn 25</div></td><td class="menge">4,000</td><td>Stk</td><td class="preis">45,00</td><td class="summe">180,00</td></tr>
+    </table>
+
+    <h3>Einbauteile — Tronsole Trittschalldämmung</h3>
+    <table>
+        <tr><th style="width:70px">OZ</th><th>Leistungsbeschreibung</th><th style="width:65px">Menge</th><th style="width:35px">ME</th><th style="width:80px">EP €</th><th style="width:95px">GP €</th></tr>
+        <tr><td class="pos">4.2.100</td><td><strong>Tronsole Typ B-V1-L1500</strong><br>Trittschalldämmelement Treppenfußpunkt, L=1,50 m, Elastomerlager, V1-Querkrafttragstufe.<div class="price-note">Mat 195 + Lohn 25</div></td><td class="menge">1,000</td><td>Stk</td><td class="preis">220,00</td><td class="summe">220,00</td></tr>
+        <tr><td class="pos">4.2.110</td><td><strong>Tronsole Typ D</strong><br>Trittschalldämmelement oberes Treppenauflager (Gelenkpunkt), Elastomerlager, R90/REI90.<div class="price-note">Mat 250 + Lohn 30</div></td><td class="menge">1,000</td><td>Stk</td><td class="preis">280,00</td><td class="summe">280,00</td></tr>
+        <tr><td class="pos">4.2.120</td><td><strong>Tronsole Typ F-V1-L1500</strong><br>Vollflächige Trittschallentkopplung am Fertigteilauflager, L=1,50 m, mit Klebestreifen.<div class="price-note">Mat 220 + Lohn 30</div></td><td class="menge">15,000</td><td>Stk</td><td class="preis">250,00</td><td class="summe">3.750,00</td></tr>
+        <tr><td class="pos">4.2.130</td><td><strong>Tronsole Typ L 420-L1000</strong><br>Fugenplatte für Längsfugen, H=420 mm, L=1,00 m, Schaumstoff, Materialklasse B1.<div class="price-note">Mat 48 + Lohn 7</div></td><td class="menge">53,000</td><td>Stk</td><td class="preis">55,00</td><td class="summe">2.915,00</td></tr>
+        <tr><td class="pos">4.2.140</td><td><strong>Tronsole Typ P-V+V</strong><br>Wandelement mit Edelstahlschwert, V+V-Stufe (Druck+Zug), Brandschutz REI 90.<div class="price-note">Mat 380 + Lohn 40</div></td><td class="menge">24,000</td><td>Stk</td><td class="preis">420,00</td><td class="summe">10.080,00</td></tr>
+        <tr><td class="pos">4.2.150</td><td><strong>Tronsole Typ F-V1-L1500 (TRH 2)</strong><br>Wie 4.2.120, für TRH 2.<div class="price-note">Mat 220 + Lohn 30</div></td><td class="menge">3,000</td><td>Stk</td><td class="preis">250,00</td><td class="summe">750,00</td></tr>
+        <tr><td class="pos">4.2.160</td><td><strong>Tronsole Typ L 420-L1000 (TRH 2)</strong><br>Wie 4.2.130, für TRH 2.<div class="price-note">Mat 48 + Lohn 7</div></td><td class="menge">7,000</td><td>Stk</td><td class="preis">55,00</td><td class="summe">385,00</td></tr>
+        <tr><td class="pos">4.2.170</td><td><strong>Tronsole Typ P-V+V (TRH 2)</strong><br>Wie 4.2.140, für TRH 2.<div class="price-note">Mat 380 + Lohn 40</div></td><td class="menge">6,000</td><td>Stk</td><td class="preis">420,00</td><td class="summe">2.520,00</td></tr>
+    </table>
+
+    <h3>Deckenpodeste</h3>
+    <table>
+        <tr><th style="width:70px">OZ</th><th>Leistungsbeschreibung</th><th style="width:65px">Menge</th><th style="width:35px">ME</th><th style="width:80px">EP €</th><th style="width:95px">GP €</th></tr>
+        <tr><td class="pos">4.2.180</td><td><strong>Schalung Deckenpodeste</strong><br>Konventionelle Deckenschalung, SB 2, Deckendicke 28 cm, Geschosshöhe 3,30 m, inkl. Ausklinkungen für FT-Läufe.<div class="price-note">Mat 8 + Lohn 20</div></td><td class="menge">33,800</td><td>m²</td><td class="preis">28,00</td><td class="summe">946,40</td></tr>
+        <tr><td class="pos">4.2.190</td><td><strong>Deckenpodeste C25/30 Stahlbeton SB2 d=20 cm</strong><br>Podeste in Sichtbeton SB 2, C25/30, XC1, ÜK1, Plattendicke 28 cm.<div class="price-note">Bet 125+28 + Stahl 22 + Lohn 25</div></td><td class="menge">11,000</td><td>m³</td><td class="preis">200,00</td><td class="summe">2.200,00</td></tr>
+        <tr class="summe-row"><td colspan="5"><strong>Summe 4.2. Fertigteiltreppen</strong></td><td class="summe"><strong>33.996,40</strong></td></tr>
+    </table>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 4.3: BEWEHRUNG -->
+<!-- ============================================================ -->
+<div class="page" style="page-break-before: always;" id="s43">
+    <h2>4.3. Bewehrung</h2>
+    <table>
+        <tr><th style="width:70px">OZ</th><th>Leistungsbeschreibung</th><th style="width:65px">Menge</th><th style="width:35px">ME</th><th style="width:80px">EP €</th><th style="width:95px">GP €</th></tr>
+        <tr><td class="pos">4.3.10</td><td><strong>Betonstabstahl B500B bis 10 mm</strong><br>Für alle Bauteile aus Ortbeton, alle Längen, liefern und einlegen inkl. Biegen und Binden.<div class="price-note">Mat 0,95 + Lohn 0,60</div></td><td class="menge">48,000</td><td>t</td><td class="preis">1.550,00</td><td class="summe">74.400,00</td></tr>
+        <tr><td class="pos">4.3.20</td><td><strong>Betonstabstahl B500B 12-14 mm</strong><br>Für alle Bauteile aus Ortbeton, alle Längen.<div class="price-note">Mat 0,90 + Lohn 0,55</div></td><td class="menge">110,000</td><td>t</td><td class="preis">1.450,00</td><td class="summe">159.500,00</td></tr>
+        <tr><td class="pos">4.3.30</td><td><strong>Betonstabstahl B500B über 14 mm</strong><br>Für alle Bauteile aus Ortbeton, alle Längen.<div class="price-note">Mat 0,85 + Lohn 0,55</div></td><td class="menge">51,000</td><td>t</td><td class="preis">1.400,00</td><td class="summe">71.400,00</td></tr>
+        <tr><td class="pos">4.3.40</td><td><strong>Betonstahlmatte B500A</strong><br>Lager- oder Listenmatten für alle Bauteile, liefern und fachgerecht verlegen.<div class="price-note">Mat 0,95 + Lohn 0,55</div></td><td class="menge">134,000</td><td>t</td><td class="preis">1.500,00</td><td class="summe">201.000,00</td></tr>
+        <tr><td class="pos">4.3.50</td><td><strong>Betonstahl-Unterstützungskörbe</strong><br>Baustahlgewebe-Unterstützungskörbe, bei Sichtbeton mit Kunststoffabstandhalter.<div class="price-note">Mat 3,50 + Lohn 1,30</div></td><td class="menge">3.000,000</td><td>kg</td><td class="preis">4,80</td><td class="summe">14.400,00</td></tr>
+        <tr class="summe-row"><td colspan="5"><strong>Summe 4.3. Bewehrung</strong></td><td class="summe"><strong>520.700,00</strong></td></tr>
+    </table>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 4.4: ABDICHTUNG, DÄMMUNG, TRENNLAGEN -->
+<!-- ============================================================ -->
+<div class="page" style="page-break-before: always;" id="s44">
+    <h2>4.4. Abdichtung, Dämmung, Trennlagen</h2>
+    <table>
+        <tr><th style="width:70px">OZ</th><th>Leistungsbeschreibung</th><th style="width:65px">Menge</th><th style="width:35px">ME</th><th style="width:80px">EP €</th><th style="width:95px">GP €</th></tr>
+        <tr><td class="pos">4.4.10</td><td><strong>Dämmung unter Bodenplatte XPS 035 160 mm</strong><br>XPS nach DIN EN 13164, PW/PB, Druckspannung 700 kPa, λ=0,035, Stufenfalz, abZ DIBt.<div class="price-note">Mat 28 + Lohn 6</div></td><td class="menge">845,000</td><td>m²</td><td class="preis">34,00</td><td class="summe">28.730,00</td></tr>
+        <tr><td class="pos">4.4.20</td><td><strong>Dämmung Außenwand XPS 035 200 mm</strong><br>XPS Perimeterdämmung PW, Druckspannung 300 kPa, λ=0,035, Stufenfalz, mit Perimeterkleber.<div class="price-note">Mat 35 + Lohn 7</div></td><td class="menge">337,000</td><td>m²</td><td class="preis">42,00</td><td class="summe">14.154,00</td></tr>
+        <tr><td class="pos">4.4.30</td><td><strong>Dämmung Fundamente XPS 035 160 mm</strong><br>Frostschürze (40cm) und Aufzugunterfahrt (110cm), Dämmstärke 16 cm, inkl. Zuschnitt.<div class="price-note">Mat 28 + Lohn 6</div></td><td class="menge">62,000</td><td>m²</td><td class="preis">34,00</td><td class="summe">2.108,00</td></tr>
+        <tr><td class="pos">4.4.40</td><td><strong>FBV-Abdichtungssystem waagerecht</strong><br>FPO-Dichtsbahn unter Bodenplatte, rissüberbrückend, druckwasserdicht ≥2,0 bar, Überlappung ≥50 mm, Hochführung 30 cm.<div class="price-note">Mat 14 + Lohn 5</div></td><td class="menge">431,000</td><td>m²</td><td class="preis">19,00</td><td class="summe">8.189,00</td></tr>
+        <tr><td class="pos">4.4.50</td><td><strong>FBV-Abdichtungssystem senkrecht</strong><br>FBV-Bahn an Innenseite der vertikalen Wandschalung, hinterlaufreizität, Eckausbildung mit Formteilen.<div class="price-note">Mat 17 + Lohn 6</div></td><td class="menge">235,000</td><td>m²</td><td class="preis">23,00</td><td class="summe">5.405,00</td></tr>
+        <tr><td class="pos">4.4.60</td><td><strong>System-Klebeband</strong><br>Zulage für Durchdringungen, Reparaturstellen, komplizierte Geometrien.<div class="price-note">Mat 5 + Lohn 3</div></td><td class="menge">15,000</td><td>m</td><td class="preis">8,00</td><td class="summe">120,00</td></tr>
+        <tr><td class="pos">4.4.70</td><td><strong>Abdichtung Spannstellen</strong><br>FBV-Stopfen oder Klebepads für Schalungsanker der Außenwände.<div class="price-note">Mat 4 + Lohn 4</div></td><td class="menge">80,000</td><td>Stk</td><td class="preis">8,00</td><td class="summe">640,00</td></tr>
+        <tr><td class="pos">4.4.80</td><td><strong>Rohrdurchführung mit FBV-Flansch</strong><br>Wasserdichter Anschluss an Medienrohre mittels Klebeflansch/Manschette.<div class="price-note">Mat 18 + Lohn 12</div></td><td class="menge">6,000</td><td>Stk</td><td class="preis">30,00</td><td class="summe">180,00</td></tr>
+        <tr><td class="pos">4.4.90</td><td><strong>Abdichtung Arbeitsfuge Sohle/Wand FBV</strong><br>Fugenabdichtungssystem für horizontale Arbeitsfuge, beschichtetes Fugenblech oder quellfähiges Fugenband.<div class="price-note">Mat 12 + Lohn 6</div></td><td class="menge">91,000</td><td>m</td><td class="preis">18,00</td><td class="summe">1.638,00</td></tr>
+        <tr><td class="pos">4.4.100</td><td><strong>Zulage Systemübergang Sohle/Wand (Hochzug)</strong><br>Hochführung der horizontalen FBV-Bahn ≥30 cm über OK Bodenplatte, Fixierung, Reinigung, Verklebung ≥10 cm.<div class="price-note">Mat 5 + Lohn 5</div></td><td class="menge">91,000</td><td>m</td><td class="preis">10,00</td><td class="summe">910,00</td></tr>
+        <tr><td class="pos">4.4.110</td><td><strong>Anschluss Sollrisselemente an FBV</strong><br>Wasserdichter Anschluss von Schwindrohren/Rissblechen an vertikale FBV-Wandabdichtung.<div class="price-note">Mat 10 + Lohn 8</div></td><td class="menge">15,000</td><td>m</td><td class="preis">18,00</td><td class="summe">270,00</td></tr>
+        <tr><td class="pos">4.4.120</td><td><strong>Flaschenhohlkehle Zementmörtel</strong><br>Zwischen Wand und Bodenplatte, alternativ als Keil.<div class="price-note">Mat 4 + Lohn 8</div></td><td class="menge">88,000</td><td>m</td><td class="preis">12,00</td><td class="summe">1.056,00</td></tr>
+        <tr><td class="pos">4.4.130</td><td><strong>Dickbeschichtung Bodenfeuchte W1-E</strong><br>PMBC nach DIN 18533, 2-komponentig, dts≥3 mm, RÜ3-E, inkl. Grundierung, mind. 2 Arbeitsgänge.<div class="price-note">Mat 14 + Lohn 8</div></td><td class="menge">130,000</td><td>m²</td><td class="preis">22,00</td><td class="summe">2.860,00</td></tr>
+        <tr><td class="pos">4.4.140</td><td><strong>Dickbeschichtung drückendes Wasser W2.1-E</strong><br>PMBC nach DIN 18533, dts ca. 4 mm mit Gewebeeinlage, RÜ3-E, inkl. Grundierung.<div class="price-note">Mat 18 + Lohn 10</div></td><td class="menge">130,000</td><td>m²</td><td class="preis">28,00</td><td class="summe">3.640,00</td></tr>
+        <tr><td class="pos">4.4.150</td><td><strong>Dichtmanschette KG-Rohr in StB</strong><br>EPDM-Mauerkragen gegen drückendes Wasser, DN 100 (ca. 85%) und DN 125 (ca. 15%), inkl. Edelstahl-Spannbänder.<div class="price-note">Mat 35 + Lohn 15</div></td><td class="menge">16,000</td><td>Stk</td><td class="preis">50,00</td><td class="summe">800,00</td></tr>
+        <tr><td class="pos">4.4.160</td><td><strong>Noppenbahn HDPE 3-schichtig</strong><br>HDPE mit Filtervlies PP, Noppenhöhe 8 mm, Druckfestigkeit 250 kPa, nach DIN 4095.<div class="price-note">Mat 10 + Lohn 4</div></td><td class="menge">331,000</td><td>m²</td><td class="preis">14,00</td><td class="summe">4.634,00</td></tr>
+        <tr><td class="pos">4.4.170</td><td><strong>Zementglattstrich Fensterbank</strong><br>MV 1:3 als Abgleich auf Fensterbänke, Leibungen, z.T. im Gefälle, Dicke 5 cm i.M., bis 1,0 m².<div class="price-note">Mat 8 + Lohn 14</div></td><td class="menge">184,000</td><td>m²</td><td class="preis">22,00</td><td class="summe">4.048,00</td></tr>
+        <tr class="summe-row"><td colspan="5"><strong>Summe 4.4. Abdichtung, Dämmung, Trennlagen</strong></td><td class="summe"><strong>79.282,00</strong></td></tr>
+    </table>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 4.5: SONSTIGE LEISTUNGEN -->
+<!-- ============================================================ -->
+<div class="page" style="page-break-before: always;" id="s45">
+    <h2>4.5. Sonstige Leistungen</h2>
+    <table>
+        <tr><th style="width:70px">OZ</th><th>Leistungsbeschreibung</th><th style="width:65px">Menge</th><th style="width:35px">ME</th><th style="width:80px">EP €</th><th style="width:95px">GP €</th></tr>
+        <tr><td class="pos">4.5.10</td><td><strong>Mehrsparten-Hauseinführung</strong><br>Für unterkellerte Gebäude, geprüft DVGW VP.601, 2×Strom/Wasser, 1×TK, 1×Strom+TK. Inkl. Aufstellvorrichtung, Bodenplattenelement, Leerrohrsystem Ø80mm, Estrichaufsatz.<div class="price-note">Mat 280 + Lohn 60</div></td><td class="menge">2,000</td><td>Stk</td><td class="preis">340,00</td><td class="summe">680,00</td></tr>
+        <tr><td class="pos">4.5.20</td><td><strong>Schwindrohre</strong><br>Für WU-Betonwände (Weiße Wanne), PVC-frei, integrierte Schwindringe, Wandstärke 25-30 cm, Einbauabstand ca. 6 m und an Ecken, inkl. Dreikantleiste innen+außen.<div class="price-note">Mat 14 + Lohn 8</div></td><td class="menge">60,000</td><td>m</td><td class="preis">22,00</td><td class="summe">1.320,00</td></tr>
+        <tr><td class="pos">4.5.30</td><td><strong>Fugenblech</strong><br>Verzinktes Stahlblech beidseitig beschichtet, Breite 16-20 cm, Dicke 1,2-2,0 mm, inkl. Stoßklammern und Befestigungsbügel.<div class="price-note">Mat 10 + Lohn 6</div></td><td class="menge">120,000</td><td>m</td><td class="preis">16,00</td><td class="summe">1.920,00</td></tr>
+        <tr><td class="pos">4.5.40</td><td><strong>Weichfaserplatte 20 mm</strong><br>Bituminierte Holzfaserplatte DIN EN 13171, verrottungsbeständig, bitumenverträglich, vor Verfüllung Fundamente.<div class="price-note">Mat 12 + Lohn 4</div></td><td class="menge">110,000</td><td>m²</td><td class="preis">16,00</td><td class="summe">1.760,00</td></tr>
+        <tr><td class="pos">4.5.50</td><td><strong>Maueranschlussschienen</strong><br>Profil 28/15-D, feuerverzinkt (innen) / Edelstahl (außen), mit Schaumstofffüllung, lagersicher und fluchtrecht nageln.<div class="price-note">Mat 5 + Lohn 5</div></td><td class="menge">475,000</td><td>m</td><td class="preis">10,00</td><td class="summe">4.750,00</td></tr>
+        <tr><td class="pos">4.5.60</td><td><strong>Wand-/Deckenanschluss gleitend 11,5 cm</strong><br>Gleitender Deckenanschluss mit Dämmstreifen Mineralwolle, Dicke bis 20 mm.<div class="price-note">Mat 3 + Lohn 4</div></td><td class="menge">243,000</td><td>m</td><td class="preis">7,00</td><td class="summe">1.701,00</td></tr>
+        <tr><td class="pos">4.5.70</td><td><strong>Schraubenanker Aufzugbauer</strong><br>Bauseits gelieferte Schraubenanker mit Seilöse nach Anweisung des Aufzugbauers in Decke/Wand einbauen, inkl. Bohrungen.<div class="price-note">Lohn pauschal</div></td><td class="menge">8,000</td><td>Stk</td><td class="preis">85,00</td><td class="summe">680,00</td></tr>
+        <tr><td class="pos">4.5.80</td><td><strong>Rüsthülsen Aufzugbauer</strong><br>Bauseits gelieferte Rüsthülsen 31×31×95 mm für Gerüstschuh 5,5 kN, in Seitenwänden einbauen, inkl. Aussparungen.<div class="price-note">Lohn pauschal</div></td><td class="menge">40,000</td><td>Stk</td><td class="preis">45,00</td><td class="summe">1.800,00</td></tr>
+        <tr><td class="pos">4.5.90</td><td><strong>Ankerschienen Aufzugbauer</strong><br>Bauseits gelieferte Ankerschienen in verschiedenen Längen an Innenseite der Aufzugswände einbauen.<div class="price-note">Lohn 8 €/m</div></td><td class="menge">15,000</td><td>m</td><td class="preis">12,00</td><td class="summe">180,00</td></tr>
+        <tr><td class="pos">4.5.100</td><td><strong>Nass-/Trockensauger elektrisch</strong><br>Nicht in Positionen erfasste Geräte, separat nachweis. Leistung trocken bis 1500 m³/h.<div class="price-note">Miete pauschal</div></td><td class="menge">1,000</td><td>d</td><td class="preis">45,00</td><td class="summe">45,00</td></tr>
+        <tr><td class="pos">4.5.110</td><td><strong>Betonfertigteillichtschacht druckwasserdicht</strong><br>Bewehrter Betonfertigteillichtschacht, lichte Maße 1020×1800×600 mm, W2.1-E, Einbautiefe -2,30 m, inkl. Gitterrost und Abhebesicherung.<div class="price-note">Mat 1.200 + Lohn 250</div></td><td class="menge">3,000</td><td>Stk</td><td class="preis">1.450,00</td><td class="summe">4.350,00</td></tr>
+        <tr><td class="pos">4.5.120</td><td><strong>Stundensatz Vorarbeiter</strong><br>Arbeiten nicht in Positionen erfasst, gegen Nachweis.<div class="price-note">IG BAU Stufe 5 + NK</div></td><td class="menge">10,000</td><td>h</td><td class="preis">58,00</td><td class="summe">580,00</td></tr>
+        <tr><td class="pos">4.5.130</td><td><strong>Stundensatz Fachwerker</strong><br>Arbeiten nicht in Positionen erfasst, gegen Nachweis.<div class="price-note">IG BAU Stufe 3-4 + NK</div></td><td class="menge">10,000</td><td>h</td><td class="preis">48,00</td><td class="summe">480,00</td></tr>
+        <tr><td class="pos">4.5.140</td><td><strong>Stundensatz Helfer Mauerarbeiten</strong><br>Arbeiten nicht in Positionen erfasst, gegen Nachweis.<div class="price-note">IG BAU Stufe 1-2 + NK</div></td><td class="menge">10,000</td><td>h</td><td class="preis">38,00</td><td class="summe">380,00</td></tr>
+        <tr class="summe-row"><td colspan="5"><strong>Summe 4.5. Sonstige Leistungen</strong></td><td class="summe"><strong>20.626,00</strong></td></tr>
+    </table>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 4.6: BESONDERE EINBAUTEILE IM BETON -->
+<!-- ============================================================ -->
+<div class="page" style="page-break-before: always;" id="s46">
+    <h2>4.6. Besondere Einbauteile im Beton</h2>
+    <div class="hinweis">Tragende Wärmedämmelemente (Schöck Isokorb XT / Sconnex) zur thermischen Trennung von durchlaufenden Stahlbetonplatten. Alle Elemente mit abZ oder ETA. Listenpreise Stand 06/2026 — Projektpreise über Anfrage.</div>
+
+    <h3>Tragende Wärmedämmelemente — Isokorb XT (H250, 25cm Decke)</h3>
+    <table>
+        <tr><th style="width:70px">OZ</th><th>Leistungsbeschreibung</th><th style="width:65px">Menge</th><th style="width:35px">ME</th><th style="width:80px">EP €</th><th style="width:95px">GP €</th></tr>
+        <tr><td class="pos">4.6.10</td><td><strong>Isokorb XT Pos.1 — D-MM1-VV1 H250</strong><br>Durchlaufend, MM1/VV1, REI120, CV35, X120, L=500mm. Beidseitige Momenten- und Querkraftübertragung.<div class="price-note">Mat 85 + Lohn 20</div></td><td class="menge">5,000</td><td>Stk</td><td class="preis">105,00</td><td class="summe">525,00</td></tr>
+        <tr><td class="pos">4.6.20</td><td><strong>Isokorb XT Pos.2 — D-MM3-VV1 H250</strong><br>Durchlaufend, erhöhte MM3/VV1, REI120, CV35, X120, L=500mm.<div class="price-note">Mat 130 + Lohn 20</div></td><td class="menge">11,000</td><td>Stk</td><td class="preis">150,00</td><td class="summe">1.650,00</td></tr>
+        <tr><td class="pos">4.6.30</td><td><strong>Isokorb XT Pos.3 — D-MM1-VV1 H250</strong><br>Durchlaufend, MM1/VV1, REI120, CV35, X120, L=500mm. Für Balkone.<div class="price-note">Mat 85 + Lohn 20</div></td><td class="menge">4,000</td><td>Stk</td><td class="preis">105,00</td><td class="summe">420,00</td></tr>
+        <tr><td class="pos">4.6.40</td><td><strong>Isokorb XT Pos.4 — Z-EI120 H250</strong><br>Reine thermische Trennung ohne Statik, EI120, X120, L=500mm.<div class="price-note">Mat 45 + Lohn 10</div></td><td class="menge">7,000</td><td>Stk</td><td class="preis">55,00</td><td class="summe">385,00</td></tr>
+        <tr><td class="pos">4.6.50</td><td><strong>Isokorb XT Pos.5 — Z-EI120 H250 Sonderlänge</strong><br>Zusatzdämmung, L=0,35m, EI120, X120, H250.<div class="price-note">Mat 40 + Lohn 10</div></td><td class="menge">1,000</td><td>Stk</td><td class="preis">50,00</td><td class="summe">50,00</td></tr>
+        <tr><td class="pos">4.6.60</td><td><strong>Isokorb XT Pos.6 — D-MM3-VV5 H250 Hochlast</strong><br>Durchlaufend, Hochlast MM3/VV5, REI120, CV35, X120, L=500mm.<div class="price-note">Mat 180 + Lohn 25</div></td><td class="menge">2,000</td><td>Stk</td><td class="preis">205,00</td><td class="summe">410,00</td></tr>
+        <tr><td class="pos">4.6.70</td><td><strong>Isokorb XT Pos.7 — Q-VV6 H250 L=0,39m</strong><br>Querkraftübertragung Gelenkpunkt, VV6-Höchstlaststufe, L=0,39m.<div class="price-note">Mat 120 + Lohn 20</div></td><td class="menge">1,000</td><td>Stk</td><td class="preis">140,00</td><td class="summe">140,00</td></tr>
+        <tr><td class="pos">4.6.80</td><td><strong>Isokorb XT Pos.8 — Q-V1 H250 L=1,0m</strong><br>Querkraftübertragung Gelenkpunkt, V1-Standard, L=1,00m.<div class="price-note">Mat 85 + Lohn 15</div></td><td class="menge">20,000</td><td>Stk</td><td class="preis">100,00</td><td class="summe">2.000,00</td></tr>
+        <tr><td class="pos">4.6.90</td><td><strong>Isokorb XT Pos.9 — Q-V1 H250 L=0,5m</strong><br>Querkraftübertragung Gelenkpunkt, V1, L=0,50m.<div class="price-note">Mat 65 + Lohn 15</div></td><td class="menge">1,000</td><td>Stk</td><td class="preis">80,00</td><td class="summe">80,00</td></tr>
+        <tr><td class="pos">4.6.100</td><td><strong>Isokorb XT Pos.10 — Z-EI120 H250 L=0,245m</strong><br>Zusatzdämmung ohne Statik, L=0,245m.<div class="price-note">Mat 38 + Lohn 8</div></td><td class="menge">1,000</td><td>Stk</td><td class="preis">46,00</td><td class="summe">46,00</td></tr>
+        <tr><td class="pos">4.6.110</td><td><strong>Isokorb XT Pos.11 — K-M9V2 H250 Hochlast Balkon</strong><br>Kragarm, M9 (hoch)/V2, REI120, CV35, X120, L=1,0m. Generation 6.2.<div class="price-note">Mat 260 + Lohn 25</div></td><td class="menge">3,000</td><td>Stk</td><td class="preis">285,00</td><td class="summe">855,00</td></tr>
+        <tr><td class="pos">4.6.120</td><td><strong>Isokorb XT Pos.12 — K-M1V2 H250 L=1,0m</strong><br>Kragarm Basis M1/V2, REI120, CV35, X120, L=1,0m.<div class="price-note">Mat 150 + Lohn 20</div></td><td class="menge">1,000</td><td>Stk</td><td class="preis">170,00</td><td class="summe">170,00</td></tr>
+        <tr><td class="pos">4.6.130</td><td><strong>Isokorb XT Pos.13 — K-M1V2 H250 L=0,505m</strong><br>Kragarm Anschluss, M1/V2, L=0,505m Sonderlänge.<div class="price-note">Mat 120 + Lohn 18</div></td><td class="menge">1,000</td><td>Stk</td><td class="preis">138,00</td><td class="summe">138,00</td></tr>
+        <tr><td class="pos">4.6.140</td><td><strong>Isokorb XT Pos.14 — Q-VV5 H250 L=0,86m</strong><br>Querkraft Gelenkpunkt, VV5, L=0,86m Sonderlänge.<div class="price-note">Mat 110 + Lohn 18</div></td><td class="menge">1,000</td><td>Stk</td><td class="preis">128,00</td><td class="summe">128,00</td></tr>
+    </table>
+
+    <h3>Tragende Wärmedämmelemente — Isokorb XT (H210, 21cm Decke)</h3>
+    <table>
+        <tr><th style="width:70px">OZ</th><th>Leistungsbeschreibung</th><th style="width:65px">Menge</th><th style="width:35px">ME</th><th style="width:80px">EP €</th><th style="width:95px">GP €</th></tr>
+        <tr><td class="pos">4.6.150</td><td><strong>Isokorb XT Pos.15 — K-O-M2V1 H210 L=1,0m</strong><br>Kragarm Typ K-O, M2/V1, REI120, CV35, LR145, X80, H210, Gen 7.2. Anschluss an vertikale Bauteile.<div class="price-note">Mat 135 + Lohn 20</div></td><td class="menge">1,000</td><td>Stk</td><td class="preis">155,00</td><td class="summe">155,00</td></tr>
+        <tr><td class="pos">4.6.160</td><td><strong>Isokorb XT Pos.16 — K-O-M1V1 H210 L=1,0m</strong><br>Kragarm Typ K-O, M1/V1, REI120, CV35, LR145, X80, H210, Gen 7.2.<div class="price-note">Mat 120 + Lohn 20</div></td><td class="menge">3,000</td><td>Stk</td><td class="preis">140,00</td><td class="summe">420,00</td></tr>
+        <tr><td class="pos">4.6.170</td><td><strong>Isokorb XT Pos.17 — K-O-M1V1 H210 L=0,36m</strong><br>Kragarm, M1/V1, Sonderlänge 0,36m, Gen 7.2.<div class="price-note">Mat 90 + Lohn 15</div></td><td class="menge">1,000</td><td>Stk</td><td class="preis">105,00</td><td class="summe">105,00</td></tr>
+        <tr><td class="pos">4.6.180</td><td><strong>Isokorb XT Pos.18 — Q-VV3 H210 L=0,52m</strong><br>Querkraft Gelenkpunkt, VV3, X80, H210, L=0,52m Sonderlänge.<div class="price-note">Mat 85 + Lohn 15</div></td><td class="menge">1,000</td><td>Stk</td><td class="preis">100,00</td><td class="summe">100,00</td></tr>
+        <tr><td class="pos">4.6.190</td><td><strong>Isokorb XT Pos.19 — Z-EI120 H210 L=1,0m</strong><br>Zusatzdämmung ohne Statik, X80, H210, EI120.<div class="price-note">Mat 50 + Lohn 10</div></td><td class="menge">1,000</td><td>Stk</td><td class="preis">60,00</td><td class="summe">60,00</td></tr>
+        <tr><td class="pos">4.6.200</td><td><strong>Isokorb XT Pos.20 — Z-EI120 H250 L=0,355m</strong><br>Zusatzdämmung XT, X120, H250, L=0,355m.<div class="price-note">Mat 42 + Lohn 8</div></td><td class="menge">1,000</td><td>Stk</td><td class="preis">50,00</td><td class="summe">50,00</td></tr>
+        <tr><td class="pos">4.6.210</td><td><strong>Isokorb XT Pos.21 — K-U-M2V1 H250 L=1,0m</strong><br>Kragarm mit Höhenversatz (Balkon nach unten), M2/V1, CV50, LR200, X120, H250, Gen 7.2.<div class="price-note">Mat 160 + Lohn 22</div></td><td class="menge">21,000</td><td>Stk</td><td class="preis">182,00</td><td class="summe">3.822,00</td></tr>
+        <tr><td class="pos">4.6.220</td><td><strong>Isokorb XT Pos.22 — Q-V1 H250 L=0,4m</strong><br>Querkraft Gelenkpunkt, V1, L=0,40m Sonderlänge.<div class="price-note">Mat 65 + Lohn 12</div></td><td class="menge">1,000</td><td>Stk</td><td class="preis">77,00</td><td class="summe">77,00</td></tr>
+        <tr><td class="pos">4.6.230</td><td><strong>Isokorb XT Pos.23 — Q-V1 H250 L=0,735m</strong><br>Querkraft positiv, V1, L=0,735m Sonderlänge.<div class="price-note">Mat 80 + Lohn 14</div></td><td class="menge">1,000</td><td>Stk</td><td class="preis">94,00</td><td class="summe">94,00</td></tr>
+        <tr><td class="pos">4.6.240</td><td><strong>Isokorb XT Pos.24 — Z-EI120 H250 L=0,45m</strong><br>Zusatzdämmung, L=0,45m.<div class="price-note">Mat 42 + Lohn 8</div></td><td class="menge">1,000</td><td>Stk</td><td class="preis">50,00</td><td class="summe">50,00</td></tr>
+        <tr><td class="pos">4.6.250</td><td><strong>Isokorb XT Pos.25 — Z-EI120 H250 L=0,24m</strong><br>Zusatzdämmung, L=0,24m.<div class="price-note">Mat 38 + Lohn 8</div></td><td class="menge">1,000</td><td>Stk</td><td class="preis">46,00</td><td class="summe">46,00</td></tr>
+        <tr><td class="pos">4.6.260</td><td><strong>Isokorb XT Pos.26 — Q-V1 H250 L=0,565m</strong><br>Querkraft Gelenkpunkt, V1, L=0,565m Sonderlänge.<div class="price-note">Mat 72 + Lohn 12</div></td><td class="menge">1,000</td><td>Stk</td><td class="preis">84,00</td><td class="summe">84,00</td></tr>
+        <tr><td class="pos">4.6.270</td><td><strong>Isokorb XT Pos.27 — K-U-M2V1 H250 L=1,0m</strong><br>Kragarm mit Höhenversatz, M2/V1, CV50, LR200, Gen 7.2.<div class="price-note">Mat 160 + Lohn 22</div></td><td class="menge">4,000</td><td>Stk</td><td class="preis">182,00</td><td class="summe">728,00</td></tr>
+        <tr><td class="pos">4.6.280</td><td><strong>Isokorb XT Pos.28 — Z-EI120 H250 L=0,125m</strong><br>Zusatzdämmung, L=0,125m.<div class="price-note">Mat 35 + Lohn 8</div></td><td class="menge">1,000</td><td>Stk</td><td class="preis">43,00</td><td class="summe">43,00</td></tr>
+    </table>
+
+    <h3>Tragende Wärmedämmelemente — Isokorb XT (H210, 21cm Decke, weitere)</h3>
+    <table>
+        <tr><th style="width:70px">OZ</th><th>Leistungsbeschreibung</th><th style="width:65px">Menge</th><th style="width:35px">ME</th><th style="width:80px">EP €</th><th style="width:95px">GP €</th></tr>
+        <tr><td class="pos">4.6.290</td><td><strong>Isokorb XT Pos.29 — D-MM1-VV3 H210</strong><br>Durchlaufend, MM1/VV3, REI120, CV35, X120, H210, L=500mm, Gen 6.0.<div class="price-note">Mat 95 + Lohn 18</div></td><td class="menge">5,000</td><td>Stk</td><td class="preis">113,00</td><td class="summe">565,00</td></tr>
+        <tr><td class="pos">4.6.300</td><td><strong>Isokorb XT Pos.30 — D-MM2-VV2 H210</strong><br>Durchlaufend, MM2/VV2, REI120, CV35, X120, H210, L=500mm, Gen 6.0.<div class="price-note">Mat 110 + Lohn 18</div></td><td class="menge">1,000</td><td>Stk</td><td class="preis">128,00</td><td class="summe">128,00</td></tr>
+        <tr><td class="pos">4.6.310</td><td><strong>Isokorb XT Pos.31 — K-M3V2 H210</strong><br>Kragarm, M3/V2, REI120, CV35, X120, H210, Gen 6.2.<div class="price-note">Mat 145 + Lohn 20</div></td><td class="menge">4,000</td><td>Stk</td><td class="preis">165,00</td><td class="summe">660,00</td></tr>
+        <tr><td class="pos">4.6.320</td><td><strong>Isokorb XT Pos.32 — K-M3VV1 H210</strong><br>Kragarm mit Windsog, M3/VV1, REI120, Gen 6.2.<div class="price-note">Mat 155 + Lohn 20</div></td><td class="menge">1,000</td><td>Stk</td><td class="preis">175,00</td><td class="summe">175,00</td></tr>
+        <tr><td class="pos">4.6.330</td><td><strong>Sconnex P-U-B250 L=1,0m</strong><br>Thermische Trennung tragender Wandscheiben, Hochfester Leichtbeton, Wanddicke 250mm.<div class="price-note">Mat 140 + Lohn 25</div></td><td class="menge">7,000</td><td>Stk</td><td class="preis">165,00</td><td class="summe">1.155,00</td></tr>
+        <tr><td class="pos">4.6.340</td><td><strong>Isokorb XT Pos.34 — K-M6V2 H210</strong><br>Kragarm Hochlast, M6/V2, REI120, CV35, X120, H210, Gen 6.2, HTE-Compact.<div class="price-note">Mat 210 + Lohn 25</div></td><td class="menge">8,000</td><td>Stk</td><td class="preis">235,00</td><td class="summe">1.880,00</td></tr>
+        <tr><td class="pos">4.6.350</td><td><strong>Isokorb XT Pos.35 — D-MM1-VV3 H210</strong><br>Durchlaufend symmetrisch, MM1/VV3, Gen 6.0.<div class="price-note">Mat 95 + Lohn 18</div></td><td class="menge">5,000</td><td>Stk</td><td class="preis">113,00</td><td class="summe">565,00</td></tr>
+        <tr><td class="pos">4.6.360</td><td><strong>Isokorb XT Pos.36 — D-MM2-VV2 H210</strong><br>Durchlaufend symmetrisch, MM2/VV2, Gen 6.0.<div class="price-note">Mat 110 + Lohn 18</div></td><td class="menge">1,000</td><td>Stk</td><td class="preis">128,00</td><td class="summe">128,00</td></tr>
+        <tr><td class="pos">4.6.370</td><td><strong>Isokorb XT Pos.37 — K-M3V2 H210</strong><br>Kragarm, M3/V2, Gen 6.2 (Balkonseite).<div class="price-note">Mat 145 + Lohn 20</div></td><td class="menge">4,000</td><td>Stk</td><td class="preis">165,00</td><td class="summe">660,00</td></tr>
+        <tr><td class="pos">4.6.380</td><td><strong>Isokorb XT Pos.38 — K-M3VV1 H210</strong><br>Kragarm mit Windsog, M3/VV1, Gen 6.2.<div class="price-note">Mat 155 + Lohn 20</div></td><td class="menge">1,000</td><td>Stk</td><td class="preis">175,00</td><td class="summe">175,00</td></tr>
+        <tr><td class="pos">4.6.390</td><td><strong>Isokorb XT Pos.39 — K-M6V2 H210</strong><br>Kragarm Hochlast, M6/V2, Gen 6.2, HTE-Compact.<div class="price-note">Mat 210 + Lohn 25</div></td><td class="menge">8,000</td><td>Stk</td><td class="preis">235,00</td><td class="summe">1.880,00</td></tr>
+        <tr><td class="pos">4.6.400</td><td><strong>Isokorb XT Pos.40 — Q-VV1 H220</strong><br>Querkraft Gelenkpunkt, VV1, H220 (22cm Decke), wechselseitig.<div class="price-note">Mat 85 + Lohn 15</div></td><td class="menge">13,000</td><td>Stk</td><td class="preis">100,00</td><td class="summe">1.300,00</td></tr>
+        <tr><td class="pos">4.6.410</td><td><strong>Isokorb XT Pos.41 — Q-P-VV6 H220 L=0,3m</strong><br>Punktförmige Querkraft VV6-Höchstlast, H220, L=0,30m, Gen 5.0.<div class="price-note">Mat 160 + Lohn 20</div></td><td class="menge">1,000</td><td>Stk</td><td class="preis">180,00</td><td class="summe">180,00</td></tr>
+        <tr><td class="pos">4.6.420</td><td><strong>Sconnex SK Stahl-an-Beton</strong><br>SK-WU-M1-V1-R0-LR270-X80-CV20-H230-L180-D16-1.0. Kragarm Stahl an Beton.<div class="price-note">Mat 220 + Lohn 30</div></td><td class="menge">15,000</td><td>Stk</td><td class="preis">250,00</td><td class="summe">3.750,00</td></tr>
+    </table>
+
+    <h3>Durchstanzbewehrung</h3>
+    <table>
+        <tr><th style="width:70px">OZ</th><th>Leistungsbeschreibung</th><th style="width:65px">Menge</th><th style="width:35px">ME</th><th style="width:80px">EP €</th><th style="width:95px">GP €</th></tr>
+        <tr><td class="pos">4.6.430</td><td><strong>Durchstanzbewehrung O 12/230-3/A510</strong><br>Typ O, Ø12mm, H230mm, 3 Bolzen/Leiste, B500B, gestauchte Köpfe, sternförmig um Stütze.<div class="price-note">Mat 14 + Lohn 6</div></td><td class="menge">6,000</td><td>Stk</td><td class="preis">20,00</td><td class="summe">120,00</td></tr>
+        <tr><td class="pos">4.6.440</td><td><strong>Durchstanzbewehrung O 14/230-4/A680</strong><br>Ø14mm, H230mm, 4 Bolzen, A680.<div class="price-note">Mat 18 + Lohn 6</div></td><td class="menge">40,000</td><td>Stk</td><td class="preis">24,00</td><td class="summe">960,00</td></tr>
+        <tr><td class="pos">4.6.450</td><td><strong>Durchstanzbewehrung O 12/230-3/A510</strong><br>Wie 4.6.430.<div class="price-note">Mat 14 + Lohn 6</div></td><td class="menge">3,000</td><td>Stk</td><td class="preis">20,00</td><td class="summe">60,00</td></tr>
+        <tr><td class="pos">4.6.460</td><td><strong>Durchstanzbewehrung O 14/230-8/A1360</strong><br>Ø14mm, H230mm, 8 Bolzen XL, A1360, L~1,4m.<div class="price-note">Mat 32 + Lohn 8</div></td><td class="menge">8,000</td><td>Stk</td><td class="preis">40,00</td><td class="summe">320,00</td></tr>
+        <tr><td class="pos">4.6.470</td><td><strong>Durchstanzbewehrung O 14/230-3/A510</strong><br>Ø14mm, H230mm, 3 Bolzen.<div class="price-note">Mat 16 + Lohn 6</div></td><td class="menge">20,000</td><td>Stk</td><td class="preis">22,00</td><td class="summe">440,00</td></tr>
+        <tr><td class="pos">4.6.480</td><td><strong>Durchstanzbewehrung O 16/230-4/A680</strong><br>Ø16mm maximale Tragfähigkeit, H230mm, 4 Bolzen, A680.<div class="price-note">Mat 22 + Lohn 7</div></td><td class="menge">2,000</td><td>Stk</td><td class="preis">29,00</td><td class="summe">58,00</td></tr>
+        <tr><td class="pos">4.6.490</td><td><strong>Durchstanzbewehrung O 14/230-4/A680</strong><br>Ø14mm, 4 Bolzen, A680.<div class="price-note">Mat 18 + Lohn 6</div></td><td class="menge">3,000</td><td>Stk</td><td class="preis">24,00</td><td class="summe">72,00</td></tr>
+        <tr><td class="pos">4.6.500</td><td><strong>Durchstanzbewehrung O 14/230-5/A850</strong><br>Ø14mm, 5 Bolzen, A850, L~900mm.<div class="price-note">Mat 22 + Lohn 7</div></td><td class="menge">3,000</td><td>Stk</td><td class="preis">29,00</td><td class="summe">87,00</td></tr>
+        <tr><td class="pos">4.6.510</td><td><strong>Durchstanzbewehrung O 14/230-8/A1360</strong><br>Ø14mm, 8 Bolzen XL, A1360.<div class="price-note">Mat 32 + Lohn 8</div></td><td class="menge">4,000</td><td>Stk</td><td class="preis">40,00</td><td class="summe">160,00</td></tr>
+        <tr><td class="pos">4.6.520</td><td><strong>Durchstanzbewehrung O 20/340-3/B595</strong><br>Ø20mm maximale Tragfähigkeit, H340mm, 3 Bolzen, B595, verstärkte Schiene.<div class="price-note">Mat 35 + Lohn 8</div></td><td class="menge">22,000</td><td>Stk</td><td class="preis">43,00</td><td class="summe">946,00</td></tr>
+        <tr><td class="pos">4.6.530</td><td><strong>Durchstanzbewehrung O 16/340-4/B845</strong><br>Ø16mm, H340mm, 4 Bolzen, B845, verstärkte Schiene.<div class="price-note">Mat 28 + Lohn 7</div></td><td class="menge">18,000</td><td>Stk</td><td class="preis">35,00</td><td class="summe">630,00</td></tr>
+        <tr><td class="pos">4.6.540</td><td><strong>Durchstanzbewehrung O 16/340-3/B595</strong><br>Ø16mm, H340mm, 3 Bolzen, B595.<div class="price-note">Mat 25 + Lohn 7</div></td><td class="menge">5,000</td><td>Stk</td><td class="preis">32,00</td><td class="summe">160,00</td></tr>
+        <tr><td class="pos">4.6.550</td><td><strong>Durchstanzbewehrung O 20/440-5/B1415</strong><br>Ø20mm, H440mm, 5 Bolzen, B1415, extralange Schiene ~1,40m.<div class="price-note">Mat 45 + Lohn 10</div></td><td class="menge">32,000</td><td>Stk</td><td class="preis">55,00</td><td class="summe">1.760,00</td></tr>
+        <tr><td class="pos">4.6.560</td><td><strong>Durchstanzbewehrung O 25/440-3/B785</strong><br>Ø25mm maximale Tragfähigkeit, H440mm, 3 Bolzen, B785, massive Schiene. ~1,7kg/Bolzen.<div class="price-note">Mat 42 + Lohn 10</div></td><td class="menge">12,000</td><td>Stk</td><td class="preis">52,00</td><td class="summe">624,00</td></tr>
+        <tr><td class="pos">4.6.570</td><td><strong>Durchstanzbewehrung O 20/440-4/B1125</strong><br>Ø20mm, H440mm, 4 Bolzen, B1125, verstärkte Schiene ~1,15m.<div class="price-note">Mat 38 + Lohn 9</div></td><td class="menge">4,000</td><td>Stk</td><td class="preis">47,00</td><td class="summe">188,00</td></tr>
+        <tr><td class="pos">4.6.580</td><td><strong>Durchstanzbewehrung O 25/440-3/B785</strong><br>Ø25mm, H440mm, 3 Bolzen, B785.<div class="price-note">Mat 42 + Lohn 10</div></td><td class="menge">30,000</td><td>Stk</td><td class="preis">52,00</td><td class="summe">1.560,00</td></tr>
+        <tr><td class="pos">4.6.590</td><td><strong>Querkraftdorne LD-Q 20</strong><br>Dehnfugen-Querkraftdorn Ø20mm, Edelstahl, quadratische Hülse, längs- und querverschieblich, inkl. Bügelbewehrung.<div class="price-note">Mat 85 + Lohn 25</div></td><td class="menge">4,000</td><td>Stk</td><td class="preis">110,00</td><td class="summe">440,00</td></tr>
+    </table>
+    <table>
+        <tr class="section-sum"><td colspan="5"><strong>Summe 4.6. Besondere Einbauteile im Beton</strong></td><td class="summe"><strong>31.734,00</strong></td></tr>
+    </table>
+    <table>
+        <tr class="total-row"><td colspan="5"><strong>Summe 4. Betonarbeiten (4.1+4.2+4.3+4.4+4.5+4.6)</strong></td><td class="summe"><strong>1.415.745,58</strong></td></tr>
+    </table>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 5: MAUERARBEITEN -->
+<!-- ============================================================ -->
+<div class="page" style="page-break-before: always;" id="s5">
+    <h2>5. Mauerarbeiten</h2>
+    <div class="hinweis">
+        Mauerwerk aus KS-Plansteinen im Dünnbettmörtel. Alternativ großformatige XL-Planelemente bei gleicher Festigkeitsklasse und Rohdichte.
+        Nichttragende und tragende Wände werden in der Abrechnung nicht unterschieden. Nichttragendes Mauerwerk ist nachträglich zu unterschließen.
+    </div>
+    <div class="hinweis">
+        <strong>Abrechnungsregelung für Öffnungen:</strong><br>
+        a) Öffnungen bis 2,50 m² Einzelgröße werden übermessen (Leibungen im EP enthalten).<br>
+        b) Öffnungen über 2,50 m² werden abgezogen, Leibungen gesondert vergütet.<br>
+        c) Aussparungen unter 0,1 m² werden übermessen.
+    </div>
+    <table>
+        <tr><th style="width:70px">OZ</th><th>Leistungsbeschreibung</th><th style="width:65px">Menge</th><th style="width:35px">ME</th><th style="width:80px">EP €</th><th style="width:95px">GP €</th></tr>
+        <tr><td class="pos">5.10</td><td><strong>Kimmschicht 11,5 cm</strong><br>Waagerechte Ausgleichsschicht nach DIN 18330, MW 11,5 cm, Mörtelgruppe III, Dicke 1-3 cm, plan und waagerecht nach DIN 18202 Tabelle 3 Zeile 3.<div class="price-note">Mat 6 + Lohn 12</div></td><td class="menge">243,000</td><td>m</td><td class="preis">18,00</td><td class="summe">4.374,00</td></tr>
+        <tr><td class="pos">5.20</td><td><strong>Kimmschicht 17,5 cm</strong><br>Wie 5.10, MW 17,5 cm.<div class="price-note">Mat 8 + Lohn 14</div></td><td class="menge">242,000</td><td>m</td><td class="preis">22,00</td><td class="summe">5.324,00</td></tr>
+        <tr><td class="pos">5.30</td><td><strong>Kimmschicht 24 cm</strong><br>Wie 5.10, MW 24 cm.<div class="price-note">Mat 10 + Lohn 16</div></td><td class="menge">191,000</td><td>m</td><td class="preis">26,00</td><td class="summe">4.966,00</td></tr>
+        <tr><td class="pos">5.40</td><td><strong>Mauerwerkswände 11,5 cm</strong><br>Nichttragend/tragend, KS-Plansteine DIN EN 771-2, SFK 12, RDK 1,8, Dünnbettverfahren, Stoßfugen knirsch mit Nut-Feder. Inkl. Passsteine und Versetzgeräte.<div class="price-note">Mat 35 + Lohn 17</div></td><td class="menge">716,000</td><td>m²</td><td class="preis">52,00</td><td class="summe">37.232,00</td></tr>
+        <tr><td class="pos">5.50</td><td><strong>Mauerwerkswände 17,5 cm</strong><br>Tragend, KS-Plansteine DIN EN 771-2/DIN 20000-402, SFK 12/20, RDK 1,8/2,0, Dünnbettverfahren. Inkl. Passsteine und Versetzgeräte.<div class="price-note">Mat 42 + Lohn 22</div></td><td class="menge">787,000</td><td>m²</td><td class="preis">64,00</td><td class="summe">50.368,00</td></tr>
+        <tr><td class="pos">5.60</td><td><strong>Mauerwerkswände 24 cm</strong><br>Tragend, KS-Plansteine DIN EN 771-2, SFK 20, RDK 2,0, Dünnbettverfahren. Inkl. Passsteine, Versetzgeräte und Minikran bei Stein-Einzelgewichten &gt;25 kg.<div class="price-note">Mat 52 + Lohn 30</div></td><td class="menge">580,000</td><td>m²</td><td class="preis">82,00</td><td class="summe">47.560,00</td></tr>
+        <tr><td class="pos">5.70</td><td><strong>Stumpfstossanschlüsse MW an Beton</strong><br>Zulage stumpfer Stoß statt Verband, Edelstahl-Flachstahlanker (1.4301) in Dünnbettfuge, i.d.R. alle 2 Schichten, d=11,5-24 cm.<div class="price-note">Mat 4 + Lohn 4</div></td><td class="menge">495,000</td><td>m</td><td class="preis">8,00</td><td class="summe">3.960,00</td></tr>
+        <tr><td class="pos">5.80</td><td><strong>Stumpfstossanschlüsse MW an MW</strong><br>Wie 5.70, Anschluss Mauerwerk an Mauerwerk.<div class="price-note">Mat 4 + Lohn 4</div></td><td class="menge">245,000</td><td>m</td><td class="preis">8,00</td><td class="summe">1.960,00</td></tr>
+        <tr><td class="pos">5.90</td><td><strong>Betonflachstürze 11,5 cm</strong><br>KS-Flachstürze oder KS-Fertigteil-Stürze, inkl. Mörtelbett, Auflagerlänge ≥11,5 cm, inkl. Übermauerung/Abstützung bis Erhärtung.<div class="price-note">Mat 28 + Lohn 12</div></td><td class="menge">84,000</td><td>Stk</td><td class="preis">40,00</td><td class="summe">3.360,00</td></tr>
+        <tr><td class="pos">5.100</td><td><strong>Betonflachstürze 17,5 cm</strong><br>Betonstürze, inkl. Mörtelbett, Auflagerlänge ≥11,5 cm.<div class="price-note">Mat 35 + Lohn 14</div></td><td class="menge">31,000</td><td>Stk</td><td class="preis">49,00</td><td class="summe">1.519,00</td></tr>
+        <tr><td class="pos">5.110</td><td><strong>Tür-/Fensteröffnung &gt;2,5 m² d=17,5 cm</strong><br>Öffnung anlegen und Leibungen senkrecht hochführen, Wandstärke 17,5 cm, gemessen wird die umlaufende Leibung in m.<div class="price-note">Mat 8 + Lohn 12</div></td><td class="menge">45,000</td><td>m</td><td class="preis">20,00</td><td class="summe">900,00</td></tr>
+        <tr><td class="pos">5.120</td><td><strong>Tür-/Fensteröffnung &gt;2,5 m² d=24 cm</strong><br>Wie 5.110, Wandstärke 24 cm.<div class="price-note">Mat 10 + Lohn 14</div></td><td class="menge">61,000</td><td>m</td><td class="preis">24,00</td><td class="summe">1.464,00</td></tr>
+        <tr><td class="pos">5.130</td><td><strong>Mauersperrbahn 25 cm G 200 DD</strong><br>Dachdichtungsbahn besandet nach DIN 18533 (W1-E), Bahnenbreite 35 cm, 10 cm Überstand beidseits.<div class="price-note">Mat 8 + Lohn 5</div></td><td class="menge">52,000</td><td>m</td><td class="preis">13,00</td><td class="summe">676,00</td></tr>
+        <tr><td class="pos">5.140</td><td><strong>Mauersperrbahn 40 cm G 200 DD</strong><br>Wie 5.130, Bahnenbreite &gt;35 bis 45 cm.<div class="price-note">Mat 12 + Lohn 5</div></td><td class="menge">14,000</td><td>m</td><td class="preis">17,00</td><td class="summe">238,00</td></tr>
+        <tr><td class="pos">5.150</td><td><strong>Bautüre Grundeinsatz</strong><br>Verzinktes Stahlblech, PZ-Schloss + Drücker, b/h ca. 1,5/3,0 m, inkl. provisorische Verkleinerung, Demontage und Entsorgung.<div class="price-note">Mat 280 + Lohn 120</div></td><td class="menge">3,000</td><td>Stk</td><td class="preis">400,00</td><td class="summe">1.200,00</td></tr>
+        <tr><td class="pos">5.160</td><td><strong>Wanddurchbruch bis 500 cm²</strong><br>Öffnung in Mauerwerk anlegen, Ansichtsfläche bis 500 cm², Wanddicke bis 24 cm.<div class="price-note">Mat 12 + Lohn 18</div></td><td class="menge">85,000</td><td>Stk</td><td class="preis">30,00</td><td class="summe">2.550,00</td></tr>
+        <tr><td class="pos">5.170</td><td><strong>Wanddurchbruch 500-1000 cm²</strong><br>Öffnung anlegen, Ansichtsfläche &gt;500 bis 1000 cm², Wanddicke bis 24 cm.<div class="price-note">Mat 18 + Lohn 22</div></td><td class="menge">65,000</td><td>Stk</td><td class="preis">40,00</td><td class="summe">2.600,00</td></tr>
+        <tr><td class="pos">5.180</td><td><strong>WD vermauern 500-1000 cm²</strong><br>Wanddurchbruch nachträglich vermauern mit KS-Vollsteinen, inkl. Anarbeiten an Installationen.<div class="price-note">Mat 22 + Lohn 28</div></td><td class="menge">65,000</td><td>Stk</td><td class="preis">50,00</td><td class="summe">3.250,00</td></tr>
+        <tr><td class="pos">5.190</td><td><strong>Wanddurchbruch 1000-2500 cm²</strong><br>Ansichtsfläche &gt;1000 bis 2500 cm², Wanddicke bis 24 cm.<div class="price-note">Mat 25 + Lohn 30</div></td><td class="menge">32,000</td><td>Stk</td><td class="preis">55,00</td><td class="summe">1.760,00</td></tr>
+        <tr><td class="pos">5.200</td><td><strong>WD vermauern 1000-2500 cm²</strong><br>Nachträglich vermauern, inkl. Installationen.<div class="price-note">Mat 30 + Lohn 35</div></td><td class="menge">32,000</td><td>Stk</td><td class="preis">65,00</td><td class="summe">2.080,00</td></tr>
+        <tr><td class="pos">5.210</td><td><strong>Wanddurchbruch 2500-5000 cm²</strong><br>Ansichtsfläche &gt;2500 bis 5000 cm², Wanddicke bis 24 cm.<div class="price-note">Mat 35 + Lohn 40</div></td><td class="menge">27,000</td><td>Stk</td><td class="preis">75,00</td><td class="summe">2.025,00</td></tr>
+        <tr><td class="pos">5.220</td><td><strong>WD vermauern 2500-5000 cm²</strong><br>Nachträglich vermauern, inkl. Installationen.<div class="price-note">Mat 40 + Lohn 45</div></td><td class="menge">27,000</td><td>Stk</td><td class="preis">85,00</td><td class="summe">2.295,00</td></tr>
+        <tr><td class="pos">5.230</td><td><strong>Wanddurchbruch 5000-7500 cm²</strong><br>Ansichtsfläche &gt;5000 bis 7500 cm², Wanddicke bis 24 cm.<div class="price-note">Mat 45 + Lohn 50</div></td><td class="menge">5,000</td><td>Stk</td><td class="preis">95,00</td><td class="summe">475,00</td></tr>
+        <tr><td class="pos">5.240</td><td><strong>WD vermauern 5000-7500 cm²</strong><br>Nachträglich vermauern, inkl. Installationen.<div class="price-note">Mat 50 + Lohn 55</div></td><td class="menge">5,000</td><td>Stk</td><td class="preis">105,00</td><td class="summe">525,00</td></tr>
+        <tr class="section-sum"><td colspan="5"><strong>Summe 5. Mauerarbeiten</strong></td><td class="summe"><strong>179.461,00</strong></td></tr>
+    </table>
+</div>
+
+<!-- ============================================================ -->
+<!-- ZUSAMMENSTELLUNG -->
+<!-- ============================================================ -->
+<div class="page" style="page-break-before: always;" id="szusammen">
+    <h2>Zusammenstellung</h2>
+    <p style="font-size:10px; margin-bottom:10px;">Projekt: 026339 Erd-, Gerüst- und Rohbauarbeiten KiTa Liebigstraße — LV: Rohbauarbeiten</p>
+
+    <table>
+        <tr><th>Ordnungszahl</th><th>Kurztext</th><th style="width:120px">Betrag in EUR</th></tr>
+        <tr><td colspan="3" style="background:#edf2f7"><strong>1. Baustelleneinrichtung</strong></td></tr>
+        <tr><td>1.6.</td><td>Leerrohrverkabelung Ortbeton</td><td class="preis">7.281,00</td></tr>
+        <tr class="summe-row"><td colspan="2"><strong>Summe 1. Baustelleneinrichtung</strong></td><td class="summe"><strong>7.281,00</strong></td></tr>
+
+        <tr><td colspan="3" style="background:#edf2f7"><strong>4. Betonarbeiten</strong></td></tr>
+        <tr><td>4.1.</td><td>Schalung und Beton</td><td class="preis">729.707,18</td></tr>
+        <tr><td>4.2.</td><td>Fertigteiltreppen</td><td class="preis">33.996,40</td></tr>
+        <tr><td>4.3.</td><td>Bewehrung</td><td class="preis">520.700,00</td></tr>
+        <tr><td>4.4.</td><td>Abdichtung, Dämmung, Trennlagen</td><td class="preis">79.282,00</td></tr>
+        <tr><td>4.5.</td><td>Sonstige Leistungen</td><td class="preis">20.626,00</td></tr>
+        <tr><td>4.6.</td><td>Besondere Einbauteile im Beton</td><td class="preis">31.734,00</td></tr>
+        <tr class="summe-row"><td colspan="2"><strong>Summe 4. Betonarbeiten</strong></td><td class="summe"><strong>1.416.045,58</strong></td></tr>
+
+        <tr><td colspan="3" style="background:#edf2f7"><strong>5. Mauerarbeiten</strong></td></tr>
+        <tr class="summe-row"><td colspan="2"><strong>Summe 5. Mauerarbeiten</strong></td><td class="summe"><strong>179.461,00</strong></td></tr>
+
+        <tr class="total-row"><td colspan="2"><strong>Summe LV Rohbauarbeiten (netto)</strong></td><td class="summe"><strong>1.602.787,58</strong></td></tr>
+    </table>
+
+    <table style="margin-top:15px">
+        <tr><td style="width:70%"><strong>Zuzüglich der gesetzlichen Mehrwertsteuer</strong> aus 1.602.787,58 EUR</td><td style="text-align:right">19,00%</td><td class="preis">304.529,64</td></tr>
+        <tr class="total-row"><td><strong>Gesamtsumme brutto</strong></td><td></td><td class="summe"><strong>1.907.317,22 EUR</strong></td></tr>
+    </table>
+
+    <div class="anreise" style="margin-top:20px">
+        <strong>Hinweis:</strong> Alle Preise sind Richtwerte auf Basis aktueller Marktdaten (Stand 06/2026, Region Düsseldorf/NRW).
+        Materialpreise inkl. Anlieferung Baustelle. Lohnkosten inkl. Lohnnebenkosten (SOKA-Bau).
+        Verbindliche Angebote bei regionalen Lieferanten und Subunternehmern einholen.
+        Schöck Isokorb-Preise sind Listenpreise — Projektpreise über direkte Anfrage.
+    </div>
+
+    <div class="footer">
+        LV Rohbauarbeiten — KiTa Liebigstraße — 026339 — Stadt Ratingen — Erstellt 04.07.2026 — Preisstand 06/2026
+    </div>
+</div>
+
+</body>
+</html>

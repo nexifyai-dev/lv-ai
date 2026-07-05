@@ -12,7 +12,6 @@ import { type LoginActionState, login } from "../actions";
 
 export default function Page() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
   const [isSuccessful, setIsSuccessful] = useState(false);
 
   const [state, formAction] = useActionState<LoginActionState, FormData>(
@@ -25,11 +24,14 @@ export default function Page() {
   // biome-ignore lint/correctness/useExhaustiveDependencies: router and updateSession are stable refs
   useEffect(() => {
     if (state.status === "failed") {
-      toast({ type: "error", description: "Invalid credentials!" });
+      toast({
+        type: "error",
+        description: "Ungültiges Passwort. Bitte erneut versuchen.",
+      });
     } else if (state.status === "invalid_data") {
       toast({
         type: "error",
-        description: "Failed validating your submission!",
+        description: "Eingabe konnte nicht validiert werden.",
       });
     } else if (state.status === "success") {
       setIsSuccessful(true);
@@ -38,29 +40,27 @@ export default function Page() {
     }
   }, [state.status]);
 
-  const handleSubmit = (formData: FormData) => {
-    setEmail(formData.get("email") as string);
-    formAction(formData);
-  };
-
   return (
     <>
-      <h1 className="text-2xl font-semibold tracking-tight">Welcome back</h1>
-      <p className="text-sm text-muted-foreground">
-        Sign in to your account to continue
-      </p>
-      <AuthForm action={handleSubmit} defaultEmail={email}>
-        <SubmitButton isSuccessful={isSuccessful}>Sign in</SubmitButton>
-        <p className="text-center text-[13px] text-muted-foreground">
-          {"No account? "}
-          <Link
-            className="text-foreground underline-offset-4 hover:underline"
-            href="/register"
-          >
-            Sign up
-          </Link>
+      <div className="flex flex-col items-center gap-2 mb-6">
+        <div className="w-12 h-12 rounded-lg bg-primary flex items-center justify-center">
+          <span className="text-primary-foreground font-bold text-xl">LV</span>
+        </div>
+        <h1 className="text-2xl font-semibold tracking-tight">LV.AI</h1>
+        <p className="text-sm text-muted-foreground text-center">
+          Autonomer KI-Experte für Leistungsverzeichnisse
+          <br />
+          Ausschreibung · Vergabe · Abrechnung
         </p>
+      </div>
+
+      <AuthForm action={formAction}>
+        <SubmitButton isSuccessful={isSuccessful}>Zugang</SubmitButton>
       </AuthForm>
+
+      <p className="text-center text-[12px] text-muted-foreground mt-4">
+        D/A/CH · GAEB DA XML · VOB · ÖNORM · SIA
+      </p>
     </>
   );
 }

@@ -7,9 +7,10 @@ import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://chat.vercel.ai"),
-  title: "Next.js Chatbot Template",
-  description: "Next.js chatbot template using the AI SDK.",
+  metadataBase: new URL("https://lv-ai.nexifyai.cloud"),
+  title: "LV.AI — Leistungsverzeichnis KI-Experte",
+  description:
+    "Autonomer KI-Experte für Leistungsverzeichnisse, Ausschreibung, Vergabe und Abrechnung im D/A/CH-Raum. GAEB DA XML, VOB, ÖNORM, SIA.",
 };
 
 export const viewport = {
@@ -56,7 +57,7 @@ export default function RootLayout({
   return (
     <html
       className={`${geist.variable} ${geistMono.variable}`}
-      lang="en"
+      lang="de"
       suppressHydrationWarning
     >
       <head>

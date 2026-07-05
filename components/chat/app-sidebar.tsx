@@ -61,7 +61,7 @@ export function AppSidebar({ user }: { user: User | undefined }) {
       method: "DELETE",
     });
 
-    toast.success("All chats deleted");
+    toast.success("Alle Gespräche gelöscht");
   };
 
   return (
@@ -74,10 +74,12 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                 <SidebarMenuButton
                   asChild
                   className="size-8 !px-0 items-center justify-center group-data-[collapsible=icon]:group-hover/logo:opacity-0"
-                  tooltip="Chatbot"
+                  tooltip="LV.AI"
                 >
                   <Link href="/" onClick={() => setOpenMobile(false)}>
-                    <MessageSquareIcon className="size-4 text-sidebar-foreground/50" />
+                    <div className="size-6 rounded-md bg-primary flex items-center justify-center">
+                      <span className="text-primary-foreground font-bold text-[10px]">LV</span>
+                    </div>
                   </Link>
                 </SidebarMenuButton>
                 <Tooltip>
@@ -90,7 +92,7 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                     </SidebarMenuButton>
                   </TooltipTrigger>
                   <TooltipContent className="hidden md:block" side="right">
-                    Open sidebar
+                    Seitenleiste öffnen
                   </TooltipContent>
                 </Tooltip>
               </div>
@@ -111,10 +113,10 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                       setOpenMobile(false);
                       router.push("/");
                     }}
-                    tooltip="New Chat"
+                    tooltip="Neues Gespräch"
                   >
                     <PenSquareIcon className="size-4" />
-                    <span className="font-medium">New chat</span>
+                    <span className="font-medium">Neues Gespräch</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 {user && (
@@ -122,10 +124,10 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                     <SidebarMenuButton
                       className="rounded-lg text-sidebar-foreground/40 transition-colors duration-150 hover:bg-destructive/10 hover:text-destructive"
                       onClick={() => setShowDeleteAllDialog(true)}
-                      tooltip="Delete All Chats"
+                      tooltip="Alle löschen"
                     >
                       <TrashIcon className="size-4" />
-                      <span className="text-[13px]">Delete all</span>
+                      <span className="text-[13px]">Alle löschen</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 )}
@@ -146,16 +148,16 @@ export function AppSidebar({ user }: { user: User | undefined }) {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete all chats?</AlertDialogTitle>
+            <AlertDialogTitle>Alle Gespräche löschen?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete all
-              your chats and remove them from our servers.
+              Diese Aktion kann nicht rückgängig gemacht werden. Alle Ihre
+              Gespräche werden dauerhaft gelöscht.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>Abbrechen</AlertDialogCancel>
             <AlertDialogAction onClick={handleDeleteAll}>
-              Delete All
+              Alle löschen
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

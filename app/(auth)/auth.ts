@@ -30,6 +30,10 @@ declare module "next-auth/jwt" {
   }
 }
 
+// LV.AI Passwort-Gate — Einfaches Passwort für MVP
+// Später: Ersetzt durch echtes Multi-User Auth (Magic Link / Passkey)
+const LV_GATE_PASSWORD = process.env.LV_PASSWORD || "LV2026!!";
+
 export const {
   handlers: { GET, POST },
   auth,
@@ -38,37 +42,45 @@ export const {
 } = NextAuth({
   ...authConfig,
   providers: [
+    // Passwort-Gate — LV2026!! für Zugang
     Credentials({
       credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
+        password: { label: "Passwort", type: "password" },
       },
       async authorize(credentials) {
-        const email = String(credentials.email ?? "");
         const password = String(credentials.password ?? "");
-        const users = await getUser(email);
 
-        if (users.length === 0) {
-          await compare(password, DUMMY_PASSWORD);
-          return null;
+        // Prüfe gegen LV-Gate-Passwort
+        if (password === LV_GATE_PASSWORD) {
+          // Erstelle oder hole Gate-User
+          const email = "admin@lv-ai.local";
+          const users = await getUser(email);
+
+          if (users.length > 0) {
+            return { ...users[0], type: "regular" };
+          }
+
+          // Fallback: Guest-User wenn kein Admin existiert
+          const [guestUser] = await createGuestUser();
+          return { ...guestUser, type: "regular" };
         }
 
-        const [user] = users;
-
-        if (!user.password) {
-          await compare(password, DUMMY_PASSWORD);
-          return null;
+        // Fallback: Standard-Auth mit Email/Passwort
+        const email = String(credentials.email ?? "");
+        if (email) {
+          const users = await getUser(email);
+          if (users.length > 0 && users[0].password) {
+            const passwordsMatch = await compare(password, users[0].password);
+            if (passwordsMatch) {
+              return { ...users[0], type: "regular" };
+            }
+          }
         }
 
-        const passwordsMatch = await compare(password, user.password);
-
-        if (!passwordsMatch) {
-          return null;
-        }
-
-        return { ...user, type: "regular" };
+        return null;
       },
     }),
+    // Guest-Zugang (ohne Passwort)
     Credentials({
       id: "guest",
       credentials: {},

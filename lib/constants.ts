@@ -12,9 +12,14 @@ export const guestRegex = /^guest-\d+$/;
 
 export const DUMMY_PASSWORD = generateDummyPassword();
 
+// LV.AI — Vorgeschlagene Aktionen für den Chat
 export const suggestions = [
-  "What are the advantages of using Next.js?",
-  "Write code to demonstrate Dijkstra's algorithm",
-  "Help me write an essay about Silicon Valley",
-  "What is the weather in San Francisco?",
+  "Erstelle ein Leistungsverzeichnis für Rohbauarbeiten",
+  "Kostenschätzung nach DIN 276 für ein Einfamilienhaus",
+  "Preisspiegel für 3 Bieter erstellen und auswerten",
+  "GAEB-Datei importieren und Positionen prüfen",
+  "Nachtragsformulierung für Mehrleistungen vorbereiten",
+  "Schlussrechnung gegen Auftrags-LV prüfen",
+  "Gewährleistungsfristen für mein Projekt berechnen",
+  "Alternativpositionen für günstigere Materialien vorschlagen",
 ];
