@@ -21,7 +21,7 @@ const ALLOWED_TYPES = [
 
 const FileSchema = z.object({
   file: z
-    .instanceof(Blob)
+    .instanceof(File)
     .refine((file) => file.size <= 20 * 1024 * 1024, {
       message: "Dateigröße muss unter 20MB liegen",
     })
