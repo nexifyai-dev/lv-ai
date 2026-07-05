@@ -31,10 +31,10 @@ export async function GET(
     ).toResponse();
   }
 
-  if (!["X81", "X83", "X84"].includes(format)) {
+  if (!["X81", "X82", "X83", "X84", "X85", "X86"].includes(format)) {
     return new ChatbotError(
       "bad_request:api",
-      "Format ungültig. Erlaubt: X81, X83, X84."
+      "Format ungültig. Erlaubt: X81–X86."
     ).toResponse();
   }
 

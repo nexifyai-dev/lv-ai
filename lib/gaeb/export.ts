@@ -1,7 +1,7 @@
 // ─── GAEB DA XML 3.3 Export ──────────────────────────────────────────────────
 // Generiert valide GAEB DA XML Dateien aus lv-ai DB-Daten.
-// Unterstützte Formate: X81 (Leistungsbeschreibung), X83 (Angebotsaufforderung),
-// X84 (Angebotsabgabe — mit Bieterpreisen).
+// Unterstützte Formate: X81 (Leistungsbeschreibung), X82 (Kostenanschlag), X83 (Angebotsaufforderung),
+// X84 (Angebotsabgabe — Bieterpreise), X85 (Nebenangebot), X86 (Auftrags-LV).
 //
 // Schema: GAEB DA XML 3.3 (Nachfolger von 3.2, abwärtskompatibel).
 // Namespace: http://www.gaeb.de/GAEB_DA_XML/DA<XX>/3.3
@@ -13,7 +13,7 @@
 
 import type { GaebPosition } from "./parser";
 
-export type GaebFormat = "X81" | "X83" | "X84";
+export type GaebFormat = "X81" | "X82" | "X83" | "X84" | "X85" | "X86";
 
 export interface GaebProjectInfo {
   projectName: string;
@@ -72,7 +72,7 @@ export function exportGaebXml(input: GaebExportInput): string {
   xmlParts.push("  </Award>");
 
   // X84: Zusätzliche Angebotsdaten
-  if (format === "X84") {
+  if (format === "X84" || format === "X85") {
     xmlParts.push(generateOfferBlock(projectInfo));
   }
 
@@ -123,7 +123,7 @@ function generateProjectInfo(
   }
 
   // X84: Bieter-Info
-  if (format === "X84" && info.bidderName) {
+  if ((format === "X84" || format === "X85") && info.bidderName) {
     parts.push("    <Prt>");
     parts.push("      <PrtInfo>");
     parts.push("        <PrtType>BI</PrtType>"); // BI = Bieter
@@ -221,14 +221,18 @@ function generateItem(pos: GaebPosition, format: GaebFormat): string {
     parts.push(`              <QUDesc>${escapeXml(pos.einheit)}</QUDesc>`);
   }
 
-  // X84: Bieterpreis (EP + GP)
-  if (format === "X84") {
-    if (pos.einheitspreis) {
-      parts.push(`              <UP>${escapeXml(pos.einheitspreis)}</UP>`);
-    }
-    if (pos.gesamtpreis) {
-      parts.push(`              <TP>${escapeXml(pos.gesamtpreis)}</TP>`);
-    }
+  // Preisfelder: EP (UP) für X82/X84/X85/X86, GP (TP) nur X84/X85
+  if (
+    (format === "X82" ||
+      format === "X84" ||
+      format === "X85" ||
+      format === "X86") &&
+    pos.einheitspreis
+  ) {
+    parts.push(`              <UP>${escapeXml(pos.einheitspreis)}</UP>`);
+  }
+  if ((format === "X84" || format === "X85") && pos.gesamtpreis) {
+    parts.push(`              <TP>${escapeXml(pos.gesamtpreis)}</TP>`);
   }
 
   parts.push("            </Item>");
@@ -255,9 +259,12 @@ function generateOfferBlock(info: GaebProjectInfo): string {
 
 // ─── Validation ──────────────────────────────────────────────────────────────
 function validateInput(input: GaebExportInput): void {
-  if (!input.format || !["X81", "X83", "X84"].includes(input.format)) {
+  if (
+    !input.format ||
+    !["X81", "X82", "X83", "X84", "X85", "X86"].includes(input.format)
+  ) {
     throw new Error(
-      `Ungültiges GAEB-Format: "${input.format}". Erlaubt: X81, X83, X84.`
+      `Ungültiges GAEB-Format: "${input.format}". Erlaubt: X81-X86.`
     );
   }
 
@@ -265,8 +272,13 @@ function validateInput(input: GaebExportInput): void {
     throw new Error("Projektname fehlt — GAEB benötigt mindestens PrjName.");
   }
 
-  if (input.format === "X84" && !input.projectInfo.bidderName?.trim()) {
-    throw new Error("X84 (Angebotsabgabe) benötigt bidderName (Bieter).");
+  if (
+    (input.format === "X84" || input.format === "X85") &&
+    !input.projectInfo.bidderName?.trim()
+  ) {
+    throw new Error(
+      `${input.format} (Angebotsabgabe/Nebenangebot) benötigt bidderName (Bieter).`
+    );
   }
 
   if (input.positions.length === 0) {

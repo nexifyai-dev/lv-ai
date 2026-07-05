@@ -188,7 +188,7 @@ describe("GAEB Export", () => {
           projectInfo: baseProjectInfo,
           positions: samplePositions,
         })
-      ).toThrow("X81, X83, X84");
+      ).toThrow("X81-X86");
     });
 
     it("wirft bei fehlendem Projektnamen", () => {
@@ -268,9 +268,116 @@ describe("GAEB Export", () => {
     });
   });
 
+  describe("exportGaebXml — X82 (Kostenanschlag)", () => {
+    const x82Pos = [
+      {
+        oz: "01.0010",
+        kurztext: "Aushub",
+        menge: "100",
+        einheit: "m3",
+        einheitspreis: "25.00",
+      },
+    ];
+
+    it("nutzt DA82 Namespace", () => {
+      const xml = exportGaebXml({
+        format: "X82",
+        projectInfo: baseProjectInfo,
+        positions: x82Pos,
+      });
+      expect(xml).toContain('xmlns="http://www.gaeb.de/GAEB_DA_XML/DA82/3.3"');
+    });
+
+    it("enthält EP (UP) aber keinen GP (TP)", () => {
+      const xml = exportGaebXml({
+        format: "X82",
+        projectInfo: baseProjectInfo,
+        positions: x82Pos,
+      });
+      expect(xml).toContain("<UP>25.00</UP>");
+      expect(xml).not.toContain("<TP>");
+    });
+  });
+
+  describe("exportGaebXml — X85 (Nebenangebot)", () => {
+    const x85Pos = [
+      {
+        oz: "01.0050",
+        kurztext: "Alternativ",
+        menge: "1",
+        einheit: "Stk",
+        einheitspreis: "25.00",
+        gesamtpreis: "25.00",
+      },
+    ];
+
+    it("nutzt DA85 Namespace", () => {
+      const xml = exportGaebXml({
+        format: "X85",
+        projectInfo: {
+          ...baseProjectInfo,
+          bidderName: "Alternativ-Bieter GmbH",
+        },
+        positions: x85Pos,
+      });
+      expect(xml).toContain('xmlns="http://www.gaeb.de/GAEB_DA_XML/DA85/3.3"');
+    });
+
+    it("enthält EP+GP und Offer-Block", () => {
+      const xml = exportGaebXml({
+        format: "X85",
+        projectInfo: { ...baseProjectInfo, bidderName: "Alt-Bieter" },
+        positions: x85Pos,
+      });
+      expect(xml).toContain("<UP>25.00</UP>");
+      expect(xml).toContain("<TP>25.00</TP>");
+      expect(xml).toContain("<PrtType>BI</PrtType>");
+    });
+
+    it("erfordert Bieter-Namen", () => {
+      expect(() =>
+        exportGaebXml({
+          format: "X85",
+          projectInfo: baseProjectInfo,
+          positions: x85Pos,
+        })
+      ).toThrow("bidderName");
+    });
+  });
+
+  describe("exportGaebXml — X86 (Auftrags-LV)", () => {
+    const x86Pos = [
+      {
+        oz: "01.0010",
+        kurztext: "Auftrags-LV",
+        menge: "100",
+        einheit: "m3",
+        einheitspreis: "25.00",
+      },
+    ];
+
+    it("nutzt DA86 Namespace", () => {
+      const xml = exportGaebXml({
+        format: "X86",
+        projectInfo: baseProjectInfo,
+        positions: x86Pos,
+      });
+      expect(xml).toContain('xmlns="http://www.gaeb.de/GAEB_DA_XML/DA86/3.3"');
+    });
+
+    it("enthält EP (UP) aber keinen GP (TP)", () => {
+      const xml = exportGaebXml({
+        format: "X86",
+        projectInfo: baseProjectInfo,
+        positions: x86Pos,
+      });
+      expect(xml).toContain("<UP>25.00</UP>");
+      expect(xml).not.toContain("<TP>");
+    });
+  });
+
   describe("exportGaebXml — Leere Itemlist", () => {
     it("erzeugt leeres Itemlist-Tag bei 0 Positionen mit Validierung", () => {
-      // Validierung greift VOR generateItemlist — 0 Positionen werfen
       expect(() =>
         exportGaebXml({
           format: "X83",
