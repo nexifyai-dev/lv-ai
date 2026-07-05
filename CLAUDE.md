@@ -20,8 +20,8 @@ LV.AI ist ein chat-basierter KI-Experte für das gesamte AVA-Geschäft im Bauwes
 |-----------|-------------|
 | Framework | Next.js 16 (App Router) |
 | UI | shadcn/ui + Tailwind CSS 4 |
-| AI | Vercel AI SDK 6 + 9Router (NeXify) |
-| Datenbank | Neon Postgres + Drizzle ORM |
+| AI | Vercel AI SDK 6 + MiMo AI (Xiaomi Token Plan, OpenAI-kompatibel) |
+| Datenbank | Neon Postgres + Drizzle ORM 0.34 |
 | Memory | mem0 (Projekt + Global Scope) |
 | Auth | Auth.js (MVP: Passwort-Gate) |
 | Testing | Vitest + Playwright |
@@ -34,7 +34,7 @@ LV.AI ist ein chat-basierter KI-Experte für das gesamte AVA-Geschäft im Bauwes
 │   └── (chat)/             # Chat-Hauptansicht
 ├── components/             # UI-Komponenten (shadcn/ui)
 ├── lib/
-│   ├── ai/                 # Models, Prompts, Providers (9Router)
+│   ├── ai/                 # Models, Prompts, Providers (MiMo AI)
 │   ├── compliance/         # D/A/CH Compliance-Modul (VOB/ÖNORM/SIA)
 │   ├── db/                 # Drizzle Schema + Queries
 │   ├── memory/             # mem0 Integration
@@ -51,12 +51,14 @@ LV.AI ist ein chat-basierter KI-Experte für das gesamte AVA-Geschäft im Bauwes
 4. **Dual Memory** — Projekt-Scope + Global-Scope via mem0
 5. **Deutsche Fachsprache** — Alle UI-Texte und KI-Antworten auf Deutsch
 
-## 🔗 9Router Integration
+## 🔗 AI-Provider Integration
 
-- Endpoint: `https://ai-router.nexifyai.cloud/v1`
-- Default Model: `nexifyai-combo-llm` (Round-Robin DeepSeek)
-- Title Model: `ds/deepseek-v3.2`
-- Kompatibel mit OpenAI API via `@ai-sdk/openai`
+- Provider: MiMo AI (Xiaomi Token Plan) — OpenAI-kompatible API
+- Endpoint: `https://token-plan-ams.xiaomimimo.com/v1` (via `OPENAI_BASE_URL`)
+- Default Model: `mimo-v2.5-pro` (1T Params, 1M Kontext, native Tool Calling)
+- Title Model: `mimo-v2.5-pro`
+- Konfiguration via `OPENAI_API_KEY` + `OPENAI_BASE_URL` in `.env`
+- Geplant (Konzept v1.0): Migration auf 9Router + OpenRouter für Multi-Modell-Strategie
 
 ## 📋 Compliance-Module
 
