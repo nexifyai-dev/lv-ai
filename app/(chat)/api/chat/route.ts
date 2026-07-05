@@ -22,7 +22,6 @@ import { type RequestHints, systemPrompt } from "@/lib/ai/prompts";
 import { getLanguageModel } from "@/lib/ai/providers";
 import { createDocument } from "@/lib/ai/tools/create-document";
 import { editDocument } from "@/lib/ai/tools/edit-document";
-import { getWeather } from "@/lib/ai/tools/get-weather";
 import { requestSuggestions } from "@/lib/ai/tools/request-suggestions";
 import { updateDocument } from "@/lib/ai/tools/update-document";
 import { isProductionEnvironment } from "@/lib/constants";
@@ -188,19 +187,33 @@ export async function POST(request: Request) {
 
     const modelMessages = await convertToModelMessages(uiMessages);
 
+    // Token-Optimierung T20: Message-History auf die letzten 8 Nachrichten
+    // truncieren. Vollständige Historie bläht jeden Request auf; bei 20
+    // Nachrichten wären das ~2000 Token Overhead. Die UI zeigt weiterhin alle
+    // Nachrichten (aus DB), aber das Modell bekommt nur die jüngsten 8.
+    // MVP ohne Summary — kann später via mem0/Brain nachgerüstet werden.
+    const MAX_HISTORY_MESSAGES = 8;
+    const truncatedMessages =
+      modelMessages.length > MAX_HISTORY_MESSAGES
+        ? modelMessages.slice(-MAX_HISTORY_MESSAGES)
+        : modelMessages;
+
     const stream = createUIMessageStream({
       originalMessages: isToolApprovalFlow ? uiMessages : undefined,
       execute: async ({ writer: dataStream }) => {
         const result = streamText({
           model: getLanguageModel(chatModel),
           system: systemPrompt({ requestHints, supportsTools }),
-          messages: modelMessages,
+          messages: truncatedMessages,
           stopWhen: stepCountIs(5),
+          // Token-Optimierung T19: Output-Limit verhindert Endlos-Antworten.
+          // Chat: 2000 Token (~1500 Wörter), LV-Generierung via Tool läuft
+          // separat mit eigenem Limit in den Tool-Definitionen.
+          maxOutputTokens: 2000,
           experimental_activeTools:
             isReasoningModel && !supportsTools
               ? []
               : [
-                  "getWeather",
                   "createDocument",
                   "editDocument",
                   "updateDocument",
@@ -212,7 +225,6 @@ export async function POST(request: Request) {
             }),
           },
           tools: {
-            getWeather,
             createDocument: createDocument({
               session,
               dataStream,
@@ -289,10 +301,7 @@ export async function POST(request: Request) {
         }
       },
       onError: (error) => {
-        if (
-          error instanceof Error &&
-          error.message?.includes("rate limit")
-        ) {
+        if (error instanceof Error && error.message?.includes("rate limit")) {
           return "Rate-Limit erreicht. Bitte warten Sie einen Moment und versuchen Sie es erneut.";
         }
         return "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.";
