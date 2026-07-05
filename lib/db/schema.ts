@@ -38,6 +38,9 @@ export const gaebFormatEnum = pgEnum("gaeb_format", [
 export const bieterStatusEnum = pgEnum("bieter_status", [
   "offen",
   "eingereicht",
+  "gueltig",
+  "unvollstaendig",
+  "ausgeschlossen",
   "vergeben",
   "abgelehnt",
 ]);
@@ -269,11 +272,41 @@ export const offer = pgTable("Offer", {
   status: bieterStatusEnum("status").notNull().default("offen"),
   bemerkungen: text("bemerkungen"),
   eingereichtAm: timestamp("eingereichtAm"),
+  // Zuschlagserteilung (VOB/A § 17 Zuschlag)
+  zuschlagErteiltAm: timestamp("zuschlagErteiltAm"),
+  zuschlagBegruendung: text("zuschlagBegruendung"),
+  auschlussGrund: text("auschlussGrund"), // bei status=ausgeschlossen
   createdAt: timestamp("createdAt").notNull().defaultNow(),
   updatedAt: timestamp("updatedAt").notNull().defaultNow(),
 });
 
 export type Offer = InferSelectModel<typeof offer>;
+
+// ─── Bieter-Angebotspositionen (position-level Preise pro Bieter) ────────────
+
+export const offerPosition = pgTable(
+  "OfferPosition",
+  {
+    id: uuid("id").primaryKey().notNull().defaultRandom(),
+    offerId: uuid("offerId")
+      .notNull()
+      .references(() => offer.id, { onDelete: "cascade" }),
+    oz: varchar("oz", { length: 20 }).notNull(),
+    kurztext: text("kurztext"),
+    menge: decimal("menge", { precision: 12, scale: 3 }),
+    einheit: varchar("einheit", { length: 10 }),
+    einheitspreis: decimal("einheitspreis", { precision: 12, scale: 2 }),
+    gesamtpreis: decimal("gesamtpreis", { precision: 14, scale: 2 }),
+    sortierung: integer("sortierung").default(0),
+    createdAt: timestamp("createdAt").notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt").notNull().defaultNow(),
+  },
+  (table) => ({
+    offerOzPk: primaryKey({ columns: [table.offerId, table.oz] }),
+  })
+);
+
+export type OfferPosition = InferSelectModel<typeof offerPosition>;
 
 // ─── Rechnungen ──────────────────────────────────────────────────────────────
 

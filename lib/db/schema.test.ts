@@ -14,6 +14,7 @@ import {
   lvPosition,
   message,
   offer,
+  offerPosition,
   project,
   projektStatusEnum,
   rechnungStatusEnum,
@@ -69,6 +70,9 @@ describe("LV.AI Database Schema", () => {
       expect(bieterStatusEnum.enumValues).toEqual([
         "offen",
         "eingereicht",
+        "gueltig",
+        "unvollstaendig",
+        "ausgeschlossen",
         "vergeben",
         "abgelehnt",
       ]);
@@ -151,6 +155,11 @@ describe("LV.AI Database Schema", () => {
     it("should export offer table for Bieter", () => {
       expect(offer).toBeDefined();
       expect(tableName(offer)).toBe("Offer");
+    });
+
+    it("should export offerPosition table for position-level Bieter-preise", () => {
+      expect(offerPosition).toBeDefined();
+      expect(tableName(offerPosition)).toBe("OfferPosition");
     });
 
     it("should export invoice table for Rechnungen", () => {

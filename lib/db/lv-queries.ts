@@ -10,6 +10,10 @@ import {
   type LvPosition,
   lvDocument,
   lvPosition,
+  type Offer,
+  type OfferPosition,
+  offer,
+  offerPosition,
   project,
 } from "./schema";
 
@@ -205,5 +209,170 @@ export async function getLvDocumentSum(lvDocumentId: string): Promise<number> {
     }, 0);
   } catch (_error) {
     return 0;
+  }
+}
+
+// ─── Angebote (Bieter) ─────────────────────────────────────────────────────────
+// VOB/A § 17 Zuschlagserteilung: Status-Wechsel offen → eingereicht → gueltig →
+// ausgeschlossen/unvollstaendig → vergeben/abgelehnt.
+
+export async function deleteOffersByProject(projectId: string): Promise<void> {
+  try {
+    await db.delete(offer).where(eq(offer.projectId, projectId));
+  } catch (_error) {
+    throw new ChatbotError(
+      "bad_request:database",
+      "Angebote konnten nicht gelöscht werden."
+    );
+  }
+}
+
+export type BieterStatus =
+  | "offen"
+  | "eingereicht"
+  | "gueltig"
+  | "unvollstaendig"
+  | "ausgeschlossen"
+  | "vergeben"
+  | "abgelehnt";
+
+export async function getOffersByProject(projectId: string): Promise<Offer[]> {
+  try {
+    return await db
+      .select()
+      .from(offer)
+      .where(eq(offer.projectId, projectId))
+      .orderBy(asc(offer.bieter));
+  } catch (_error) {
+    throw new ChatbotError(
+      "bad_request:database",
+      "Angebote konnten nicht geladen werden."
+    );
+  }
+}
+
+export async function getOfferById(id: string): Promise<Offer | null> {
+  try {
+    const rows = await db.select().from(offer).where(eq(offer.id, id)).limit(1);
+    return rows[0] ?? null;
+  } catch (_error) {
+    throw new ChatbotError(
+      "bad_request:database",
+      "Angebot konnte nicht geladen werden."
+    );
+  }
+}
+
+export async function createOffer(input: {
+  projectId: string;
+  bieter: string;
+  gaebSourceId?: string;
+  gesamtsumme?: string;
+  bemerkungen?: string;
+  eingereichtAm?: Date;
+}): Promise<Offer> {
+  const id = generateUUID();
+  try {
+    const [row] = await db
+      .insert(offer)
+      .values({
+        id,
+        projectId: input.projectId,
+        bieter: input.bieter,
+        gaebSourceId: input.gaebSourceId,
+        gesamtsumme: input.gesamtsumme,
+        bemerkungen: input.bemerkungen,
+        eingereichtAm: input.eingereichtAm,
+        status: "eingereicht",
+      })
+      .returning();
+    return row;
+  } catch (_error) {
+    throw new ChatbotError(
+      "bad_request:database",
+      "Angebot konnte nicht erstellt werden."
+    );
+  }
+}
+
+export async function updateOfferStatus(
+  id: string,
+  patch: {
+    status?: BieterStatus;
+    auschlussGrund?: string | null;
+    zuschlagErteiltAm?: Date | null;
+    zuschlagBegruendung?: string | null;
+    bemerkungen?: string | null;
+  }
+): Promise<Offer | null> {
+  try {
+    const [row] = await db
+      .update(offer)
+      .set({ ...patch, updatedAt: new Date() })
+      .where(eq(offer.id, id))
+      .returning();
+    return row ?? null;
+  } catch (_error) {
+    throw new ChatbotError(
+      "bad_request:database",
+      "Angebotsstatus konnte nicht aktualisiert werden."
+    );
+  }
+}
+
+// ─── Offer-Positionen (position-level Preise pro Bieter) ──────────────────────
+
+export async function getOfferPositions(
+  offerId: string
+): Promise<OfferPosition[]> {
+  try {
+    return await db
+      .select()
+      .from(offerPosition)
+      .where(eq(offerPosition.offerId, offerId))
+      .orderBy(asc(offerPosition.sortierung), asc(offerPosition.oz));
+  } catch (_error) {
+    throw new ChatbotError(
+      "bad_request:database",
+      "Angebotspositionen konnten nicht geladen werden."
+    );
+  }
+}
+
+export async function replaceOfferPositions(
+  offerId: string,
+  positions: Array<{
+    oz: string;
+    kurztext?: string;
+    menge?: string;
+    einheit?: string;
+    einheitspreis?: string;
+    gesamtpreis?: string;
+    sortierung?: number;
+  }>
+): Promise<void> {
+  try {
+    // Bestehende Positionen ersetzen (cascade delete via FK)
+    await db.delete(offerPosition).where(eq(offerPosition.offerId, offerId));
+    if (positions.length === 0) {
+      return;
+    }
+    await db.insert(offerPosition).values(
+      positions.map((p, i) => ({
+        offerId,
+        oz: p.oz,
+        kurztext: p.kurztext,
+        menge: p.menge,
+        einheit: p.einheit,
+        einheitspreis: p.einheitspreis,
+        gesamtpreis: p.gesamtpreis,
+        sortierung: p.sortierung ?? i,
+      }))
+    );
+  } catch (_error) {
+    throw new ChatbotError(
+      "bad_request:database",
+      "Angebotspositionen konnten nicht gespeichert werden."
+    );
   }
 }

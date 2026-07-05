@@ -1,5 +1,6 @@
 import {
   ArrowLeftIcon,
+  ClipboardListIcon,
   DownloadIcon,
   FileSpreadsheetIcon,
   FileTextIcon,
@@ -71,6 +72,13 @@ export default async function LvProjectPage({ params }: PageProps) {
           >
             <FileSpreadsheetIcon className="size-3.5" />
             Preisspiegel
+          </Link>
+          <Link
+            className="inline-flex items-center gap-1.5 rounded-md border border-border/60 px-3 py-1.5 text-sm transition-colors hover:bg-accent"
+            href={`/lv/${projectId}/bieter`}
+          >
+            <ClipboardListIcon className="size-3.5" />
+            Bieter
           </Link>
           <CreateLvDocumentButton projectId={projectId} />
         </div>

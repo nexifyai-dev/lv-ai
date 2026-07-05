@@ -81,10 +81,33 @@ LV.AI ist ein chat-basierter KI-Experte für das gesamte AVA-Geschäft im Bauwes
 | 0 – Fundament | ✅ Abgeschlossen | Template, Schema, mem0, Auth, GAEB-Parser, D/A/CH-Compliance |
 | 1 – LV-Kern | 🚧 In Arbeit | LV-Editor ✅, Positionen ✅, PDF ⏳ |
 | 2 – GAEB-Engine | ✅ Abgeschlossen | GAEB DA XML Export (X81/X83/X84), Import-Action, Text-Parser, Download-Route |
-| 3 – Vergabe | 🚧 In Arbeit | Preisspiegel-Engine ✅, Preisspiegel-UI ✅, Bieterauswertung ⏳ |
+| 3 – Vergabe | ✅ Abgeschlossen | Preisspiegel-Engine ✅, Preisspiegel-UI ✅, Bieterauswertung ✅ (T33) |
 | 4 – Zeichnungen | ⏳ Offen | SVG/PDF Plan-Generator |
 | 5 – Proaktivität | ⏳ Offen | Cron, Erinnerungen |
 | 6 – Skalierung | ⏳ Offen | Multi-User, Rollen |
+
+---
+
+## 🧪 LV.AI-Prüfverfahren (verbindlich vor jeder Abschlussmeldung)
+
+> Gilt zusätzlich zum globalen 8-Punkte-Basis-Prüfverfahren. Erweiterung für GAEB/AVA-Spezifika.
+
+15. **GAEB-Konformität** bei jeder Änderung an Import/Export-Logik (X81–X86 Schema-Validierung), insbesondere in `lib/gaeb/`, `preisspiegel-actions`, `bieter-actions`.
+16. **mem0-Scope-Integrität** — kein Vermischen von Projekt- und Global-Memory nach Änderungen an der Memory-Schicht (Prüfung über `mem0-mcp` und `agentmemory-shrunk`-Connector).
+17. **Fachliche VOB/ÖNORM/SIA-Korrektheit** — Preisspiegel-, Bieter- und Angebotslogik (`lv-queries`, `preisspiegel-actions`, `bieter-client`) wird gegen das Regelwerk geprüft, nicht nur gegen Code-Logik.
+18. **Datenintegrität bei Bieter-/Angebotsvergleich** — jede Änderung an `lv-queries-offers` oder verwandten Queries erfordert einen Vorher/Nachher-Test mit realistischem Bieter-Datensatz (mind. 2 Bieter, unterschiedliche Positionen), um Fehlberechnungen im Preisspiegel auszuschließen.
+19. **Infrastruktur-Konsistenz** — bei Änderungen, die Hosting/DNS/Domains betreffen (Hostinger-Connectoren: `hostinger-hosting`, `hostinger-dns`, `hostinger-domains`, `hostinger-vps`), wird vor Abschluss geprüft, dass Deployment und Domain-Routing unverändert funktionieren.
+
+### Verfügbare Wissens-/Datenquellen (immer aktiv einbeziehen)
+
+Vor jeder Umsetzung wird geprüft, ob folgende verbundene Quellen für die Anforderung relevant sind, und bei Relevanz einbezogen:
+
+- `mem0-mcp`, `agentmemory-shrunk` — Projekt- und Session-Gedächtnis
+- `hostinger-hosting`, `hostinger-dns`, `hostinger-domains`, `hostinger-vps`, `hostinger-billing`, `hostinger-reach` — Infrastruktur- und Deployment-Kontext
+
+### Abschlussformel LV.AI
+
+> Proaktiv & autonom: Alle Wissensquellen (Code, MCPs, Chatverlauf, mem0) abgleichen, Abweichungen logisch erkennen, Ursache verstehen, vollständig finden und an der Wurzel lösen. Fertigstellung nur schuldenfrei, nach Basis-Prüfverfahren (Build/Type/Lint/Tests/Smoke-Test/Regression/Diff-Review/Prüfnachweis) plus LV.AI-Erweiterung (GAEB/Memory/VOB-Integrität). Erst nach vollständigem Durchlauf gilt die Aufgabe als geprüft, validiert und formal abgenommen.
 
 ---
 

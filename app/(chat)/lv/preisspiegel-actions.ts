@@ -3,6 +3,11 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { auth } from "@/app/(auth)/auth";
+import {
+  createOffer,
+  deleteOffersByProject,
+  replaceOfferPositions,
+} from "@/lib/db/lv-queries";
 import { ChatbotError } from "@/lib/errors";
 import {
   type BieterAngebot,
@@ -45,10 +50,15 @@ const preisspiegelSchema = z.object({
 
 type PreisspiegelInput = z.infer<typeof preisspiegelSchema>;
 
+// ─── Resultat-Typ (mit persistierten Offer-IDs) ──────────────────────────────
+export interface PreisspiegelActionResult extends PreisspiegelResult {
+  offerIds: Record<string, string>; // bieterName → offerId
+}
+
 // ─── Action ──────────────────────────────────────────────────────────────────
 export async function generatePreisspiegelAction(
   input: PreisspiegelInput
-): Promise<PreisspiegelResult> {
+): Promise<PreisspiegelActionResult> {
   await requireSession();
   const parsed = preisspiegelSchema.safeParse(input);
   if (!parsed.success) {
@@ -96,14 +106,38 @@ export async function generatePreisspiegelAction(
   // 2. Preisspiegel generieren
   const result = createPreisspiegel(angebote);
 
-  // 3. Warnings anhängen (als erstes Ausreißer-Element falls leer)
-  if (warnings.length > 0) {
-    // Wir können warnings nicht direkt ans Result anhängen — stattdessen
-    // loggen wir sie. Die UI kann sie aus den Ausreißer-Hinweisen ableiten.
+  // 3. Angebote in DB persistieren (VOB/A § 17 nachvollziehbar)
+  // Bestehende Angebote ersetzen — Preisspiegel ist die aktuellste Auswertung.
+  await deleteOffersByProject(projectId);
+  const offerIds: Record<string, string> = {};
+  for (const angebot of angebote) {
+    const gesamtsumme =
+      angebot.gesamtsumme !== undefined
+        ? angebot.gesamtsumme.toFixed(2)
+        : undefined;
+    const row = await createOffer({
+      projectId,
+      bieter: angebot.bieterName,
+      gesamtsumme,
+      eingereichtAm: new Date(),
+    });
+    offerIds[angebot.bieterName] = row.id;
+    await replaceOfferPositions(
+      row.id,
+      angebot.positions.map((p) => ({
+        oz: p.oz,
+        kurztext: p.kurztext,
+        menge: p.menge,
+        einheit: p.einheit,
+        einheitspreis: p.einheitspreis,
+        gesamtpreis: p.gesamtpreis,
+      }))
+    );
   }
 
-  // 4. Cache invalidieren
+  // 4. Cache invalidieren (Preisspiegel + Bieter-Seite)
   revalidatePath(`/lv/${projectId}/preisspiegel`);
+  revalidatePath(`/lv/${projectId}/bieter`);
 
-  return result;
+  return { ...result, offerIds };
 }

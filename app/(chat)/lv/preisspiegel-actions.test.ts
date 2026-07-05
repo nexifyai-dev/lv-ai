@@ -14,6 +14,24 @@ vi.mock("@/lib/gaeb/preisspiegel", () => ({
   createPreisspiegel: createPreisspiegelMock,
 }));
 
+vi.mock("server-only", () => ({}));
+
+const deleteOffersByProjectMock = vi.fn(async () => undefined);
+const createOfferMock = vi.fn(
+  async (input: { bieter: string; projectId: string }) => ({
+    id: `offer-${input.bieter}`,
+    projectId: input.projectId,
+    bieter: input.bieter,
+    status: "eingereicht",
+  })
+);
+const replaceOfferPositionsMock = vi.fn(async () => undefined);
+vi.mock("@/lib/db/lv-queries", () => ({
+  deleteOffersByProject: deleteOffersByProjectMock,
+  createOffer: createOfferMock,
+  replaceOfferPositions: replaceOfferPositionsMock,
+}));
+
 globalThis.fetch = vi.fn() as unknown as typeof fetch;
 
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
@@ -131,9 +149,14 @@ describe("generatePreisspiegelAction", () => {
       mockAngebotA,
       mockAngebotB,
     ]);
+    // DB persistiert Angebote (VOB/A § 17)
+    expect(deleteOffersByProjectMock).toHaveBeenCalledWith(PROJECT_ID);
+    expect(createOfferMock).toHaveBeenCalledTimes(2);
+    expect(replaceOfferPositionsMock).toHaveBeenCalledTimes(2);
     expect(revalidatePathMock).toHaveBeenCalledWith(
       `/lv/${PROJECT_ID}/preisspiegel`
     );
+    expect(revalidatePathMock).toHaveBeenCalledWith(`/lv/${PROJECT_ID}/bieter`);
   });
 
   it("überspringt fehlerhafte Downloads und fährt fort", async () => {
@@ -156,5 +179,54 @@ describe("generatePreisspiegelAction", () => {
     });
 
     expect(result.bieterCount).toBe(2);
+    // Persistierte Angebote trotz Download-Fehler
+    expect(deleteOffersByProjectMock).toHaveBeenCalled();
+    expect(createOfferMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("persistiert alle Positionen in DB", async () => {
+    authedSession();
+    (globalThis.fetch as any)
+      .mockResolvedValueOnce({ ok: true, text: async () => "xml-a" })
+      .mockResolvedValueOnce({ ok: true, text: async () => "xml-b" });
+    const angebotMitPos = {
+      bieterName: "Bieter X",
+      positions: [
+        {
+          oz: "01.0010",
+          kurztext: "Aushub",
+          menge: "100",
+          einheit: "m³",
+          einheitspreis: "25.00",
+          gesamtpreis: "2500.00",
+        },
+      ],
+      gesamtsumme: 2500,
+    };
+    parseX84Mock
+      .mockReturnValueOnce(angebotMitPos)
+      .mockReturnValueOnce(mockAngebotB);
+    createPreisspiegelMock.mockReturnValue(mockPreisspiegel);
+
+    const { generatePreisspiegelAction } = await import(
+      "./preisspiegel-actions"
+    );
+    await generatePreisspiegelAction({
+      projectId: PROJECT_ID,
+      fileUrls: [FILE_URL_A, FILE_URL_B],
+    });
+
+    expect(replaceOfferPositionsMock).toHaveBeenCalledTimes(2);
+    // Erster Call: Positionen korrekt gemappt
+    const firstCall = replaceOfferPositionsMock.mock.calls[0] as unknown[];
+    const firstCallPositions = firstCall[1] as Array<{
+      oz: string;
+      kurztext: string;
+      einheitspreis: string;
+    }>;
+    expect(firstCallPositions).toHaveLength(1);
+    expect(firstCallPositions[0].oz).toBe("01.0010");
+    expect(firstCallPositions[0].kurztext).toBe("Aushub");
+    expect(firstCallPositions[0].einheitspreis).toBe("25.00");
   });
 });
