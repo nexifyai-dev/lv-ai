@@ -25,3 +25,7 @@ yarn-error.log*
 /playwright/*
 next-env.d.ts
 tsconfig.tsbuildinfo
+
+# Lokale Uploads (Dev-Fallback, wenn BLOB_READ_WRITE_TOKEN fehlt)
+# Produktion nutzt Vercel Blob, diese Dateien sind nur lokale Test-Artefakte.
+/public/uploads/
