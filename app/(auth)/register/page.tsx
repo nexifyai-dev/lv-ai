@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useActionState, useEffect, useState } from "react";
+
 import { AuthForm } from "@/components/chat/auth-form";
 import { SubmitButton } from "@/components/chat/submit-button";
 import { toast } from "@/components/chat/toast";
@@ -11,7 +12,6 @@ import { type RegisterActionState, register } from "../actions";
 
 export default function Page() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
   const [isSuccessful, setIsSuccessful] = useState(false);
 
   const [state, formAction] = useActionState<RegisterActionState, FormData>(
@@ -24,40 +24,35 @@ export default function Page() {
   // biome-ignore lint/correctness/useExhaustiveDependencies: router and updateSession are stable refs
   useEffect(() => {
     if (state.status === "user_exists") {
-      toast({ type: "error", description: "Account already exists!" });
+      toast({ type: "error", description: "Konto existiert bereits!" });
     } else if (state.status === "failed") {
-      toast({ type: "error", description: "Failed to create account!" });
+      toast({ type: "error", description: "Konto konnte nicht erstellt werden." });
     } else if (state.status === "invalid_data") {
       toast({
         type: "error",
-        description: "Failed validating your submission!",
+        description: "Eingabe konnte nicht validiert werden.",
       });
     } else if (state.status === "success") {
-      toast({ type: "success", description: "Account created!" });
+      toast({ type: "success", description: "Zugang erstellt!" });
       setIsSuccessful(true);
       updateSession();
       router.refresh();
     }
   }, [state.status]);
 
-  const handleSubmit = (formData: FormData) => {
-    setEmail(formData.get("email") as string);
-    formAction(formData);
-  };
-
   return (
     <>
-      <h1 className="text-2xl font-semibold tracking-tight">Create account</h1>
-      <p className="text-sm text-muted-foreground">Get started for free</p>
-      <AuthForm action={handleSubmit} defaultEmail={email}>
-        <SubmitButton isSuccessful={isSuccessful}>Sign up</SubmitButton>
+      <h1 className="text-2xl font-semibold tracking-tight">Zugang erstellen</h1>
+      <p className="text-sm text-muted-foreground">LV.AI Passwort eingeben</p>
+      <AuthForm action={formAction}>
+        <SubmitButton isSuccessful={isSuccessful}>Zugang</SubmitButton>
         <p className="text-center text-[13px] text-muted-foreground">
-          {"Have an account? "}
+          {"Bereits Zugang? "}
           <Link
             className="text-foreground underline-offset-4 hover:underline"
             href="/login"
           >
-            Sign in
+            Anmelden
           </Link>
         </p>
       </AuthForm>
