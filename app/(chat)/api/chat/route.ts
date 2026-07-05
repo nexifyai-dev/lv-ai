@@ -291,13 +291,11 @@ export async function POST(request: Request) {
       onError: (error) => {
         if (
           error instanceof Error &&
-          error.message?.includes(
-            "AI Gateway requires a valid credit card on file to service requests"
-          )
+          error.message?.includes("rate limit")
         ) {
-          return "AI Gateway requires a valid credit card on file to service requests. Please visit https://vercel.com/d?to=%2F%5Bteam%5D%2F%7E%2Fai%3Fmodal%3Dadd-credit-card to add a card and unlock your free credits.";
+          return "Rate-Limit erreicht. Bitte warten Sie einen Moment und versuchen Sie es erneut.";
         }
-        return "Oops, an error occurred!";
+        return "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.";
       },
     });
 
@@ -323,22 +321,11 @@ export async function POST(request: Request) {
       },
     });
   } catch (error) {
-    const vercelId = request.headers.get("x-vercel-id");
-
     if (error instanceof ChatbotError) {
       return error.toResponse();
     }
 
-    if (
-      error instanceof Error &&
-      error.message?.includes(
-        "AI Gateway requires a valid credit card on file to service requests"
-      )
-    ) {
-      return new ChatbotError("bad_request:activate_gateway").toResponse();
-    }
-
-    console.error("Unhandled error in chat API:", error, { vercelId });
+    console.error("Unhandled error in chat API:", error);
     return new ChatbotError("offline:chat").toResponse();
   }
 }
