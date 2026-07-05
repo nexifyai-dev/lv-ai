@@ -1,7 +1,6 @@
 "use client";
 
-import { ChevronUp } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { ChevronUp, LogOutIcon, MoonIcon, SunIcon } from "lucide-react";
 import type { User } from "next-auth";
 import { signOut, useSession } from "next-auth/react";
 import { useTheme } from "next-themes";
@@ -17,7 +16,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { guestRegex } from "@/lib/constants";
 import { LoaderIcon } from "./icons";
 import { toast } from "./toast";
 
@@ -30,11 +28,8 @@ function emailToHue(email: string): number {
 }
 
 export function SidebarUserNav({ user }: { user: User }) {
-  const router = useRouter();
-  const { data, status } = useSession();
+  const { status } = useSession();
   const { setTheme, resolvedTheme } = useTheme();
-
-  const isGuest = guestRegex.test(data?.user?.email ?? "");
 
   return (
     <SidebarMenu>
@@ -46,7 +41,7 @@ export function SidebarUserNav({ user }: { user: User }) {
                 <div className="flex flex-row items-center gap-2">
                   <div className="size-6 animate-pulse rounded-full bg-sidebar-foreground/10" />
                   <span className="animate-pulse rounded-md bg-sidebar-foreground/10 text-transparent text-[13px]">
-                    Loading...
+                    Laden...
                   </span>
                 </div>
                 <div className="animate-spin text-sidebar-foreground/50">
@@ -65,7 +60,7 @@ export function SidebarUserNav({ user }: { user: User }) {
                   }}
                 />
                 <span className="truncate text-[13px]" data-testid="user-email">
-                  {isGuest ? "Guest" : user?.email}
+                  {user?.email || "LV.AI Nutzer"}
                 </span>
                 <ChevronUp className="ml-auto size-3.5 text-sidebar-foreground/50" />
               </SidebarMenuButton>
@@ -83,7 +78,17 @@ export function SidebarUserNav({ user }: { user: User }) {
                 setTheme(resolvedTheme === "dark" ? "light" : "dark")
               }
             >
-              {`Toggle ${resolvedTheme === "light" ? "dark" : "light"} mode`}
+              {resolvedTheme === "light" ? (
+                <>
+                  <MoonIcon className="size-4 mr-2" />
+                  Dunkelmodus
+                </>
+              ) : (
+                <>
+                  <SunIcon className="size-4 mr-2" />
+                  Hellmodus
+                </>
+              )}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild data-testid="user-nav-item-auth">
@@ -94,23 +99,19 @@ export function SidebarUserNav({ user }: { user: User }) {
                     toast({
                       type: "error",
                       description:
-                        "Checking authentication status, please try again!",
+                        "Authentifizierung wird geprüft, bitte erneut versuchen!",
                     });
-
                     return;
                   }
 
-                  if (isGuest) {
-                    router.push("/login");
-                  } else {
-                    signOut({
-                      redirectTo: "/",
-                    });
-                  }
+                  signOut({
+                    redirectTo: "/login",
+                  });
                 }}
                 type="button"
               >
-                {isGuest ? "Login to your account" : "Sign out"}
+                <LogOutIcon className="size-4 mr-2" />
+                Abmelden
               </button>
             </DropdownMenuItem>
           </DropdownMenuContent>

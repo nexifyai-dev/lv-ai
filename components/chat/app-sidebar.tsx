@@ -1,10 +1,14 @@
 "use client";
 
 import {
+  BookOpenIcon,
+  FileTextIcon,
   MessageSquareIcon,
   PanelLeftIcon,
   PenSquareIcon,
+  SettingsIcon,
   TrashIcon,
+  UploadIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -24,11 +28,13 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
+  SidebarSeparator,
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
@@ -102,7 +108,9 @@ export function AppSidebar({ user }: { user: User | undefined }) {
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarHeader>
+
         <SidebarContent>
+          {/* Neues Gespräch */}
           <SidebarGroup className="pt-1">
             <SidebarGroupContent>
               <SidebarMenu>
@@ -119,7 +127,83 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                     <span className="font-medium">Neues Gespräch</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-                {user && (
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+
+          {/* Chat-Verlauf */}
+          <SidebarHistory user={user} />
+
+          <SidebarSeparator />
+
+          {/* Wissens-Bereich */}
+          <SidebarGroup>
+            <SidebarGroupLabel className="text-[11px] uppercase tracking-wider text-sidebar-foreground/50">
+              Wissen
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    className="h-8 rounded-lg text-[13px] text-sidebar-foreground/70 transition-colors duration-150 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+                    onClick={() => {
+                      setOpenMobile(false);
+                      router.push("/knowledge");
+                    }}
+                    tooltip="Dokumente & Wissensbasis"
+                  >
+                    <BookOpenIcon className="size-4" />
+                    <span>Dokumente</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    className="h-8 rounded-lg text-[13px] text-sidebar-foreground/70 transition-colors duration-150 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+                    onClick={() => {
+                      setOpenMobile(false);
+                      // File Upload Dialog öffnen
+                      const input = document.createElement("input");
+                      input.type = "file";
+                      input.multiple = true;
+                      input.accept = ".pdf,.doc,.docx,.xls,.xlsx,.gaeb,.xml,.txt,.csv";
+                      input.onchange = async (e) => {
+                        const files = (e.target as HTMLInputElement).files;
+                        if (!files?.length) return;
+                        for (const file of files) {
+                          const formData = new FormData();
+                          formData.append("file", file);
+                          try {
+                            const res = await fetch("/api/files/upload", {
+                              method: "POST",
+                              body: formData,
+                            });
+                            if (res.ok) {
+                              toast.success(`${file.name} hochgeladen`);
+                            } else {
+                              toast.error(`Fehler bei ${file.name}`);
+                            }
+                          } catch {
+                            toast.error(`Upload fehlgeschlagen: ${file.name}`);
+                          }
+                        }
+                      };
+                      input.click();
+                    }}
+                    tooltip="Dateien hochladen"
+                  >
+                    <UploadIcon className="size-4" />
+                    <span>Dateien hochladen</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+
+          {/* Alle löschen */}
+          {user && (
+            <SidebarGroup>
+              <SidebarGroupContent>
+                <SidebarMenu>
                   <SidebarMenuItem>
                     <SidebarMenuButton
                       className="rounded-lg text-sidebar-foreground/40 transition-colors duration-150 hover:bg-destructive/10 hover:text-destructive"
@@ -130,12 +214,12 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                       <span className="text-[13px]">Alle löschen</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                )}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-          <SidebarHistory user={user} />
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          )}
         </SidebarContent>
+
         <SidebarFooter className="border-t border-sidebar-border pt-2 pb-3">
           {user && <SidebarUserNav user={user} />}
         </SidebarFooter>

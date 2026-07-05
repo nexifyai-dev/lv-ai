@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import Script from "next/script";
 import { Suspense } from "react";
 import { Toaster } from "sonner";
@@ -9,7 +10,18 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { ActiveChatProvider } from "@/hooks/use-active-chat";
 import { auth } from "../(auth)/auth";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default async function Layout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const session = await auth();
+
+  // Nicht eingeloggte User werden zum Login weitergeleitet
+  if (!session?.user) {
+    redirect("/login");
+  }
+
   return (
     <>
       <Script
@@ -18,20 +30,26 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       />
       <DataStreamProvider>
         <Suspense fallback={<div className="flex h-dvh bg-sidebar" />}>
-          <SidebarShell>{children}</SidebarShell>
+          <SidebarShell user={session.user}>{children}</SidebarShell>
         </Suspense>
       </DataStreamProvider>
     </>
   );
 }
 
-async function SidebarShell({ children }: { children: React.ReactNode }) {
-  const [session, cookieStore] = await Promise.all([auth(), cookies()]);
+async function SidebarShell({
+  children,
+  user,
+}: {
+  children: React.ReactNode;
+  user: { id: string; email?: string | null; type: string };
+}) {
+  const cookieStore = await cookies();
   const isCollapsed = cookieStore.get("sidebar_state")?.value !== "true";
 
   return (
     <SidebarProvider defaultOpen={!isCollapsed}>
-      <AppSidebar user={session?.user} />
+      <AppSidebar user={user} />
       <SidebarInset>
         <Toaster
           position="top-center"
