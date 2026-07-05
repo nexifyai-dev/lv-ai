@@ -60,6 +60,7 @@ import {
   getOfferById,
   getOfferPositions,
   getOffersByProject,
+  getProjectById,
   replaceOfferPositions,
   updateOfferStatus,
 } from "./lv-queries";
@@ -151,5 +152,17 @@ describe("Offer-Queries", () => {
     await replaceOfferPositions("offer-1", []);
     expect(mocks.deleteSpy).toHaveBeenCalled();
     expect(mocks.insertSpy).not.toHaveBeenCalled();
+  });
+
+  it("getProjectById gibt null bei leerem Resultat", async () => {
+    mocks.selectSpy.mockReturnValueOnce({
+      from: vi.fn(() => ({
+        where: vi.fn(() => ({
+          limit: vi.fn(async () => []),
+        })),
+      })),
+    } as any);
+    const result = await getProjectById("uuid-nicht-vorhanden");
+    expect(result).toBeNull();
   });
 });

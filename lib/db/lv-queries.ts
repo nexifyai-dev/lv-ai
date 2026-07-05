@@ -14,6 +14,7 @@ import {
   type OfferPosition,
   offer,
   offerPosition,
+  type Project,
   project,
 } from "./schema";
 
@@ -21,6 +22,24 @@ import {
 // exportiert). Für LV-spezifische Queries eigener Einstiegspunkt.
 const client = postgres(process.env.POSTGRES_URL ?? "");
 const db = drizzle(client);
+
+// ─── LV-Dokumente ─────────────────────────────────────────────────────────────
+
+export async function getProjectById(id: string): Promise<Project | null> {
+  try {
+    const rows = await db
+      .select()
+      .from(project)
+      .where(eq(project.id, id))
+      .limit(1);
+    return rows[0] ?? null;
+  } catch (_error) {
+    throw new ChatbotError(
+      "bad_request:database",
+      "Projekt konnte nicht geladen werden."
+    );
+  }
+}
 
 // ─── LV-Dokumente ─────────────────────────────────────────────────────────────
 

@@ -4,6 +4,7 @@ import {
   DownloadIcon,
   FileSpreadsheetIcon,
   FileTextIcon,
+  PrinterIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -147,13 +148,22 @@ async function DocumentSection({
             </div>
           </div>
           {positions.length > 0 && (
-            <Link
-              className="inline-flex items-center gap-1.5 rounded-md border border-border/60 px-3 py-1.5 text-sm transition-colors hover:bg-accent"
-              href={`/lv/${projectId}/export?documentId=${document.id}&format=X83`}
-            >
-              <DownloadIcon className="size-3.5" />
-              GAEB X83
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link
+                className="inline-flex items-center gap-1.5 rounded-md border border-border/60 px-3 py-1.5 text-sm transition-colors hover:bg-accent"
+                href={`/lv/${projectId}/export?documentId=${document.id}&format=X83`}
+              >
+                <DownloadIcon className="size-3.5" />
+                GAEB X83
+              </Link>
+              <Link
+                className="inline-flex items-center gap-1.5 rounded-md border border-border/60 px-3 py-1.5 text-sm transition-colors hover:bg-accent"
+                href={`/lv/${projectId}/export/pdf?documentId=${document.id}`}
+              >
+                <PrinterIcon className="size-3.5" />
+                PDF
+              </Link>
+            </div>
           )}
           <PositionEditor lvDocumentId={document.id} />
         </div>
