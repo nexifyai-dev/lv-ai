@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import Script from "next/script";
 import { Suspense } from "react";
 import { Toaster } from "sonner";
@@ -29,11 +30,11 @@ async function AuthShell({ children }: { children: React.ReactNode }) {
   const session = await auth();
 
   if (!session?.user) {
-    const { redirect } = await import("next/navigation");
     redirect("/login");
   }
 
-  const user = session.user;
+  // TypeScript: nach redirect() ist session.user garantiert definiert
+  const user = session!.user!;
   const cookieStore = await cookies();
   const isCollapsed = cookieStore.get("sidebar_state")?.value !== "true";
 
