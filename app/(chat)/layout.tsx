@@ -33,12 +33,13 @@ async function AuthShell({ children }: { children: React.ReactNode }) {
     redirect("/login");
   }
 
+  const user = session.user;
   const cookieStore = await cookies();
   const isCollapsed = cookieStore.get("sidebar_state")?.value !== "true";
 
   return (
     <SidebarProvider defaultOpen={!isCollapsed}>
-      <AppSidebar user={session.user} />
+      <AppSidebar user={user} />
       <SidebarInset>
         <Toaster
           position="top-center"
