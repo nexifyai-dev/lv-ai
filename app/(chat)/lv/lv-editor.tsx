@@ -1,6 +1,6 @@
 "use client";
 
-import { PlusIcon, PencilIcon, TrashIcon, Loader2Icon } from "lucide-react";
+import { Loader2Icon, PencilIcon, PlusIcon, TrashIcon } from "lucide-react";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
@@ -31,12 +31,10 @@ interface Position {
 // ─── Position-Editor (Dialog-basiert) ────────────────────────────────────────
 export function PositionEditor({
   lvDocumentId,
-  projectId,
   position,
   onDone,
 }: {
   lvDocumentId: string;
-  projectId: string;
   position?: Position | null;
   onDone?: () => void;
 }) {
@@ -72,7 +70,9 @@ export function PositionEditor({
         setOpen(false);
         onDone?.();
       } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Fehler beim Speichern.");
+        toast.error(
+          err instanceof Error ? err.message : "Fehler beim Speichern."
+        );
       }
     });
   }
@@ -80,9 +80,9 @@ export function PositionEditor({
   return (
     <>
       <button
-        type="button"
-        onClick={() => setOpen(true)}
         className="inline-flex items-center gap-1.5 rounded-md border border-border/60 px-3 py-1.5 text-sm transition-colors hover:bg-accent"
+        onClick={() => setOpen(true)}
+        type="button"
       >
         {isEdit ? (
           <>
@@ -103,68 +103,68 @@ export function PositionEditor({
             <h2 className="mb-4 text-lg font-semibold">
               {isEdit ? "Position bearbeiten" : "Neue Position"}
             </h2>
-            <form onSubmit={handleSubmit} className="space-y-3">
+            <form className="space-y-3" onSubmit={handleSubmit}>
               <div className="grid grid-cols-2 gap-3">
                 <Field
                   label="OZ"
-                  value={form.oz}
                   onChange={(v) => update("oz", v)}
                   placeholder="01.0020"
                   required
+                  value={form.oz}
                 />
                 <Field
                   label="Einheit"
-                  value={form.einheit}
                   onChange={(v) => update("einheit", v)}
                   placeholder="m³, m², Stk."
+                  value={form.einheit}
                 />
               </div>
               <Field
                 label="Kurztext"
-                value={form.kurztext}
                 onChange={(v) => update("kurztext", v)}
                 placeholder="Boden aushuben"
                 required
+                value={form.kurztext}
               />
               <Field
                 label="Langtext"
-                value={form.langtext ?? ""}
                 onChange={(v) => update("langtext", v)}
                 placeholder="Boden für Streifenfundamente aushuben, inkl. Abtransport"
                 textarea
+                value={form.langtext ?? ""}
               />
               <div className="grid grid-cols-3 gap-3">
                 <Field
                   label="Menge"
-                  value={form.menge}
                   onChange={(v) => update("menge", v)}
                   placeholder="100.5"
+                  value={form.menge}
                 />
                 <Field
                   label="EP (€)"
-                  value={form.einheitspreis}
                   onChange={(v) => update("einheitspreis", v)}
                   placeholder="25.00"
+                  value={form.einheitspreis}
                 />
                 <Field
                   label="GP (€)"
-                  value={form.gesamtpreis}
                   onChange={(v) => update("gesamtpreis", v)}
                   placeholder="2512.50"
+                  value={form.gesamtpreis}
                 />
               </div>
               <div className="flex justify-end gap-2 pt-2">
                 <button
-                  type="button"
-                  onClick={() => setOpen(false)}
                   className="rounded-md px-3 py-1.5 text-sm hover:bg-accent"
+                  onClick={() => setOpen(false)}
+                  type="button"
                 >
                   Abbrechen
                 </button>
                 <button
-                  type="submit"
-                  disabled={pending}
                   className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground disabled:opacity-50"
+                  disabled={pending}
+                  type="submit"
                 >
                   {pending && <Loader2Icon className="size-3.5 animate-spin" />}
                   Speichern
@@ -189,27 +189,36 @@ export function DeletePositionButton({
   const [pending, startTransition] = useTransition();
 
   function handleDelete() {
-    if (!confirm("Position wirklich löschen?")) return;
+    // biome-ignore lint/suspicious/noAlert: browser-confirm ist für MVP ok
+    if (!confirm("Position wirklich löschen?")) {
+      return;
+    }
     startTransition(async () => {
       try {
         await deleteLvPositionAction(positionId);
         toast.success("Position gelöscht.");
         onDone?.();
       } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Löschen fehlgeschlagen.");
+        toast.error(
+          err instanceof Error ? err.message : "Löschen fehlgeschlagen."
+        );
       }
     });
   }
 
   return (
     <button
-      type="button"
-      onClick={handleDelete}
-      disabled={pending}
-      className="inline-flex items-center gap-1 rounded-md p-1 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive disabled:opacity-50"
       aria-label="Position löschen"
+      className="inline-flex items-center gap-1 rounded-md p-1 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive disabled:opacity-50"
+      disabled={pending}
+      onClick={handleDelete}
+      type="button"
     >
-      {pending ? <Loader2Icon className="size-3.5 animate-spin" /> : <TrashIcon className="size-3.5" />}
+      {pending ? (
+        <Loader2Icon className="size-3.5 animate-spin" />
+      ) : (
+        <TrashIcon className="size-3.5" />
+      )}
     </button>
   );
 }
@@ -245,7 +254,9 @@ export function CreateLvDocumentButton({
         setForm({ titel: "", gaebFormat: "", version: "" });
         onDone?.();
       } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Erstellung fehlgeschlagen.");
+        toast.error(
+          err instanceof Error ? err.message : "Erstellung fehlgeschlagen."
+        );
       }
     });
   }
@@ -253,9 +264,9 @@ export function CreateLvDocumentButton({
   return (
     <>
       <button
-        type="button"
-        onClick={() => setOpen(true)}
         className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground"
+        onClick={() => setOpen(true)}
+        type="button"
       >
         <PlusIcon className="size-4" />
         Neues LV
@@ -265,56 +276,65 @@ export function CreateLvDocumentButton({
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="w-full max-w-md rounded-lg border border-border bg-background p-6 shadow-lg">
             <h2 className="mb-4 text-lg font-semibold">Neues LV-Dokument</h2>
-            <form onSubmit={handleSubmit} className="space-y-3">
+            <form className="space-y-3" onSubmit={handleSubmit}>
               <Field
                 label="Titel"
-                value={form.titel}
                 onChange={(v) => setForm((p) => ({ ...p, titel: v }))}
                 placeholder="LV Rohbauarbeiten KiTa Liebigstraße"
                 required
+                value={form.titel}
               />
               <div className="grid grid-cols-2 gap-3">
                 <label className="space-y-1 text-sm">
                   <span className="text-muted-foreground">GAEB-Format</span>
                   <select
-                    value={form.gaebFormat}
+                    className="w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm"
                     onChange={(e) =>
                       setForm((p) => ({
                         ...p,
                         gaebFormat: e.target.value as GaebFormat | "",
                       }))
                     }
-                    className="w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm"
+                    value={form.gaebFormat}
                   >
                     <option value="">—</option>
-                    {(["X81", "X82", "X83", "X84", "X85", "X86", "X87", "X89"] as const).map(
-                      (f) => (
-                        <option key={f} value={f}>
-                          {f}
-                        </option>
-                      )
-                    )}
+                    {(
+                      [
+                        "X81",
+                        "X82",
+                        "X83",
+                        "X84",
+                        "X85",
+                        "X86",
+                        "X87",
+                        "X89",
+                      ] as const
+                    ).map((f) => (
+                      <option key={f} value={f}>
+                        {f}
+                      </option>
+                    ))}
                   </select>
                 </label>
                 <Field
                   label="Version"
-                  value={form.version}
                   onChange={(v) => setForm((p) => ({ ...p, version: v }))}
                   placeholder="1.0"
+                  value={form.version}
                 />
               </div>
               <div className="flex justify-end gap-2 pt-2">
                 <button
-                  type="button"
-                  onClick={() => setOpen(false)}
                   className="rounded-md px-3 py-1.5 text-sm hover:bg-accent"
+                  onClick={() => setOpen(false)}
+                  type="button"
                 >
                   Abbrechen
                 </button>
                 <button
-                  type="submit"
-                  disabled={pending}
                   className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground disabled:opacity-50"
+                  disabled={pending}
+                  type="submit"
                 >
                   {pending && <Loader2Icon className="size-3.5 animate-spin" />}
                   Erstellen
@@ -345,6 +365,7 @@ function Field({
   textarea?: boolean;
 }) {
   return (
+    // biome-ignore lint/a11y/noLabelWithoutControl: label wraps the input/textarea as child — valid implicit association
     <label className="space-y-1 text-sm">
       <span className="text-muted-foreground">
         {label}
@@ -352,20 +373,20 @@ function Field({
       </span>
       {textarea ? (
         <textarea
-          value={value}
+          className="w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm"
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           rows={3}
-          className="w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm"
+          value={value}
         />
       ) : (
         <input
-          type="text"
-          value={value}
+          className="w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm"
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           required={required}
-          className="w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm"
+          type="text"
+          value={value}
         />
       )}
     </label>

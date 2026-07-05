@@ -17,6 +17,11 @@ import {
   getLvPositionsByDocument,
   projectExists,
 } from "@/lib/db/lv-queries";
+import {
+  CreateLvDocumentButton,
+  DeletePositionButton,
+  PositionEditor,
+} from "../lv-editor";
 
 interface PageProps {
   params: Promise<{ projectId: string }>;
@@ -53,6 +58,9 @@ export default async function LvProjectPage({ params }: PageProps) {
           <h1 className="text-lg font-semibold">
             Leistungsverzeichnis · Projekt {projectId.slice(0, 8)}
           </h1>
+        </div>
+        <div className="ml-auto">
+          <CreateLvDocumentButton projectId={projectId} />
         </div>
       </header>
 
@@ -108,11 +116,14 @@ async function DocumentSection({
             </span>
           </div>
         </div>
-        <div className="text-right">
-          <div className="text-xs text-muted-foreground">Gesamtsumme</div>
-          <div className="text-lg font-semibold tabular-nums">
-            {formatEuro(sum)}
+        <div className="flex items-center gap-4">
+          <div className="text-right">
+            <div className="text-xs text-muted-foreground">Gesamtsumme</div>
+            <div className="text-lg font-semibold tabular-nums">
+              {formatEuro(sum)}
+            </div>
           </div>
+          <PositionEditor lvDocumentId={document.id} />
         </div>
       </div>
 
@@ -131,6 +142,7 @@ async function DocumentSection({
                 <TableHead className="w-20">Einheit</TableHead>
                 <TableHead className="w-32 text-right">EP (€)</TableHead>
                 <TableHead className="w-32 text-right">GP (€)</TableHead>
+                <TableHead className="w-20" />
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -156,6 +168,13 @@ async function DocumentSection({
                   </TableCell>
                   <TableCell className="text-right tabular-nums font-medium">
                     {pos.gesamtpreis ?? "—"}
+                  </TableCell>
+                  <TableCell className="flex items-center gap-1">
+                    <PositionEditor
+                      lvDocumentId={document.id}
+                      position={pos}
+                    />
+                    <DeletePositionButton positionId={pos.id} />
                   </TableCell>
                 </TableRow>
               ))}
