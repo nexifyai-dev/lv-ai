@@ -1,14 +1,24 @@
-// ─── LV.AI Model Configuration — MiMo AI (Xiaomi Token Plan) ─────────────────
-// API: https://token-plan-ams.xiaomimimo.com/v1 (OpenAI-kompatibel)
-// Docs: https://mimo.mi.com/docs/en-US/tokenplan/integration/openai-compatible
+// ─── LV.AI Model Configuration — 9Router (NeXify Multi-Provider-Gateway) ──────
+// API: https://ai-router.nexifyai.cloud/v1 (OpenAI-kompatibel)
+// Läuft lokal auf dem VPS via systemd `9router-server.service` (Port 20128),
+// public über Cloudflare Tunnel (nexify-main-v2).
+//
+// Modelle (Stand 2026-07-05, siehe /v1/models):
+//   - nexifyai-combo-llm — Round-Robin DeepSeek-V4-Pro/Flash (Standard)
+//   - ds/deepseek-v4-pro — höchste Qualität, Reasoning
+//   - ds/deepseek-v4-flash — schnell, kosteneffizient
+//   - ds/deepseek-reasoner — Reasoning-Modell für komplexe AVA-Fälle
+//
+// Token-Einsparung: combo-llm nutzt Flash für Routine-Chats, Pro für
+// fachliche Antworten. Automatisches Caching via DeepSeek-Backend.
 
-export const DEFAULT_CHAT_MODEL = "mimo-v2.5-pro";
+export const DEFAULT_CHAT_MODEL = "nexifyai-combo-llm";
 
 export const titleModel = {
-  id: "mimo-v2.5-pro",
-  name: "MiMo V2.5 Pro",
-  provider: "xiaomi",
-  description: "Schnelles Modell für Titelgenerierung",
+  id: "ds/deepseek-v4-flash",
+  name: "DeepSeek V4 Flash",
+  provider: "deepseek",
+  description: "Schnelles Modell für Titelgenerierung (Token-effizient)",
 };
 
 export type ModelCapabilities = {
@@ -27,30 +37,44 @@ export type ChatModel = {
 
 export const chatModels: ChatModel[] = [
   {
-    id: "mimo-v2.5-pro",
-    name: "MiMo V2.5 Pro",
-    provider: "xiaomi",
+    id: "nexifyai-combo-llm",
+    name: "NeXify Combo LLM",
+    provider: "nexify",
     description:
-      "Xiaomi MiMo V2.5 Pro — 1T Params (42B aktiv), 1M Kontext, native Tool Calling, Reasoning",
+      "Round-Robin DeepSeek V4 Pro/Flash — automatische Lastverteilung, optimale Token-Effizienz",
   },
   {
-    id: "mimo-v2.5",
-    name: "MiMo V2.5",
-    provider: "xiaomi",
+    id: "ds/deepseek-v4-pro",
+    name: "DeepSeek V4 Pro",
+    provider: "deepseek",
     description:
-      "Xiaomi MiMo V2.5 — Multimodal (Bild/Video/Audio/Text), 1M Kontext",
+      "Höchste Qualität für fachliche AVA-Aufgaben — GAEB-Positionen, VOB-Analyse, Kostenschätzung",
+    reasoningEffort: "medium",
+  },
+  {
+    id: "ds/deepseek-v4-flash",
+    name: "DeepSeek V4 Flash",
+    provider: "deepseek",
+    description:
+      "Schnelles Modell für Routine-Chats und Titelgenerierung — minimaler Token-Verbrauch",
+  },
+  {
+    id: "ds/deepseek-reasoner",
+    name: "DeepSeek Reasoner",
+    provider: "deepseek",
+    description:
+      "Reasoning-Modell für komplexe AVA-Fälle — Nachtragsmanagement, VOB/A-Konformitätsprüfung",
+    reasoningEffort: "high",
   },
 ];
 
-export async function getCapabilities(): Promise<
-  Record<string, ModelCapabilities>
-> {
+export function getCapabilities(): Record<string, ModelCapabilities> {
   const capabilities: Record<string, ModelCapabilities> = {};
   for (const model of chatModels) {
     capabilities[model.id] = {
       tools: true,
-      vision: true, // Alle Modelle unterstützen Datei-Upload (Bilder + Dokumente)
-      reasoning: true,
+      vision: true,
+      reasoning: model.id === "ds/deepseek-reasoner" || model.reasoningEffort !== undefined,
     };
   }
   return capabilities;
@@ -62,17 +86,17 @@ export type GatewayModelWithCapabilities = ChatModel & {
   capabilities: ModelCapabilities;
 };
 
+// biome-ignore lint/suspicious/useAwait: async für API-Kompatibilität (Aufrufer erwarten Promise), auch wenn intern kein await nötig ist
 export async function getAllGatewayModels(): Promise<
   GatewayModelWithCapabilities[]
 > {
-  // MiMo AI — keine dynamische Modell-Liste, nur konfigurierte Modelle
+  // 9Router bietet /v1/models — statische Liste hier als kuratierte Auswahl.
+  // Dynamische Liste via fetch wäre möglich, aber dann wären ungetestete
+  // Modelle wählbar. Kuratierung ist sicherer.
+  const caps = getCapabilities();
   return chatModels.map((m) => ({
     ...m,
-    capabilities: {
-      tools: true,
-      vision: true,
-      reasoning: true,
-    },
+    capabilities: caps[m.id] ?? { tools: true, vision: true, reasoning: true },
   }));
 }
 

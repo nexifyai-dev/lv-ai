@@ -20,7 +20,7 @@ LV.AI ist ein chat-basierter KI-Experte für das gesamte AVA-Geschäft im Bauwes
 |-----------|-------------|
 | Framework | Next.js 16 (App Router) |
 | UI | shadcn/ui + Tailwind CSS 4 |
-| AI | Vercel AI SDK 6 + MiMo AI (Xiaomi Token Plan, OpenAI-kompatibel) |
+| AI | Vercel AI SDK 6 + 9Router (NeXify, DeepSeek V4 Backend) |
 | Datenbank | Neon Postgres + Drizzle ORM 0.34 |
 | Memory | mem0 (Projekt + Global Scope) |
 | Auth | Auth.js (MVP: Passwort-Gate) |
@@ -34,7 +34,7 @@ LV.AI ist ein chat-basierter KI-Experte für das gesamte AVA-Geschäft im Bauwes
 │   └── (chat)/             # Chat-Hauptansicht
 ├── components/             # UI-Komponenten (shadcn/ui)
 ├── lib/
-│   ├── ai/                 # Models, Prompts, Providers (MiMo AI)
+│   ├── ai/                 # Models, Prompts, Providers (9Router)
 │   ├── compliance/         # D/A/CH Compliance-Modul (VOB/ÖNORM/SIA)
 │   ├── db/                 # Drizzle Schema + Queries
 │   ├── memory/             # mem0 Integration
@@ -53,12 +53,18 @@ LV.AI ist ein chat-basierter KI-Experte für das gesamte AVA-Geschäft im Bauwes
 
 ## 🔗 AI-Provider Integration
 
-- Provider: MiMo AI (Xiaomi Token Plan) — OpenAI-kompatible API
-- Endpoint: `https://token-plan-ams.xiaomimimo.com/v1` (via `OPENAI_BASE_URL`)
-- Default Model: `mimo-v2.5-pro` (1T Params, 1M Kontext, native Tool Calling)
-- Title Model: `mimo-v2.5-pro`
+- Provider: 9Router (NeXify Multi-Provider-Gateway) — OpenAI-kompatible API
+- Architektur: Docker-Compose-Stack `9router-6kxn` auf dem VPS
+  - `niner-router` (Port 20128, Next.js, OpenAI-kompatibel)
+  - `headroom` (Port 8788, Context-Optimization + Token-Caching)
+- Endpunkte (gleicher API-Key):
+  - **Lokal**: `http://127.0.0.1:20128/v1` (für lv-ai auf gleichem VPS)
+  - **Public HTTPS**: `https://ai-router.nexifyai.cloud/v1` (via Cloudflare Tunnel `nexify-main-v2`, für Vercel/Remote)
+- Default Model: `nexifyai-combo-llm` (Round-Robin DeepSeek V4 Pro/Flash)
+- Title Model: `ds/deepseek-v4-flash` (Token-effizient)
+- Weitere: `ds/deepseek-v4-pro` (höchste Qualität), `ds/deepseek-reasoner` (komplexe AVA-Fälle)
 - Konfiguration via `OPENAI_API_KEY` + `OPENAI_BASE_URL` in `.env`
-- Geplant (Konzept v1.0): Migration auf 9Router + OpenRouter für Multi-Modell-Strategie
+- Token-Einsparung: Headroom-Caching + Round-Robin + Prompt-Modularisierung (T21/T22)
 
 ## 📋 Compliance-Module
 

@@ -32,7 +32,7 @@ LV.AI ist ein chat-basierter KI-Experte für das gesamte Ausschreibungs-, Angebo
 |-----------|-------------|
 | Framework | [Next.js 16](https://nextjs.org) (App Router) |
 | UI | [shadcn/ui](https://ui.shadcn.com) + [Tailwind CSS 4](https://tailwindcss.com) |
-| AI | [Vercel AI SDK 6](https://ai-sdk.dev) + MiMo AI (Xiaomi Token Plan, OpenAI-kompatibel) |
+| AI | [Vercel AI SDK 6](https://ai-sdk.dev) + 9Router (NeXify, DeepSeek V4 Backend) |
 | Datenbank | [Neon Postgres](https://neon.tech) + [Drizzle ORM](https://orm.drizzle.team) |
 | Memory | [mem0](https://mem0.ai) (Projekt + Global Scope) |
 | Auth | [Auth.js](https://authjs.dev) (MVP: Passwort-Gate) |
@@ -75,8 +75,8 @@ Die Anwendung läuft auf [localhost:3000](http://localhost:3000).
 | Variable | Beschreibung | Pflicht |
 |----------|-------------|---------|
 | `AUTH_SECRET` | Auth.js Geheimnis | ✅ |
-| `OPENAI_API_KEY` | MiMo AI API Key (Xiaomi Token Plan) | ✅ |
-| `OPENAI_BASE_URL` | MiMo AI Endpoint (`https://token-plan-ams.xiaomimimo.com/v1`) | ✅ |
+| `OPENAI_API_KEY` | 9Router API Key | ✅ |
+| `OPENAI_BASE_URL` | 9Router Endpoint (`http://127.0.0.1:20128/v1` lokal, `https://ai-router.nexifyai.cloud/v1` public) | ✅ |
 | `POSTGRES_URL` | PostgreSQL Connection String | ✅ |
 | `MEM0_API_KEY` | mem0 API Key | Optional |
 | `LV_PASSWORD` | Passwort-Gate (Standard: LV2026!!) | Optional |
@@ -99,7 +99,7 @@ LV.AI unterstützt automatisch die korrekte Rechtsgrundlage je Land:
 │   └── (chat)/             # Chat-Hauptansicht
 ├── components/             # UI-Komponenten (shadcn/ui)
 ├── lib/
-│   ├── ai/                 # Models, Prompts, Providers (MiMo AI)
+│   ├── ai/                 # Models, Prompts, Providers (9Router)
 │   ├── compliance/         # D/A/CH Compliance-Modul
 │   ├── db/                 # Drizzle Schema + Queries
 │   ├── memory/             # mem0 Integration
