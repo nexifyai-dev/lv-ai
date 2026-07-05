@@ -48,7 +48,7 @@ export const {
         password: { label: "Passwort", type: "password" },
       },
       async authorize(credentials) {
-        const password = String(credentials.password ?? "");
+        const password = String(credentials?.password ?? "");
 
         // Prüfe gegen LV-Gate-Passwort
         if (password === LV_GATE_PASSWORD) {
@@ -63,18 +63,6 @@ export const {
           // Fallback: Guest-User wenn kein Admin existiert
           const [guestUser] = await createGuestUser();
           return { ...guestUser, type: "regular" };
-        }
-
-        // Fallback: Standard-Auth mit Email/Passwort
-        const email = String(credentials.email ?? "");
-        if (email) {
-          const users = await getUser(email);
-          if (users.length > 0 && users[0].password) {
-            const passwordsMatch = await compare(password, users[0].password);
-            if (passwordsMatch) {
-              return { ...users[0], type: "regular" };
-            }
-          }
         }
 
         return null;
