@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   bieterStatusEnum,
   chat,
+  document,
   drawing,
   erinnerungTypEnum,
   fileGlobal,
@@ -13,16 +14,26 @@ import {
   lvPosition,
   message,
   offer,
-  projektStatusEnum,
   project,
+  projektStatusEnum,
   rechnungStatusEnum,
   reminder,
   stream,
   suggestion,
   user,
   vote,
-  document,
 } from "./schema";
+
+// Drizzle 0.34+ speichert den Tabellennamen im Symbol `drizzle:Name`.
+// Der frühere Zugriff über `table._.name` wurde in 0.34 entfernt.
+const TABLE_NAME_SYMBOL = Symbol.for("drizzle:Name");
+function tableName(table: unknown): string {
+  if (!table || typeof table !== "object") {
+    return "";
+  }
+  const sym = (table as Record<symbol, unknown>)[TABLE_NAME_SYMBOL];
+  return typeof sym === "string" ? sym : "";
+}
 
 describe("LV.AI Database Schema", () => {
   describe("Enums", () => {
@@ -87,84 +98,84 @@ describe("LV.AI Database Schema", () => {
   describe("Core Tables", () => {
     it("should export user table", () => {
       expect(user).toBeDefined();
-      expect(user._.name).toBe("User");
+      expect(tableName(user)).toBe("User");
     });
 
     it("should export project table with LV-specific fields", () => {
       expect(project).toBeDefined();
-      expect(project._.name).toBe("Project");
+      expect(tableName(project)).toBe("Project");
     });
 
     it("should export chat table with projectId reference", () => {
       expect(chat).toBeDefined();
-      expect(chat._.name).toBe("Chat");
+      expect(tableName(chat)).toBe("Chat");
     });
 
     it("should export message table", () => {
       expect(message).toBeDefined();
-      expect(message._.name).toBe("Message_v2");
+      expect(tableName(message)).toBe("Message_v2");
     });
 
     it("should export vote table", () => {
       expect(vote).toBeDefined();
-      expect(vote._.name).toBe("Vote_v2");
+      expect(tableName(vote)).toBe("Vote_v2");
     });
 
     it("should export document table", () => {
       expect(document).toBeDefined();
-      expect(document._.name).toBe("Document");
+      expect(tableName(document)).toBe("Document");
     });
 
     it("should export suggestion table", () => {
       expect(suggestion).toBeDefined();
-      expect(suggestion._.name).toBe("Suggestion");
+      expect(tableName(suggestion)).toBe("Suggestion");
     });
 
     it("should export stream table", () => {
       expect(stream).toBeDefined();
-      expect(stream._.name).toBe("Stream");
+      expect(tableName(stream)).toBe("Stream");
     });
   });
 
   describe("LV-Specific Tables", () => {
     it("should export lvDocument table with GAEB format", () => {
       expect(lvDocument).toBeDefined();
-      expect(lvDocument._.name).toBe("LvDocument");
+      expect(tableName(lvDocument)).toBe("LvDocument");
     });
 
     it("should export lvPosition table with OZ, menge, einheit", () => {
       expect(lvPosition).toBeDefined();
-      expect(lvPosition._.name).toBe("LvPosition");
+      expect(tableName(lvPosition)).toBe("LvPosition");
     });
 
     it("should export offer table for Bieter", () => {
       expect(offer).toBeDefined();
-      expect(offer._.name).toBe("Offer");
+      expect(tableName(offer)).toBe("Offer");
     });
 
     it("should export invoice table for Rechnungen", () => {
       expect(invoice).toBeDefined();
-      expect(invoice._.name).toBe("Invoice");
+      expect(tableName(invoice)).toBe("Invoice");
     });
 
     it("should export reminder table for Erinnerungen", () => {
       expect(reminder).toBeDefined();
-      expect(reminder._.name).toBe("Reminder");
+      expect(tableName(reminder)).toBe("Reminder");
     });
 
     it("should export fileGlobal table for generische Uploads", () => {
       expect(fileGlobal).toBeDefined();
-      expect(fileGlobal._.name).toBe("FileGlobal");
+      expect(tableName(fileGlobal)).toBe("FileGlobal");
     });
 
     it("should export fileProject table for projektspezifische Uploads", () => {
       expect(fileProject).toBeDefined();
-      expect(fileProject._.name).toBe("FileProject");
+      expect(tableName(fileProject)).toBe("FileProject");
     });
 
     it("should export drawing table for Zeichnungen", () => {
       expect(drawing).toBeDefined();
-      expect(drawing._.name).toBe("Drawing");
+      expect(tableName(drawing)).toBe("Drawing");
     });
   });
 });

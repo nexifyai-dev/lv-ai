@@ -35,15 +35,6 @@ export interface GaebParseResult {
 }
 
 export class GaebParser {
-  private parser: DOMParser | null = null;
-
-  constructor() {
-    // DOMParser ist in Browser und Node 21+ verfügbar
-    if (typeof DOMParser !== "undefined") {
-      this.parser = new DOMParser();
-    }
-  }
-
   /**
    * Erkennt das GAEB-Format aus dem XML-Namespace.
    */
@@ -61,12 +52,36 @@ export class GaebParser {
    */
   parse(xml: string): GaebParseResult {
     try {
+      // Eingabevalidierung: GAEB DA XML muss ein <GAEB>-Wurzelelement enthalten.
+      // Verhindert, dass Nicht-XML-Eingaben (z.B. "not xml") als success=true
+      // durchrutschen, weil die Regex-Extraktion nie wirft, sondern nur null
+      // zurückgibt und somit ein "leeres aber gültiges" Resultat entstünde.
+      if (typeof xml !== "string" || xml.trim().length === 0) {
+        return {
+          success: false,
+          positions: [],
+          error: "Eingabe ist leer oder kein String.",
+          rawXml: xml,
+        };
+      }
+      if (!/<GAEB[\s>]/i.test(xml)) {
+        return {
+          success: false,
+          positions: [],
+          error:
+            "Kein GAEB-Wurzelelement gefunden — Eingabe ist kein GAEB DA XML.",
+          rawXml: xml,
+        };
+      }
+
       // Einfache XML-Verarbeitung mit Regex (für Node.js ohne DOMParser)
       const gaebFormat = this.detectFormat(xml);
 
       // Projektname extrahieren
-      const projectName = this.extractTag(xml, "PrjName") || "Unbenanntes Projekt";
-      const projectDescription = this.extractTag(xml, "PrjDescription") || undefined;
+      const projectName =
+        this.extractTag(xml, "PrjName") || "Unbenanntes Projekt";
+      const projectDescription =
+        this.extractTag(xml, "PrjDescription") || undefined;
 
       // Positionen extrahieren
       const positions = this.extractPositionsFromXml(xml);
@@ -82,7 +97,8 @@ export class GaebParser {
       return {
         success: false,
         positions: [],
-        error: error instanceof Error ? error.message : "Unbekannter Parser-Fehler",
+        error:
+          error instanceof Error ? error.message : "Unbekannter Parser-Fehler",
         rawXml: xml,
       };
     }
@@ -140,7 +156,7 @@ export class GaebParser {
   generateXml(
     projectName: string,
     positions: GaebPosition[],
-    format: string = "X83"
+    format = "X83"
   ): string {
     const nsPrefix = format.replace("X", "DA");
     const positionsXml = positions
@@ -148,11 +164,23 @@ export class GaebParser {
         (p) => `        <Item>
           <IDno>${this.escapeXml(p.oz)}</IDno>
           <Description>
-            <ShortDesc>${this.escapeXml(p.kurztext)}</ShortDesc>${p.langtext ? `
-            <LongDesc>${this.escapeXml(p.langtext)}</LongDesc>` : ""}
-          </Description>${p.menge ? `
-          <QU>${this.escapeXml(p.menge)}</QU>` : ""}${p.einheit ? `
-          <QUDesc>${this.escapeXml(p.einheit)}</QUDesc>` : ""}
+            <ShortDesc>${this.escapeXml(p.kurztext)}</ShortDesc>${
+              p.langtext
+                ? `
+            <LongDesc>${this.escapeXml(p.langtext)}</LongDesc>`
+                : ""
+            }
+          </Description>${
+            p.menge
+              ? `
+          <QU>${this.escapeXml(p.menge)}</QU>`
+              : ""
+          }${
+            p.einheit
+              ? `
+          <QUDesc>${this.escapeXml(p.einheit)}</QUDesc>`
+              : ""
+          }
         </Item>`
       )
       .join("\n");

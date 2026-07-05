@@ -75,8 +75,8 @@ describe("LV.AI Prompts", () => {
 
   describe("systemPrompt", () => {
     const mockHints = {
-      latitude: 51.1657,
-      longitude: 10.4515,
+      latitude: "51.1657",
+      longitude: "10.4515",
       city: "Berlin",
       country: "DE",
     };
@@ -128,8 +128,8 @@ describe("LV.AI Prompts", () => {
   describe("getRequestPromptFromHints", () => {
     it("should format hints correctly", () => {
       const result = getRequestPromptFromHints({
-        latitude: 48.2082,
-        longitude: 16.3738,
+        latitude: "48.2082",
+        longitude: "16.3738",
         city: "Wien",
         country: "AT",
       });

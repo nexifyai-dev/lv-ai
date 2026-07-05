@@ -48,12 +48,12 @@ export const COMPLIANCE_DE: ComplianceConfig = {
   sprache: "de-DE",
   fristen: [
     {
-      name: "Mindestanbotsfrist (öffentliche Ausschreibung)",
+      name: "Angebotsfrist (Mindestfrist öffentliche Ausschreibung nach VOB/A § 10)",
       tage: 35,
       beschreibung: "§ 10 Abs. 1 VOB/A — Frist für Angebotsabgabe",
     },
     {
-      name: "Mindestanbotsfrist (beschränkte Ausschreibung)",
+      name: "Angebotsfrist (Mindestfrist beschränkte Ausschreibung nach VOB/A § 10)",
       tage: 25,
       beschreibung: "§ 10 Abs. 2 VOB/A",
     },
@@ -86,18 +86,18 @@ export const COMPLIANCE_DE: ComplianceConfig = {
 export const COMPLIANCE_AT: ComplianceConfig = {
   land: "AT",
   name: "ÖNORM B2110/B2111 (Österreichische Norm)",
-  vergaberecht: "ÖNORM B 2110:2013 — Ausschreibung, Angebot und Vergabe",
-  vertragsrecht: "ÖNORM B 2111:2013 — Werkvertragsnorm",
-  atv: "ÖNORM B 2110 Anhang C — Technische Vertragsbedingungen",
+  vergaberecht: "ÖNORM B2110:2013 — Ausschreibung, Angebot und Vergabe",
+  vertragsrecht: "ÖNORM B2111:2013 — Werkvertragsnorm",
+  atv: "ÖNORM B2110 Anhang C — Technische Vertragsbedingungen",
   kostengliederung: "ÖNORM B 1801-1 — Kostenermittlung",
   eRechnung: ["ebInterface 5.0", "ZUGFeRD 2.1"],
   waehrung: "EUR",
   sprache: "de-AT",
   fristen: [
     {
-      name: "Mindestangebotsfrist",
+      name: "Angebotsfrist (Mindestfrist nach ÖNORM B2110)",
       tage: 30,
-      beschreibung: "ÖNORM B 2110 Punkt 5.3",
+      beschreibung: "ÖNORM B2110 Punkt 5.3",
     },
     {
       name: "Angebotsbindefrist",
