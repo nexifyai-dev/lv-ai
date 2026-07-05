@@ -49,8 +49,8 @@ export async function getCapabilities(): Promise<
   for (const model of chatModels) {
     capabilities[model.id] = {
       tools: true,
-      vision: model.id === "mimo-v2.5", // V2.5 ist multimodal
-      reasoning: true, // Beide unterstützen Reasoning
+      vision: true, // Alle Modelle unterstützen Datei-Upload (Bilder + Dokumente)
+      reasoning: true,
     };
   }
   return capabilities;
@@ -70,7 +70,7 @@ export async function getAllGatewayModels(): Promise<
     ...m,
     capabilities: {
       tools: true,
-      vision: false,
+      vision: true,
       reasoning: true,
     },
   }));
