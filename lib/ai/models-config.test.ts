@@ -9,41 +9,39 @@ import {
 
 describe("LV.AI Models Configuration", () => {
   describe("DEFAULT_CHAT_MODEL", () => {
-    it("should use nexifyai-combo-llm as default", () => {
-      expect(DEFAULT_CHAT_MODEL).toBe("nexifyai-combo-llm");
+    it("should use mimo-v2.5-pro as default", () => {
+      expect(DEFAULT_CHAT_MODEL).toBe("mimo-v2.5-pro");
     });
   });
 
   describe("titleModel", () => {
-    it("should use deepseek model for title generation", () => {
-      expect(titleModel.id).toContain("deepseek");
+    it("should use mimo-v2.5-pro for title generation", () => {
+      expect(titleModel.id).toBe("mimo-v2.5-pro");
     });
   });
 
   describe("chatModels", () => {
-    it("should have at least 2 models configured", () => {
-      expect(chatModels.length).toBeGreaterThanOrEqual(2);
+    it("should have 2 models configured", () => {
+      expect(chatModels.length).toBe(2);
     });
 
-    it("should include nexifyai-combo-llm", () => {
-      const comboModel = chatModels.find(
-        (m) => m.id === "nexifyai-combo-llm"
-      );
-      expect(comboModel).toBeDefined();
+    it("should include mimo-v2.5-pro", () => {
+      const proModel = chatModels.find((m) => m.id === "mimo-v2.5-pro");
+      expect(proModel).toBeDefined();
+      expect(proModel?.name).toBe("MiMo V2.5 Pro");
     });
 
-    it("should include deepseek model", () => {
-      const deepseekModel = chatModels.find((m) =>
-        m.id.includes("deepseek")
-      );
-      expect(deepseekModel).toBeDefined();
+    it("should include mimo-v2.5", () => {
+      const baseModel = chatModels.find((m) => m.id === "mimo-v2.5");
+      expect(baseModel).toBeDefined();
+      expect(baseModel?.name).toBe("MiMo V2.5");
     });
 
     it("each model should have required fields", () => {
       for (const model of chatModels) {
         expect(model.id).toBeDefined();
         expect(model.name).toBeDefined();
-        expect(model.provider).toBeDefined();
+        expect(model.provider).toBe("xiaomi");
         expect(model.description).toBeDefined();
       }
     });
@@ -58,15 +56,9 @@ describe("LV.AI Models Configuration", () => {
   });
 
   describe("modelsByProvider", () => {
-    it("should group models by provider", () => {
-      const providers = Object.keys(modelsByProvider);
-      expect(providers.length).toBeGreaterThan(0);
-    });
-
-    it("should have models in each provider group", () => {
-      for (const provider of Object.values(modelsByProvider)) {
-        expect(provider.length).toBeGreaterThan(0);
-      }
+    it("should group models by xiaomi provider", () => {
+      expect(modelsByProvider.xiaomi).toBeDefined();
+      expect(modelsByProvider.xiaomi.length).toBe(2);
     });
   });
 });
