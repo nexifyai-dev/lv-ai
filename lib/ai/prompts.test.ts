@@ -6,6 +6,7 @@ import {
   regularPrompt,
   sheetPrompt,
   systemPrompt,
+  systemPromptParts,
   titlePrompt,
   updateDocumentPrompt,
 } from "./prompts";
@@ -122,6 +123,69 @@ describe("LV.AI Prompts", () => {
       });
       expect(result).toContain("KiTa Liebigstraße");
       expect(result).toContain("Aktuelles Projekt");
+    });
+  });
+
+  describe("systemPromptParts", () => {
+    const mockHints = {
+      latitude: "51.1657",
+      longitude: "10.4515",
+      city: "Berlin",
+      country: "DE",
+    };
+
+    it("liefert Array mit stabilem und dynamischem Teil", () => {
+      const parts = systemPromptParts({
+        requestHints: mockHints,
+        supportsTools: false,
+      });
+      expect(Array.isArray(parts)).toBe(true);
+      expect(parts.length).toBe(2);
+      expect(parts[0].role).toBe("system");
+      expect(parts[1].role).toBe("system");
+    });
+
+    it("stabiler Teil enthält LV.AI-Identität", () => {
+      const parts = systemPromptParts({
+        requestHints: mockHints,
+        supportsTools: false,
+      });
+      expect(parts[0].content).toContain("LV.AI");
+    });
+
+    it("dynamischer Teil enthält Request-Hints", () => {
+      const parts = systemPromptParts({
+        requestHints: mockHints,
+        supportsTools: false,
+      });
+      expect(parts[1].content).toContain("Berlin");
+      expect(parts[1].content).toContain("DE");
+    });
+
+    it("stabiler Teil enthält artifactsPrompt bei supportsTools=true", () => {
+      const parts = systemPromptParts({
+        requestHints: mockHints,
+        supportsTools: true,
+      });
+      expect(parts[0].content).toContain("createDocument");
+    });
+
+    it("stabiler Teil enthält kein artifactsPrompt bei supportsTools=false", () => {
+      const parts = systemPromptParts({
+        requestHints: mockHints,
+        supportsTools: false,
+      });
+      expect(parts[0].content).not.toContain("createDocument");
+    });
+
+    it("dynamischer Teil enthält Projekt-Kontext wenn gesetzt", () => {
+      const parts = systemPromptParts({
+        requestHints: mockHints,
+        supportsTools: false,
+        projectContext: "Projekt: KiTa Liebigstraße, Land: DE, Gewerk: Rohbau",
+      });
+      expect(parts[1].content).toContain("KiTa Liebigstraße");
+      expect(parts[1].content).toContain("Aktuelles Projekt");
     });
   });
 

@@ -120,6 +120,43 @@ export const systemPrompt = ({
   return `${regularPrompt}\n\n${requestPrompt}${contextSection}\n\n${artifactsPrompt}`;
 };
 
+// ─── Modularisierte Prompt-Teile (T21) ───────────────────────────────────────
+// Liefert den System-Prompt als Array aus stabilen + dynamischen Teilen.
+// Der stabile Teil (Rolle, Gewerke, Format, Sprache + optional Artifacts) ist
+// über Provider hinweg cachtbar (Anthropic cacheControl, DeepSeek Auto-Cache,
+// OpenAI Prefix-Cache). Der dynamische Teil (Request-Hints, Projekt-Kontext)
+// ändert sich pro Anfrage und kann nicht gecacht werden.
+//
+// Verwendung in route.ts:
+//   streamText({ system: systemPromptParts({...}), ... })
+// Die AI SDK streamText-Funktion akzeptiert `system` als string ODER als
+// Array von { role, content, providerOptions? }-Objekten.
+export const systemPromptParts = ({
+  requestHints,
+  supportsTools,
+  projectContext,
+}: {
+  requestHints: RequestHints;
+  supportsTools: boolean;
+  projectContext?: string;
+}): Array<{ role: "system"; content: string }> => {
+  const requestPrompt = getRequestPromptFromHints(requestHints);
+  const contextSection = projectContext
+    ? `\n\n## Aktuelles Projekt\n${projectContext}`
+    : "";
+
+  const stableContent = supportsTools
+    ? `${regularPrompt}\n\n${artifactsPrompt}`
+    : regularPrompt;
+
+  const dynamicContent = `${requestPrompt}${contextSection}`;
+
+  return [
+    { role: "system", content: stableContent },
+    { role: "system", content: dynamicContent },
+  ];
+};
+
 export const codePrompt = `
 You are a code generator that creates self-contained, executable code snippets. When writing code:
 
