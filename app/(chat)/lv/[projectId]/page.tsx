@@ -5,6 +5,7 @@ import {
   FileSpreadsheetIcon,
   FileTextIcon,
   PrinterIcon,
+  RulerIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -80,6 +81,13 @@ export default async function LvProjectPage({ params }: PageProps) {
           >
             <ClipboardListIcon className="size-3.5" />
             Bieter
+          </Link>
+          <Link
+            className="inline-flex items-center gap-1.5 rounded-md border border-border/60 px-3 py-1.5 text-sm transition-colors hover:bg-accent"
+            href={`/lv/${projectId}/plan`}
+          >
+            <RulerIcon className="size-3.5" />
+            Plan
           </Link>
           <CreateLvDocumentButton projectId={projectId} />
         </div>
