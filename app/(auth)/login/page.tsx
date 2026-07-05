@@ -1,41 +1,38 @@
 "use client";
 
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { toast } from "@/components/chat/toast";
 
 export default function Page() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
+    setError("");
 
     const formData = new FormData(e.currentTarget);
     const password = formData.get("password") as string;
 
     try {
-      const result = await signIn("credentials", {
-        password,
-        redirect: false,
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
       });
 
-      if (result?.error) {
-        toast({
-          type: "error",
-          description: "Ungültiges Passwort. Bitte erneut versuchen.",
-        });
-      } else {
+      const data = await res.json();
+
+      if (res.ok && data.success) {
         router.push("/");
         router.refresh();
+      } else {
+        setError(data.error || "Login fehlgeschlagen");
       }
     } catch {
-      toast({
-        type: "error",
-        description: "Ein Fehler ist aufgetreten.",
-      });
+      setError("Verbindungsfehler");
     } finally {
       setIsLoading(false);
     }
@@ -73,6 +70,10 @@ export default function Page() {
             type="password"
           />
         </div>
+
+        {error && (
+          <p className="text-sm text-destructive">{error}</p>
+        )}
 
         <button
           type="submit"
