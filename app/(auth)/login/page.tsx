@@ -1,43 +1,45 @@
 "use client";
 
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { useActionState, useEffect, useState } from "react";
-
-import { AuthForm } from "@/components/chat/auth-form";
-import { SubmitButton } from "@/components/chat/submit-button";
+import { useState } from "react";
 import { toast } from "@/components/chat/toast";
-import { type LoginActionState, login } from "../actions";
 
 export default function Page() {
   const router = useRouter();
-  const [isSuccessful, setIsSuccessful] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [state, formAction] = useActionState<LoginActionState, FormData>(
-    login,
-    { status: "idle" }
-  );
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
 
-  const { update: updateSession } = useSession();
+    const formData = new FormData(e.currentTarget);
+    const password = formData.get("password") as string;
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: router and updateSession are stable refs
-  useEffect(() => {
-    if (state.status === "failed") {
+    try {
+      const result = await signIn("credentials", {
+        password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        toast({
+          type: "error",
+          description: "Ungültiges Passwort. Bitte erneut versuchen.",
+        });
+      } else {
+        router.push("/");
+        router.refresh();
+      }
+    } catch {
       toast({
         type: "error",
-        description: "Ungültiges Passwort. Bitte erneut versuchen.",
+        description: "Ein Fehler ist aufgetreten.",
       });
-    } else if (state.status === "invalid_data") {
-      toast({
-        type: "error",
-        description: "Eingabe konnte nicht validiert werden.",
-      });
-    } else if (state.status === "success") {
-      setIsSuccessful(true);
-      updateSession();
-      router.refresh();
+    } finally {
+      setIsLoading(false);
     }
-  }, [state.status]);
+  };
 
   return (
     <>
@@ -53,9 +55,33 @@ export default function Page() {
         </p>
       </div>
 
-      <AuthForm action={formAction}>
-        <SubmitButton isSuccessful={isSuccessful}>Zugang</SubmitButton>
-      </AuthForm>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
+          <label
+            className="font-normal text-muted-foreground text-sm"
+            htmlFor="password"
+          >
+            Zugangspasswort
+          </label>
+          <input
+            autoFocus
+            className="h-10 rounded-lg border border-border/50 bg-muted/50 px-3 py-1 text-sm transition-colors focus:border-foreground/20 focus:bg-muted focus:outline-none"
+            id="password"
+            name="password"
+            placeholder="••••••••"
+            required
+            type="password"
+          />
+        </div>
+
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="h-10 rounded-lg bg-primary text-primary-foreground font-medium text-sm transition-colors hover:bg-primary/90 disabled:opacity-50"
+        >
+          {isLoading ? "Wird eingeloggt..." : "Zugang"}
+        </button>
+      </form>
 
       <p className="text-center text-[12px] text-muted-foreground mt-4">
         D/A/CH · GAEB DA XML · VOB · ÖNORM · SIA
