@@ -1,0 +1,36 @@
+{
+  "$schema": "https://context7.com/schema/docs7.json",
+  "name": "LV.AI",
+  "description": "Autonomer KI-Experte für Leistungsverzeichnisse, Ausschreibung, Vergabe und Abrechnung (AVA) im D/A/CH-Raum.",
+  "favicon": "/favicon.ico",
+  "colors": {
+    "primary": "#111111",
+    "light": "#2563EB",
+    "dark": "#3B82F6"
+  },
+  "filterSidebar": true,
+  "navigation": {
+    "groups": [
+      {
+        "group": "Einführung",
+        "pages": ["index"]
+      },
+      {
+        "group": "Konzept",
+        "pages": ["KONZEPT_V1"]
+      },
+      {
+        "group": "Architektur",
+        "pages": ["ARCHITECTURE_9ROUTER", "EVALUATION_VERCEL_GATEWAY"]
+      },
+      {
+        "group": "Betrieb",
+        "pages": ["DEPLOY_CHECKLIST", "TOKEN_OPTIMIZATION"]
+      },
+      {
+        "group": "Beispiele",
+        "pages": ["samples/LV_Rohbau_KiTa_Liebigstrasse"]
+      }
+    ]
+  }
+}
