@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
@@ -81,6 +82,11 @@ export default function RootLayout({
             <TooltipProvider>{children}</TooltipProvider>
           </SessionProvider>
         </ThemeProvider>
+        <Script
+          data-library="/nexifyai-dev/lv-ai"
+          src="https://context7.com/widget.js"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
