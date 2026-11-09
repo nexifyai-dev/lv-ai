@@ -1,0 +1,56 @@
+# FILE: .github/dependabot.yml
+# NIR: 09.11.2026 01:50 (Hermes)
+# NAME: NeXifyAI Agent
+# TEAM: NeXifyAI DevOps
+# WAS: Dependabot-Versionsupdates fuer Node/pnpm, GitHub Actions
+# WARUM: Abhaengigkeiten automatisch aktuell halten, Sicherheitsupdates ohne Handarbeit
+# BEST-PRACTICE: Minor/Patch gruppiert -> wenige PRs; woechentlich montags; PR-Limit 5
+# PITFALL: Major-Updates nie ohne gruene CI mergen; target-branch bleibt der Default-Branch
+# DEPENDS: Dependabot-Versionsupdates im Repo aktiviert (Settings > Advanced Security)
+# DOCS-REF: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuring-dependabot-version-updates
+# SESSION: slack-oracle-bridge-20261109
+
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Berlin"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "npm"
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      npm-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:05"
+      timezone: "Europe/Berlin"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      github-actions-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+
