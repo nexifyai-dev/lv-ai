@@ -16,34 +16,34 @@ import type { GaebPosition } from "./parser";
 export type GaebFormat = "X81" | "X82" | "X83" | "X84" | "X85" | "X86";
 
 export interface GaebProjectInfo {
-  projectName: string;
-  projectDescription?: string;
-  projectNumber?: string;
+  bidderName?: string;
+  clientCity?: string;
   // Auftragsgeber (DE: VOB/A § 9 braucht Auftraggeber-Info)
   clientName?: string;
   clientStreet?: string;
-  clientCity?: string;
   clientZip?: string;
   // Land: DE/AT/CH — beeinflusst Currency (EUR/CHF)
   land?: "DE" | "AT" | "CH";
-  // Angebotssumme (nur X84 — Bieterpreis)
-  totalNet?: string;
-  bidderName?: string;
   // Datum der Angebotserstellung (X84)
   offerDate?: string; // ISO 8601
+  projectDescription?: string;
+  projectName: string;
+  projectNumber?: string;
+  // Angebotssumme (nur X84 — Bieterpreis)
+  totalNet?: string;
 }
 
 export interface GaebExportInput {
   format: GaebFormat;
-  projectInfo: GaebProjectInfo;
   positions: GaebPosition[];
+  projectInfo: GaebProjectInfo;
 }
 
 // ─── Currency-Land-Mapping ───────────────────────────────────────────────────
 const CURRENCY_BY_LAND: Record<string, string> = {
-  DE: "EUR",
   AT: "EUR",
   CH: "CHF",
+  DE: "EUR",
 };
 
 // ─── Main Export Function ────────────────────────────────────────────────────
@@ -304,11 +304,11 @@ function escapeXml(text: string): string {
     return "";
   }
   return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&apos;");
+    .replace(/&/gu, "&amp;")
+    .replace(/</gu, "&lt;")
+    .replace(/>/gu, "&gt;")
+    .replace(/"/gu, "&quot;")
+    .replace(/'/gu, "&apos;");
 }
 
 // ─── Convenience: Export aus DB-Daten ────────────────────────────────────────
@@ -316,15 +316,13 @@ function escapeXml(text: string): string {
 // aufruft und die Resultate hier reinreicht.
 
 export interface GaebExportFromDbInput {
-  format: GaebFormat;
-  projectName: string;
+  bidderName?: string;
+  clientCity?: string;
   clientName?: string;
   clientStreet?: string;
-  clientCity?: string;
   clientZip?: string;
+  format: GaebFormat;
   land?: "DE" | "AT" | "CH";
-  bidderName?: string;
-  totalNet?: string;
   positions: Array<{
     oz: string;
     kurztext: string;
@@ -334,30 +332,32 @@ export interface GaebExportFromDbInput {
     einheitspreis?: string | null;
     gesamtpreis?: string | null;
   }>;
+  projectName: string;
+  totalNet?: string;
 }
 
 export function exportGaebFromDb(input: GaebExportFromDbInput): string {
   return exportGaebXml({
     format: input.format,
-    projectInfo: {
-      projectName: input.projectName,
-      clientName: input.clientName,
-      clientStreet: input.clientStreet,
-      clientCity: input.clientCity,
-      clientZip: input.clientZip,
-      land: input.land,
-      bidderName: input.bidderName,
-      totalNet: input.totalNet,
-      offerDate: new Date().toISOString(),
-    },
     positions: input.positions.map((p) => ({
-      oz: p.oz,
-      kurztext: p.kurztext,
-      langtext: p.langtext ?? undefined,
-      menge: p.menge ?? undefined,
       einheit: p.einheit ?? undefined,
       einheitspreis: p.einheitspreis ?? undefined,
       gesamtpreis: p.gesamtpreis ?? undefined,
+      kurztext: p.kurztext,
+      langtext: p.langtext ?? undefined,
+      menge: p.menge ?? undefined,
+      oz: p.oz,
     })),
+    projectInfo: {
+      bidderName: input.bidderName,
+      clientCity: input.clientCity,
+      clientName: input.clientName,
+      clientStreet: input.clientStreet,
+      clientZip: input.clientZip,
+      land: input.land,
+      offerDate: new Date().toISOString(),
+      projectName: input.projectName,
+      totalNet: input.totalNet,
+    },
   });
 }

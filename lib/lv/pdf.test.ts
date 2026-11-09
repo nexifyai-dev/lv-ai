@@ -13,15 +13,15 @@ const mocks = vi.hoisted(() => {
   const getProjectByIdMock = vi.fn();
 
   return {
-    pdfSaveMock,
-    drawTextMock,
     drawLineMock,
     drawRectangleMock,
-    getPagesMock,
+    drawTextMock,
     getLvDocumentByIdMock,
-    getLvPositionsByDocumentMock,
     getLvDocumentSumMock,
+    getLvPositionsByDocumentMock,
+    getPagesMock,
     getProjectByIdMock,
+    pdfSaveMock,
   };
 });
 
@@ -31,13 +31,13 @@ vi.mock("pdf-lib", () => ({
   PDFDocument: {
     create: vi.fn(() => ({
       addPage: vi.fn(() => ({
-        drawText: mocks.drawTextMock,
         drawLine: mocks.drawLineMock,
         drawRectangle: mocks.drawRectangleMock,
+        drawText: mocks.drawTextMock,
       })),
       embedFont: vi.fn(async () => ({})),
-      save: mocks.pdfSaveMock,
       getPages: mocks.getPagesMock,
+      save: mocks.pdfSaveMock,
     })),
   },
   rgb: vi.fn(() => ({})),
@@ -46,8 +46,8 @@ vi.mock("pdf-lib", () => ({
 
 vi.mock("@/lib/db/lv-queries", () => ({
   getLvDocumentById: mocks.getLvDocumentByIdMock,
-  getLvPositionsByDocument: mocks.getLvPositionsByDocumentMock,
   getLvDocumentSum: mocks.getLvDocumentSumMock,
+  getLvPositionsByDocument: mocks.getLvPositionsByDocumentMock,
   getProjectById: mocks.getProjectByIdMock,
 }));
 
@@ -67,9 +67,9 @@ describe("generateLvPdf", () => {
     vi.clearAllMocks();
     mocks.getPagesMock.mockReturnValue([
       {
-        drawText: mocks.drawTextMock,
         drawLine: mocks.drawLineMock,
         drawRectangle: mocks.drawRectangleMock,
+        drawText: mocks.drawTextMock,
       },
     ]);
   });
@@ -83,11 +83,11 @@ describe("generateLvPdf", () => {
 
   it("generiert PDF mit Deckblatt und Positionen", async () => {
     getLvDocumentByIdMock.mockResolvedValue({
+      createdAt: new Date(),
+      gaebFormat: "X83",
       id: "lv-1",
       projectId: "proj-1",
       titel: "Rohbauarbeiten KiTa",
-      gaebFormat: "X83",
-      createdAt: new Date(),
       updatedAt: new Date(),
     });
     getProjectByIdMock.mockResolvedValue({
@@ -96,22 +96,22 @@ describe("generateLvPdf", () => {
     });
     getLvPositionsByDocumentMock.mockResolvedValue([
       {
-        oz: "01.0010",
-        kurztext: "Boden aushuben",
-        langtext: null,
-        menge: "100.500",
         einheit: "m³",
         einheitspreis: "25.00",
         gesamtpreis: "2512.50",
+        kurztext: "Boden aushuben",
+        langtext: null,
+        menge: "100.500",
+        oz: "01.0010",
       },
       {
-        oz: "01.0020",
-        kurztext: "Streifenfundamente",
-        langtext: "Beton C25/30",
-        menge: "45.000",
         einheit: "m³",
         einheitspreis: "185.00",
         gesamtpreis: "8325.00",
+        kurztext: "Streifenfundamente",
+        langtext: "Beton C25/30",
+        menge: "45.000",
+        oz: "01.0020",
       },
     ]);
     getLvDocumentSumMock.mockResolvedValue(10_837.5);
@@ -127,20 +127,20 @@ describe("generateLvPdf", () => {
 
   it("generiert PDF auch ohne Projekt", async () => {
     getLvDocumentByIdMock.mockResolvedValue({
+      gaebFormat: null,
       id: "lv-2",
       titel: "Estricharbeiten",
-      gaebFormat: null,
     });
     getProjectByIdMock.mockResolvedValue(null);
     getLvPositionsByDocumentMock.mockResolvedValue([
       {
-        oz: "02.0010",
-        kurztext: "Zementestrich",
-        langtext: null,
-        menge: "200",
         einheit: "m²",
         einheitspreis: "12.50",
         gesamtpreis: "2500.00",
+        kurztext: "Zementestrich",
+        langtext: null,
+        menge: "200",
+        oz: "02.0010",
       },
     ]);
     getLvDocumentSumMock.mockResolvedValue(2500);

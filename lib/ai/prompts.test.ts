@@ -76,10 +76,10 @@ describe("LV.AI Prompts", () => {
 
   describe("systemPrompt", () => {
     const mockHints = {
-      latitude: "51.1657",
-      longitude: "10.4515",
       city: "Berlin",
       country: "DE",
+      latitude: "51.1657",
+      longitude: "10.4515",
     };
 
     it("should include regular prompt", () => {
@@ -117,9 +117,9 @@ describe("LV.AI Prompts", () => {
 
     it("should include project context when provided", () => {
       const result = systemPrompt({
+        projectContext: "Projekt: KiTa Liebigstraße, Land: DE, Gewerk: Rohbau",
         requestHints: mockHints,
         supportsTools: false,
-        projectContext: "Projekt: KiTa Liebigstraße, Land: DE, Gewerk: Rohbau",
       });
       expect(result).toContain("KiTa Liebigstraße");
       expect(result).toContain("Aktuelles Projekt");
@@ -128,10 +128,10 @@ describe("LV.AI Prompts", () => {
 
   describe("systemPromptParts", () => {
     const mockHints = {
-      latitude: "51.1657",
-      longitude: "10.4515",
       city: "Berlin",
       country: "DE",
+      latitude: "51.1657",
+      longitude: "10.4515",
     };
 
     it("liefert Array mit stabilem und dynamischem Teil", () => {
@@ -180,9 +180,9 @@ describe("LV.AI Prompts", () => {
 
     it("dynamischer Teil enthält Projekt-Kontext wenn gesetzt", () => {
       const parts = systemPromptParts({
+        projectContext: "Projekt: KiTa Liebigstraße, Land: DE, Gewerk: Rohbau",
         requestHints: mockHints,
         supportsTools: false,
-        projectContext: "Projekt: KiTa Liebigstraße, Land: DE, Gewerk: Rohbau",
       });
       expect(parts[1].content).toContain("KiTa Liebigstraße");
       expect(parts[1].content).toContain("Aktuelles Projekt");
@@ -192,10 +192,10 @@ describe("LV.AI Prompts", () => {
   describe("getRequestPromptFromHints", () => {
     it("should format hints correctly", () => {
       const result = getRequestPromptFromHints({
-        latitude: "48.2082",
-        longitude: "16.3738",
         city: "Wien",
         country: "AT",
+        latitude: "48.2082",
+        longitude: "16.3738",
       });
       expect(result).toContain("48.2082");
       expect(result).toContain("16.3738");

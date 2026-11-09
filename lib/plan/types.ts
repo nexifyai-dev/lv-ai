@@ -4,44 +4,44 @@
 // Eigenschaften (x, y, Breite, Höhe, etc.).
 
 export interface PlanElement {
-  id: string;
-  oz: string; // LV-Ordnungszahl-Referenz
-  type: "rect" | "line" | "text" | "dimension";
-  // Position (mm im Plan, skaliert auf SVG)
-  x: number;
-  y: number;
-  // Nur für rect
-  width?: number;
-  height?: number;
-  // Nur für line
-  x2?: number;
-  y2?: number;
-  // Nur für text + dimension
-  label?: string;
   // Nur für dimension (Richtung)
   direction?: "horizontal" | "vertical";
-  // Nur für dimension (Bemaßungswert)
-  value?: string;
+  fill?: string;
+  fontSize?: number;
+  height?: number;
+  id: string;
+  // Nur für text + dimension
+  label?: string;
+  oz: string; // LV-Ordnungszahl-Referenz
+  rotation?: number; // Grad, nur für text
   // Styling
   stroke?: string;
-  fill?: string;
   strokeWidth?: number;
-  fontSize?: number;
-  rotation?: number; // Grad, nur für text
+  type: "rect" | "line" | "text" | "dimension";
+  // Nur für dimension (Bemaßungswert)
+  value?: string;
+  // Nur für rect
+  width?: number;
+  // Position (mm im Plan, skaliert auf SVG)
+  x: number;
+  // Nur für line
+  x2?: number;
+  y: number;
+  y2?: number;
 }
 
 export interface Plan {
-  id: string;
-  projectId: string;
-  titel: string;
+  createdAt: string;
   description?: string;
   elements: PlanElement[];
-  // Skalierung: 1m = wieviele SVG-Pixel?
-  scale: number; // default: 50 (1m = 50px)
+  id: string;
+  planHeight: number; // default: 420 (A2)
   // Plangröße in mm
   planWidth: number; // default: 594 (A2)
-  planHeight: number; // default: 420 (A2)
-  createdAt: string;
+  projectId: string;
+  // Skalierung: 1m = wieviele SVG-Pixel?
+  scale: number; // default: 50 (1m = 50px)
+  titel: string;
   updatedAt: string;
 }
 

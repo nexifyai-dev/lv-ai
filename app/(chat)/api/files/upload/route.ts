@@ -84,7 +84,7 @@ export async function POST(request: Request) {
   }
 
   const originalName = (formData.get("file") as File).name;
-  const safeName = originalName.replace(/[^a-zA-Z0-9._-]/g, "_");
+  const safeName = originalName.replace(/[^a-zA-Z0-9._-]/gu, "_");
   // Dateinamen um Timestamp ergänzen, um Kollisionen zu vermeiden
   const uniqueName = `${Date.now()}-${safeName}`;
   const fileBuffer = await file.arrayBuffer();
@@ -94,9 +94,9 @@ export async function POST(request: Request) {
     try {
       const path = await storeLocal(uniqueName, fileBuffer);
       return NextResponse.json({
-        url: path,
-        pathname: originalName,
         contentType: file.type,
+        pathname: originalName,
+        url: path,
       });
     } catch (err) {
       return NextResponse.json(
@@ -119,9 +119,9 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({
-      url: data.url,
-      pathname: originalName,
       contentType: file.type,
+      pathname: originalName,
+      url: data.url,
     });
   } catch {
     return NextResponse.json(

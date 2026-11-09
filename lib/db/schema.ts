@@ -62,14 +62,14 @@ export const erinnerungTypEnum = pgEnum("erinnerung_typ", [
 // ─── Users ───────────────────────────────────────────────────────────────────
 
 export const user = pgTable("User", {
-  id: uuid("id").primaryKey().notNull().defaultRandom(),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
   email: varchar("email", { length: 64 }).notNull(),
-  password: varchar("password", { length: 64 }),
-  name: text("name"),
   emailVerified: boolean("emailVerified").notNull().default(false),
+  id: uuid("id").primaryKey().notNull().defaultRandom(),
   image: text("image"),
   isAnonymous: boolean("isAnonymous").notNull().default(false),
-  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  name: text("name"),
+  password: varchar("password", { length: 64 }),
   updatedAt: timestamp("updatedAt").notNull().defaultNow(),
 });
 
@@ -78,20 +78,20 @@ export type User = InferSelectModel<typeof user>;
 // ─── Projects (Jeder Chat = ein Bauprojekt) ─────────────────────────────────
 
 export const project = pgTable("Project", {
+  adresse: text("adresse"),
+  bauherr: text("bauherr"),
+  bemerkungen: text("bemerkungen"),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  gewerk: text("gewerk"),
   id: uuid("id").primaryKey().notNull().defaultRandom(),
+  kostenbudget: decimal("kostenbudget", { precision: 12, scale: 2 }),
+  land: landEnum("land").notNull().default("DE"),
+  name: text("name").notNull(),
+  status: projektStatusEnum("status").notNull().default("entwurf"),
+  updatedAt: timestamp("updatedAt").notNull().defaultNow(),
   userId: uuid("userId")
     .notNull()
     .references(() => user.id),
-  name: text("name").notNull(),
-  land: landEnum("land").notNull().default("DE"),
-  gewerk: text("gewerk"),
-  bauherr: text("bauherr"),
-  adresse: text("adresse"),
-  status: projektStatusEnum("status").notNull().default("entwurf"),
-  kostenbudget: decimal("kostenbudget", { precision: 12, scale: 2 }),
-  bemerkungen: text("bemerkungen"),
-  createdAt: timestamp("createdAt").notNull().defaultNow(),
-  updatedAt: timestamp("updatedAt").notNull().defaultNow(),
 });
 
 export type Project = InferSelectModel<typeof project>;
@@ -99,13 +99,13 @@ export type Project = InferSelectModel<typeof project>;
 // ─── Chats (1:1 mit Projects) ────────────────────────────────────────────────
 
 export const chat = pgTable("Chat", {
-  id: uuid("id").primaryKey().notNull().defaultRandom(),
   createdAt: timestamp("createdAt").notNull(),
+  id: uuid("id").primaryKey().notNull().defaultRandom(),
+  projectId: uuid("projectId").references(() => project.id),
   title: text("title").notNull(),
   userId: uuid("userId")
     .notNull()
     .references(() => user.id),
-  projectId: uuid("projectId").references(() => project.id),
   visibility: varchar("visibility", { enum: ["public", "private"] })
     .notNull()
     .default("private"),
@@ -116,14 +116,14 @@ export type Chat = InferSelectModel<typeof chat>;
 // ─── Messages ────────────────────────────────────────────────────────────────
 
 export const message = pgTable("Message_v2", {
-  id: uuid("id").primaryKey().notNull().defaultRandom(),
+  attachments: json("attachments").notNull(),
   chatId: uuid("chatId")
     .notNull()
     .references(() => chat.id),
-  role: varchar("role").notNull(),
-  parts: json("parts").notNull(),
-  attachments: json("attachments").notNull(),
   createdAt: timestamp("createdAt").notNull(),
+  id: uuid("id").primaryKey().notNull().defaultRandom(),
+  parts: json("parts").notNull(),
+  role: varchar("role").notNull(),
 });
 
 export type DBMessage = InferSelectModel<typeof message>;
@@ -136,10 +136,10 @@ export const vote = pgTable(
     chatId: uuid("chatId")
       .notNull()
       .references(() => chat.id),
+    isUpvoted: boolean("isUpvoted").notNull(),
     messageId: uuid("messageId")
       .notNull()
       .references(() => message.id),
-    isUpvoted: boolean("isUpvoted").notNull(),
   },
   (table) => ({
     pk: primaryKey({ columns: [table.chatId, table.messageId] }),
@@ -153,13 +153,13 @@ export type Vote = InferSelectModel<typeof vote>;
 export const document = pgTable(
   "Document",
   {
-    id: uuid("id").notNull().defaultRandom(),
-    createdAt: timestamp("createdAt").notNull(),
-    title: text("title").notNull(),
     content: text("content"),
+    createdAt: timestamp("createdAt").notNull(),
+    id: uuid("id").notNull().defaultRandom(),
     kind: varchar("text", { enum: ["text", "code", "image", "sheet"] })
       .notNull()
       .default("text"),
+    title: text("title").notNull(),
     userId: uuid("userId")
       .notNull()
       .references(() => user.id),
@@ -176,24 +176,24 @@ export type Document = InferSelectModel<typeof document>;
 export const suggestion = pgTable(
   "Suggestion",
   {
-    id: uuid("id").notNull().defaultRandom(),
-    documentId: uuid("documentId").notNull(),
+    createdAt: timestamp("createdAt").notNull(),
+    description: text("description"),
     documentCreatedAt: timestamp("documentCreatedAt").notNull(),
+    documentId: uuid("documentId").notNull(),
+    id: uuid("id").notNull().defaultRandom(),
+    isResolved: boolean("isResolved").notNull().default(false),
     originalText: text("originalText").notNull(),
     suggestedText: text("suggestedText").notNull(),
-    description: text("description"),
-    isResolved: boolean("isResolved").notNull().default(false),
     userId: uuid("userId")
       .notNull()
       .references(() => user.id),
-    createdAt: timestamp("createdAt").notNull(),
   },
   (table) => ({
-    pk: primaryKey({ columns: [table.id] }),
     documentRef: foreignKey({
       columns: [table.documentId, table.documentCreatedAt],
       foreignColumns: [document.id, document.createdAt],
     }),
+    pk: primaryKey({ columns: [table.id] }),
   })
 );
 
@@ -204,16 +204,16 @@ export type Suggestion = InferSelectModel<typeof suggestion>;
 export const stream = pgTable(
   "Stream",
   {
-    id: uuid("id").notNull().defaultRandom(),
     chatId: uuid("chatId").notNull(),
     createdAt: timestamp("createdAt").notNull(),
+    id: uuid("id").notNull().defaultRandom(),
   },
   (table) => ({
-    pk: primaryKey({ columns: [table.id] }),
     chatRef: foreignKey({
       columns: [table.chatId],
       foreignColumns: [chat.id],
     }),
+    pk: primaryKey({ columns: [table.id] }),
   })
 );
 
@@ -222,17 +222,17 @@ export type Stream = InferSelectModel<typeof stream>;
 // ─── LV-Dokumente (GAEB) ────────────────────────────────────────────────────
 
 export const lvDocument = pgTable("LvDocument", {
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  gaebFormat: gaebFormatEnum("gaebFormat"),
   id: uuid("id").primaryKey().notNull().defaultRandom(),
   projectId: uuid("projectId")
     .notNull()
     .references(() => project.id),
-  titel: text("titel").notNull(),
-  gaebFormat: gaebFormatEnum("gaebFormat"),
-  version: varchar("version", { length: 20 }),
   status: varchar("status", { length: 30 }).notNull().default("entwurf"),
   storageUrl: text("storageUrl"),
-  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  titel: text("titel").notNull(),
   updatedAt: timestamp("updatedAt").notNull().defaultNow(),
+  version: varchar("version", { length: 20 }),
 });
 
 export type LvDocument = InferSelectModel<typeof lvDocument>;
@@ -240,20 +240,20 @@ export type LvDocument = InferSelectModel<typeof lvDocument>;
 // ─── LV-Positionen ──────────────────────────────────────────────────────────
 
 export const lvPosition = pgTable("LvPosition", {
-  id: uuid("id").primaryKey().notNull().defaultRandom(),
-  lvDocumentId: uuid("lvDocumentId")
-    .notNull()
-    .references(() => lvDocument.id),
-  oz: varchar("oz", { length: 20 }).notNull(), // Ordnungszahl (z.B. 01.0020)
-  kurztext: text("kurztext").notNull(),
-  langtext: text("langtext"),
-  menge: decimal("menge", { precision: 12, scale: 3 }),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
   einheit: varchar("einheit", { length: 10 }), // m³, m², m, kg, Stk., lfm
   einheitspreis: decimal("einheitspreis", { precision: 12, scale: 2 }),
   gesamtpreis: decimal("gesamtpreis", { precision: 14, scale: 2 }),
+  id: uuid("id").primaryKey().notNull().defaultRandom(),
+  kurztext: text("kurztext").notNull(),
+  langtext: text("langtext"),
+  lvDocumentId: uuid("lvDocumentId")
+    .notNull()
+    .references(() => lvDocument.id),
+  menge: decimal("menge", { precision: 12, scale: 3 }),
+  oz: varchar("oz", { length: 20 }).notNull(), // Ordnungszahl (z.B. 01.0020)
   positionstyp: varchar("positionstyp", { length: 20 }).default("standard"), // standard, alternativ, nachtrag
   sortierung: integer("sortierung").default(0),
-  createdAt: timestamp("createdAt").notNull().defaultNow(),
   updatedAt: timestamp("updatedAt").notNull().defaultNow(),
 });
 
@@ -262,22 +262,22 @@ export type LvPosition = InferSelectModel<typeof lvPosition>;
 // ─── Angebote (Bieter) ──────────────────────────────────────────────────────
 
 export const offer = pgTable("Offer", {
+  auschlussGrund: text("auschlussGrund"), // bei status=ausgeschlossen
+  bemerkungen: text("bemerkungen"),
+  bieter: text("bieter").notNull(),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  eingereichtAm: timestamp("eingereichtAm"),
+  gaebSourceId: uuid("gaebSourceId"),
+  gesamtsumme: decimal("gesamtsumme", { precision: 14, scale: 2 }),
   id: uuid("id").primaryKey().notNull().defaultRandom(),
   projectId: uuid("projectId")
     .notNull()
     .references(() => project.id),
-  bieter: text("bieter").notNull(),
-  gaebSourceId: uuid("gaebSourceId"),
-  gesamtsumme: decimal("gesamtsumme", { precision: 14, scale: 2 }),
   status: bieterStatusEnum("status").notNull().default("offen"),
-  bemerkungen: text("bemerkungen"),
-  eingereichtAm: timestamp("eingereichtAm"),
+  updatedAt: timestamp("updatedAt").notNull().defaultNow(),
+  zuschlagBegruendung: text("zuschlagBegruendung"),
   // Zuschlagserteilung (VOB/A § 17 Zuschlag)
   zuschlagErteiltAm: timestamp("zuschlagErteiltAm"),
-  zuschlagBegruendung: text("zuschlagBegruendung"),
-  auschlussGrund: text("auschlussGrund"), // bei status=ausgeschlossen
-  createdAt: timestamp("createdAt").notNull().defaultNow(),
-  updatedAt: timestamp("updatedAt").notNull().defaultNow(),
 });
 
 export type Offer = InferSelectModel<typeof offer>;
@@ -287,18 +287,18 @@ export type Offer = InferSelectModel<typeof offer>;
 export const offerPosition = pgTable(
   "OfferPosition",
   {
+    createdAt: timestamp("createdAt").notNull().defaultNow(),
+    einheit: varchar("einheit", { length: 10 }),
+    einheitspreis: decimal("einheitspreis", { precision: 12, scale: 2 }),
+    gesamtpreis: decimal("gesamtpreis", { precision: 14, scale: 2 }),
     id: uuid("id").primaryKey().notNull().defaultRandom(),
+    kurztext: text("kurztext"),
+    menge: decimal("menge", { precision: 12, scale: 3 }),
     offerId: uuid("offerId")
       .notNull()
       .references(() => offer.id, { onDelete: "cascade" }),
     oz: varchar("oz", { length: 20 }).notNull(),
-    kurztext: text("kurztext"),
-    menge: decimal("menge", { precision: 12, scale: 3 }),
-    einheit: varchar("einheit", { length: 10 }),
-    einheitspreis: decimal("einheitspreis", { precision: 12, scale: 2 }),
-    gesamtpreis: decimal("gesamtpreis", { precision: 14, scale: 2 }),
     sortierung: integer("sortierung").default(0),
-    createdAt: timestamp("createdAt").notNull().defaultNow(),
     updatedAt: timestamp("updatedAt").notNull().defaultNow(),
   },
   (table) => ({
@@ -311,17 +311,17 @@ export type OfferPosition = InferSelectModel<typeof offerPosition>;
 // ─── Rechnungen ──────────────────────────────────────────────────────────────
 
 export const invoice = pgTable("Invoice", {
+  bemerkungen: text("bemerkungen"),
+  betrag: decimal("betrag", { precision: 14, scale: 2 }).notNull(),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  eRechnungFormat: varchar("eRechnungFormat", { length: 20 }), // XRechnung, ZUGFeRD
+  faelligkeit: timestamp("faelligkeit"),
   id: uuid("id").primaryKey().notNull().defaultRandom(),
+  nummer: text("nummer").notNull(),
   projectId: uuid("projectId")
     .notNull()
     .references(() => project.id),
-  nummer: text("nummer").notNull(),
-  betrag: decimal("betrag", { precision: 14, scale: 2 }).notNull(),
   status: rechnungStatusEnum("status").notNull().default("entwurf"),
-  faelligkeit: timestamp("faelligkeit"),
-  eRechnungFormat: varchar("eRechnungFormat", { length: 20 }), // XRechnung, ZUGFeRD
-  bemerkungen: text("bemerkungen"),
-  createdAt: timestamp("createdAt").notNull().defaultNow(),
   updatedAt: timestamp("updatedAt").notNull().defaultNow(),
 });
 
@@ -330,17 +330,17 @@ export type Invoice = InferSelectModel<typeof invoice>;
 // ─── Erinnerungen ────────────────────────────────────────────────────────────
 
 export const reminder = pgTable("Reminder", {
+  beschreibung: text("beschreibung"),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  faelligAm: timestamp("faelligAm").notNull(),
+  gesendet: boolean("gesendet").notNull().default(false),
+  gesendetAm: timestamp("gesendetAm"),
   id: uuid("id").primaryKey().notNull().defaultRandom(),
   projectId: uuid("projectId")
     .notNull()
     .references(() => project.id),
-  typ: erinnerungTypEnum("typ").notNull(),
   titel: text("titel").notNull(),
-  beschreibung: text("beschreibung"),
-  faelligAm: timestamp("faelligAm").notNull(),
-  gesendet: boolean("gesendet").notNull().default(false),
-  gesendetAm: timestamp("gesendetAm"),
-  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  typ: erinnerungTypEnum("typ").notNull(),
 });
 
 export type Reminder = InferSelectModel<typeof reminder>;
@@ -348,29 +348,29 @@ export type Reminder = InferSelectModel<typeof reminder>;
 // ─── Dateien (Global + Projekt) ──────────────────────────────────────────────
 
 export const fileGlobal = pgTable("FileGlobal", {
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  filename: text("filename").notNull(),
   id: uuid("id").primaryKey().notNull().defaultRandom(),
+  storageUrl: text("storageUrl").notNull(),
+  tags: json("tags").$type<string[]>(),
+  typ: varchar("typ", { length: 50 }),
   userId: uuid("userId")
     .notNull()
     .references(() => user.id),
-  filename: text("filename").notNull(),
-  typ: varchar("typ", { length: 50 }),
-  storageUrl: text("storageUrl").notNull(),
-  tags: json("tags").$type<string[]>(),
-  createdAt: timestamp("createdAt").notNull().defaultNow(),
 });
 
 export type FileGlobal = InferSelectModel<typeof fileGlobal>;
 
 export const fileProject = pgTable("FileProject", {
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  filename: text("filename").notNull(),
   id: uuid("id").primaryKey().notNull().defaultRandom(),
   projectId: uuid("projectId")
     .notNull()
     .references(() => project.id),
-  filename: text("filename").notNull(),
-  typ: varchar("typ", { length: 50 }),
   storageUrl: text("storageUrl").notNull(),
   tags: json("tags").$type<string[]>(),
-  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  typ: varchar("typ", { length: 50 }),
 });
 
 export type FileProject = InferSelectModel<typeof fileProject>;
@@ -378,16 +378,16 @@ export type FileProject = InferSelectModel<typeof fileProject>;
 // ─── Zeichnungen ─────────────────────────────────────────────────────────────
 
 export const drawing = pgTable("Drawing", {
+  beschreibung: text("beschreibung"),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
   id: uuid("id").primaryKey().notNull().defaultRandom(),
   projectId: uuid("projectId")
     .notNull()
     .references(() => project.id),
+  storageUrlPdf: text("storageUrlPdf"),
+  storageUrlSvg: text("storageUrlSvg"),
   titel: text("titel").notNull(),
   typ: varchar("typ", { length: 30 }).notNull(), // grundriss, detail, lageplan, schnitt
-  storageUrlSvg: text("storageUrlSvg"),
-  storageUrlPdf: text("storageUrlPdf"),
-  beschreibung: text("beschreibung"),
-  createdAt: timestamp("createdAt").notNull().defaultNow(),
 });
 
 export type Drawing = InferSelectModel<typeof drawing>;

@@ -11,16 +11,16 @@ export default async function PlanPage({ params }: PlanPageProps) {
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden">
-      <header className="flex items-center gap-3 border-b border-border/40 px-6 py-4">
+      <header className="border-border/40 flex items-center gap-3 border-b px-6 py-4">
         <Link
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          className="text-muted-foreground hover:text-foreground inline-flex items-center gap-2 text-sm transition-colors"
           href={`/lv/${projectId}`}
         >
           <ArrowLeftIcon className="size-4" />
           Zurück zum LV
         </Link>
         <div className="ml-2 flex items-center gap-2">
-          <RulerIcon className="size-5 text-muted-foreground" />
+          <RulerIcon className="text-muted-foreground size-5" />
           <h1 className="text-lg font-semibold">Plan</h1>
         </div>
       </header>

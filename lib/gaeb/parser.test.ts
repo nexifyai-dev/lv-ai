@@ -1,11 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  parseGaebXml,
-  detectGaebFormat,
-  extractPositions,
-  GaebParser,
-  GAEB_FORMATS,
-} from "./parser";
+import { GAEB_FORMATS, GaebParser } from "./parser";
 
 describe("GAEB Parser", () => {
   describe("GAEB_FORMATS", () => {
@@ -84,11 +78,11 @@ describe("GAEB Parser", () => {
     it("should extract positions from parsed result", () => {
       const positions = [
         {
-          oz: "01.0010",
+          einheit: "m3",
           kurztext: "Test",
           langtext: "Test Beschreibung",
           menge: "100",
-          einheit: "m3",
+          oz: "01.0010",
         },
       ];
       expect(positions.length).toBe(1);

@@ -15,10 +15,10 @@
 export const DEFAULT_CHAT_MODEL = "nexifyai-combo-llm";
 
 export const titleModel = {
+  description: "Schnelles Modell für Titelgenerierung (Token-effizient)",
   id: "ds/deepseek-v4-flash",
   name: "DeepSeek V4 Flash",
   provider: "deepseek",
-  description: "Schnelles Modell für Titelgenerierung (Token-effizient)",
 };
 
 export type ModelCapabilities = {
@@ -37,33 +37,33 @@ export type ChatModel = {
 
 export const chatModels: ChatModel[] = [
   {
+    description:
+      "Round-Robin DeepSeek V4 Pro/Flash — automatische Lastverteilung, optimale Token-Effizienz",
     id: "nexifyai-combo-llm",
     name: "NeXify Combo LLM",
     provider: "nexify",
-    description:
-      "Round-Robin DeepSeek V4 Pro/Flash — automatische Lastverteilung, optimale Token-Effizienz",
   },
   {
+    description:
+      "Höchste Qualität für fachliche AVA-Aufgaben — GAEB-Positionen, VOB-Analyse, Kostenschätzung",
     id: "ds/deepseek-v4-pro",
     name: "DeepSeek V4 Pro",
     provider: "deepseek",
-    description:
-      "Höchste Qualität für fachliche AVA-Aufgaben — GAEB-Positionen, VOB-Analyse, Kostenschätzung",
     reasoningEffort: "medium",
   },
   {
+    description:
+      "Schnelles Modell für Routine-Chats und Titelgenerierung — minimaler Token-Verbrauch",
     id: "ds/deepseek-v4-flash",
     name: "DeepSeek V4 Flash",
     provider: "deepseek",
-    description:
-      "Schnelles Modell für Routine-Chats und Titelgenerierung — minimaler Token-Verbrauch",
   },
   {
+    description:
+      "Reasoning-Modell für komplexe AVA-Fälle — Nachtragsmanagement, VOB/A-Konformitätsprüfung",
     id: "ds/deepseek-reasoner",
     name: "DeepSeek Reasoner",
     provider: "deepseek",
-    description:
-      "Reasoning-Modell für komplexe AVA-Fälle — Nachtragsmanagement, VOB/A-Konformitätsprüfung",
     reasoningEffort: "high",
   },
 ];
@@ -72,9 +72,11 @@ export function getCapabilities(): Record<string, ModelCapabilities> {
   const capabilities: Record<string, ModelCapabilities> = {};
   for (const model of chatModels) {
     capabilities[model.id] = {
+      reasoning:
+        model.id === "ds/deepseek-reasoner" ||
+        model.reasoningEffort !== undefined,
       tools: true,
       vision: true,
-      reasoning: model.id === "ds/deepseek-reasoner" || model.reasoningEffort !== undefined,
     };
   }
   return capabilities;
@@ -86,7 +88,6 @@ export type GatewayModelWithCapabilities = ChatModel & {
   capabilities: ModelCapabilities;
 };
 
-// biome-ignore lint/suspicious/useAwait: async für API-Kompatibilität (Aufrufer erwarten Promise), auch wenn intern kein await nötig ist
 export async function getAllGatewayModels(): Promise<
   GatewayModelWithCapabilities[]
 > {
@@ -96,7 +97,7 @@ export async function getAllGatewayModels(): Promise<
   const caps = getCapabilities();
   return chatModels.map((m) => ({
     ...m,
-    capabilities: caps[m.id] ?? { tools: true, vision: true, reasoning: true },
+    capabilities: caps[m.id] ?? { reasoning: true, tools: true, vision: true },
   }));
 }
 

@@ -1,9 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
-  Mem0Service,
   createMem0Service,
-  MEMORY_SCOPE_PROJECT,
   MEMORY_SCOPE_GLOBAL,
+  MEMORY_SCOPE_PROJECT,
 } from "./mem0";
 
 describe("Mem0Service", () => {

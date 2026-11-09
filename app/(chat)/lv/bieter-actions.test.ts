@@ -12,9 +12,9 @@ const mocks = vi.hoisted(() => {
   }));
   return {
     authMock,
-    revalidatePathMock,
     getOfferByIdMock,
     getOffersByProjectMock,
+    revalidatePathMock,
     updateOfferStatusMock,
   };
 });
@@ -51,9 +51,9 @@ function mockOffer(
   overrides: Partial<{ id: string; projectId: string; status: string }> = {}
 ) {
   return {
+    bieter: "Bieter A",
     id: OFFER_ID,
     projectId: PROJECT_ID,
-    bieter: "Bieter A",
     status: "eingereicht",
     ...overrides,
   };
@@ -110,8 +110,8 @@ describe("setBieterStatusAction", () => {
       status: "gueltig",
     });
     expect(updateOfferStatusMock).toHaveBeenCalledWith(OFFER_ID, {
-      status: "gueltig",
       bemerkungen: undefined,
+      status: "gueltig",
     });
     expect(revalidatePathMock).toHaveBeenCalledWith(`/lv/${PROJECT_ID}/bieter`);
   });
@@ -130,10 +130,10 @@ describe("setBieterStatusAction", () => {
     });
     // Zuschlag für Hauptangebot
     expect(updateOfferStatusMock).toHaveBeenCalledWith(OFFER_ID, {
-      status: "vergeben",
-      zuschlagErteiltAm: expect.any(Date),
-      zuschlagBegruendung: "Günstigster gültiger Bieter.",
       bemerkungen: undefined,
+      status: "vergeben",
+      zuschlagBegruendung: "Günstigster gültiger Bieter.",
+      zuschlagErteiltAm: expect.any(Date),
     });
     // Anderes aktiv → abgelehnt
     expect(updateOfferStatusMock).toHaveBeenCalledWith(OTHER_OFFER_ID, {
@@ -144,15 +144,15 @@ describe("setBieterStatusAction", () => {
   it("erlaubt Übergang eingereicht → ausgeschlossen mit Grund", async () => {
     getOfferByIdMock.mockResolvedValue(mockOffer({ status: "eingereicht" }));
     await setBieterStatusAction({
+      auschlussGrund: "Fehlende Eignungserklärung.",
       offerId: OFFER_ID,
       projectId: PROJECT_ID,
       status: "ausgeschlossen",
-      auschlussGrund: "Fehlende Eignungserklärung.",
     });
     expect(updateOfferStatusMock).toHaveBeenCalledWith(OFFER_ID, {
-      status: "ausgeschlossen",
       auschlussGrund: "Fehlende Eignungserklärung.",
       bemerkungen: undefined,
+      status: "ausgeschlossen",
     });
   });
 
@@ -175,8 +175,8 @@ describe("setBieterStatusAction", () => {
       status: "eingereicht",
     });
     expect(updateOfferStatusMock).toHaveBeenCalledWith(OFFER_ID, {
-      status: "eingereicht",
       bemerkungen: undefined,
+      status: "eingereicht",
     });
   });
 

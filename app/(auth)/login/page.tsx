@@ -16,9 +16,9 @@ export default function Page() {
 
     try {
       const res = await fetch("/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password }),
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
       });
 
       const data = await res.json();
@@ -40,29 +40,31 @@ export default function Page() {
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="w-full max-w-sm px-4">
-        <div className="flex flex-col items-center gap-2 mb-6">
-          <div className="w-12 h-12 rounded-lg bg-primary flex items-center justify-center">
-            <span className="text-primary-foreground font-bold text-xl">LV</span>
+        <div className="mb-6 flex flex-col items-center gap-2">
+          <div className="bg-primary flex h-12 w-12 items-center justify-center rounded-lg">
+            <span className="text-primary-foreground text-xl font-bold">
+              LV
+            </span>
           </div>
           <h1 className="text-2xl font-semibold tracking-tight">LV.AI</h1>
-          <p className="text-sm text-muted-foreground text-center">
+          <p className="text-muted-foreground text-center text-sm">
             Autonomer KI-Experte für Leistungsverzeichnisse
             <br />
             Ausschreibung · Vergabe · Abrechnung
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <div className="flex flex-col gap-2">
             <label
-              className="font-normal text-muted-foreground text-sm"
+              className="text-muted-foreground text-sm font-normal"
               htmlFor="password"
             >
               Zugangspasswort
             </label>
             <input
               autoFocus
-              className="h-10 rounded-lg border border-border/50 bg-muted/50 px-3 py-1 text-sm transition-colors focus:border-foreground/20 focus:bg-muted focus:outline-none"
+              className="border-border/50 bg-muted/50 focus:border-foreground/20 focus:bg-muted h-10 rounded-lg border px-3 py-1 text-sm transition-colors focus:outline-none"
               id="password"
               name="password"
               placeholder="••••••••"
@@ -71,18 +73,18 @@ export default function Page() {
             />
           </div>
 
-          {error && <p className="text-sm text-destructive">{error}</p>}
+          {error && <p className="text-destructive text-sm">{error}</p>}
 
           <button
-            type="submit"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 h-10 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
             disabled={isLoading}
-            className="h-10 rounded-lg bg-primary text-primary-foreground font-medium text-sm transition-colors hover:bg-primary/90 disabled:opacity-50"
+            type="submit"
           >
             {isLoading ? "Wird eingeloggt..." : "Zugang"}
           </button>
         </form>
 
-        <p className="text-center text-[12px] text-muted-foreground mt-4">
+        <p className="text-muted-foreground mt-4 text-center text-[12px]">
           D/A/CH · GAEB DA XML · VOB · ÖNORM · SIA
         </p>
       </div>

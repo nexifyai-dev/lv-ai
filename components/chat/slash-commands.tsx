@@ -22,46 +22,46 @@ export type SlashCommand = {
 
 export const slashCommands: SlashCommand[] = [
   {
-    name: "new",
+    action: "new",
     description: "Start a new chat",
     icon: <PenSquareIcon className="size-3.5" />,
-    action: "new",
+    name: "new",
   },
   {
-    name: "clear",
+    action: "clear",
     description: "Clear current chat",
     icon: <Trash2Icon className="size-3.5" />,
-    action: "clear",
+    name: "clear",
   },
   {
-    name: "rename",
+    action: "rename",
     description: "Rename current chat",
     icon: <PenLineIcon className="size-3.5" />,
-    action: "rename",
+    name: "rename",
   },
   {
-    name: "model",
+    action: "model",
     description: "Change the AI model",
     icon: <ListIcon className="size-3.5" />,
-    action: "model",
+    name: "model",
   },
   {
-    name: "theme",
+    action: "theme",
     description: "Toggle dark/light mode",
     icon: <PaletteIcon className="size-3.5" />,
-    action: "theme",
+    name: "theme",
   },
   {
-    name: "delete",
+    action: "delete",
     description: "Delete current chat",
     icon: <XIcon className="size-3.5" />,
-    action: "delete",
+    name: "delete",
   },
   {
-    name: "purge",
+    action: "purge",
     description: "Delete all chats",
     icon: <BombIcon className="size-3.5" />,
-    action: "purge",
+    name: "purge",
   },
 ];
 
@@ -96,13 +96,13 @@ export function SlashCommandMenu({
 
   return (
     <div
-      className="absolute bottom-full left-0 right-0 z-50 mb-2 overflow-hidden rounded-xl border border-border/50 bg-card/95 shadow-[var(--shadow-float)] backdrop-blur-xl"
+      className="border-border/50 bg-card/95 absolute right-0 bottom-full left-0 z-50 mb-2 overflow-hidden rounded-xl border shadow-[var(--shadow-float)] backdrop-blur-xl"
       ref={menuRef}
     >
-      <div className="px-4 py-2.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/40">
+      <div className="text-muted-foreground/40 px-4 py-2.5 text-[10px] font-medium tracking-wider uppercase">
         Commands
       </div>
-      <div className="max-h-64 overflow-y-auto pb-1 no-scrollbar">
+      <div className="no-scrollbar max-h-64 overflow-y-auto pb-1">
         {filtered.map((cmd, index) => (
           <button
             className={cn(
@@ -115,17 +115,17 @@ export function SlashCommandMenu({
             onMouseDown={(e) => e.preventDefault()}
             type="button"
           >
-            <div className="flex size-6 shrink-0 items-center justify-center text-muted-foreground/60">
+            <div className="text-muted-foreground/60 flex size-6 shrink-0 items-center justify-center">
               {cmd.icon}
             </div>
-            <span className="font-mono text-[13px] text-foreground">
+            <span className="text-foreground font-mono text-[13px]">
               /{cmd.name}
             </span>
-            <span className="text-[12px] text-muted-foreground/50">
+            <span className="text-muted-foreground/50 text-[12px]">
               {cmd.description}
             </span>
             {cmd.shortcut && (
-              <span className="ml-auto text-[11px] text-muted-foreground/30">
+              <span className="text-muted-foreground/30 ml-auto text-[11px]">
                 {cmd.shortcut}
               </span>
             )}

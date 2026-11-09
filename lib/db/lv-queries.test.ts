@@ -9,20 +9,20 @@ vi.mock("server-only", () => ({}));
 const mocks = vi.hoisted(() => {
   // Thenable, das sofort zu [] resolved — für `await db.select().from().where()...`
   const makeThenable = () => ({
+    limit: vi.fn(() => makeThenable()),
+    orderBy: vi.fn(() => makeThenable()),
     // biome-ignore lint/suspicious/noThenProperty: Thenable-Mock braucht `then` für await
     then: vi.fn((resolve: any) => Promise.resolve([]).then(resolve)),
     where: vi.fn(() => makeThenable()),
-    orderBy: vi.fn(() => makeThenable()),
-    limit: vi.fn(() => makeThenable()),
   });
 
   const chain = makeThenable();
 
   const selectSpy = vi.fn(() => ({
     from: vi.fn(() => chain),
-    where: vi.fn(() => chain),
-    orderBy: vi.fn(() => chain),
     limit: vi.fn(() => chain),
+    orderBy: vi.fn(() => chain),
+    where: vi.fn(() => chain),
   }));
 
   const insertSpy = vi.fn(() => ({
@@ -43,15 +43,15 @@ const mocks = vi.hoisted(() => {
     where: vi.fn(async () => undefined),
   }));
 
-  return { selectSpy, insertSpy, updateSpy, deleteSpy, chain };
+  return { chain, deleteSpy, insertSpy, selectSpy, updateSpy };
 });
 
 vi.mock("drizzle-orm/postgres-js", () => ({
   drizzle: () => ({
-    select: mocks.selectSpy,
-    insert: mocks.insertSpy,
-    update: mocks.updateSpy,
     delete: mocks.deleteSpy,
+    insert: mocks.insertSpy,
+    select: mocks.selectSpy,
+    update: mocks.updateSpy,
   }),
 }));
 
@@ -107,9 +107,9 @@ describe("LV-Queries", () => {
   it("createLvPosition gibt Position-Objekt zurueck", async () => {
     const mockRow = {
       id: "pos-1",
+      kurztext: "Boden aushuben",
       lvDocumentId: "lv-1",
       oz: "01.0010",
-      kurztext: "Boden aushuben",
       sortierung: 0,
     };
     mocks.insertSpy.mockReturnValueOnce({
@@ -118,9 +118,9 @@ describe("LV-Queries", () => {
       })),
     } as any);
     const result = await createLvPosition({
+      kurztext: "Boden aushuben",
       lvDocumentId: "lv-1",
       oz: "01.0010",
-      kurztext: "Boden aushuben",
     });
     expect(result).toEqual(mockRow);
   });

@@ -15,15 +15,15 @@ import {
 type GaebFormat = "X81" | "X82" | "X83" | "X84" | "X85" | "X86" | "X87" | "X89";
 
 interface Position {
-  id: string;
-  lvDocumentId: string;
-  oz: string;
-  kurztext: string;
-  langtext?: string | null;
-  menge?: string | null;
   einheit?: string | null;
   einheitspreis?: string | null;
   gesamtpreis?: string | null;
+  id: string;
+  kurztext: string;
+  langtext?: string | null;
+  lvDocumentId: string;
+  menge?: string | null;
+  oz: string;
   positionstyp?: string | null;
   sortierung?: number | null;
 }
@@ -43,13 +43,13 @@ export function PositionEditor({
 
   const isEdit = Boolean(position?.id);
   const [form, setForm] = useState({
-    oz: position?.oz ?? "",
-    kurztext: position?.kurztext ?? "",
-    langtext: position?.langtext ?? "",
-    menge: position?.menge ?? "",
     einheit: position?.einheit ?? "",
     einheitspreis: position?.einheitspreis ?? "",
     gesamtpreis: position?.gesamtpreis ?? "",
+    kurztext: position?.kurztext ?? "",
+    langtext: position?.langtext ?? "",
+    menge: position?.menge ?? "",
+    oz: position?.oz ?? "",
   });
 
   function update<K extends keyof typeof form>(key: K, value: string) {
@@ -80,7 +80,7 @@ export function PositionEditor({
   return (
     <>
       <button
-        className="inline-flex items-center gap-1.5 rounded-md border border-border/60 px-3 py-1.5 text-sm transition-colors hover:bg-accent"
+        className="border-border/60 hover:bg-accent inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm transition-colors"
         onClick={() => setOpen(true)}
         type="button"
       >
@@ -99,7 +99,7 @@ export function PositionEditor({
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-lg rounded-lg border border-border bg-background p-6 shadow-lg">
+          <div className="border-border bg-background w-full max-w-lg rounded-lg border p-6 shadow-lg">
             <h2 className="mb-4 text-lg font-semibold">
               {isEdit ? "Position bearbeiten" : "Neue Position"}
             </h2>
@@ -155,14 +155,14 @@ export function PositionEditor({
               </div>
               <div className="flex justify-end gap-2 pt-2">
                 <button
-                  className="rounded-md px-3 py-1.5 text-sm hover:bg-accent"
+                  className="hover:bg-accent rounded-md px-3 py-1.5 text-sm"
                   onClick={() => setOpen(false)}
                   type="button"
                 >
                   Abbrechen
                 </button>
                 <button
-                  className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground disabled:opacity-50"
+                  className="bg-primary text-primary-foreground inline-flex items-center gap-2 rounded-md px-4 py-1.5 text-sm font-medium disabled:opacity-50"
                   disabled={pending}
                   type="submit"
                 >
@@ -209,7 +209,7 @@ export function DeletePositionButton({
   return (
     <button
       aria-label="Position löschen"
-      className="inline-flex items-center gap-1 rounded-md p-1 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive disabled:opacity-50"
+      className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive inline-flex items-center gap-1 rounded-md p-1 transition-colors disabled:opacity-50"
       disabled={pending}
       onClick={handleDelete}
       type="button"
@@ -234,8 +234,8 @@ export function CreateLvDocumentButton({
   const [open, setOpen] = useState(false);
   const [pending, startTransition] = useTransition();
   const [form, setForm] = useState({
-    titel: "",
     gaebFormat: "" as GaebFormat | "",
+    titel: "",
     version: "",
   });
 
@@ -244,14 +244,14 @@ export function CreateLvDocumentButton({
     startTransition(async () => {
       try {
         await createLvDocumentAction({
+          gaebFormat: form.gaebFormat || undefined,
           projectId,
           titel: form.titel,
-          gaebFormat: form.gaebFormat || undefined,
           version: form.version || undefined,
         });
         toast.success("LV-Dokument erstellt.");
         setOpen(false);
-        setForm({ titel: "", gaebFormat: "", version: "" });
+        setForm({ gaebFormat: "", titel: "", version: "" });
         onDone?.();
       } catch (err) {
         toast.error(
@@ -264,7 +264,7 @@ export function CreateLvDocumentButton({
   return (
     <>
       <button
-        className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground"
+        className="bg-primary text-primary-foreground inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium"
         onClick={() => setOpen(true)}
         type="button"
       >
@@ -274,7 +274,7 @@ export function CreateLvDocumentButton({
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-md rounded-lg border border-border bg-background p-6 shadow-lg">
+          <div className="border-border bg-background w-full max-w-md rounded-lg border p-6 shadow-lg">
             <h2 className="mb-4 text-lg font-semibold">Neues LV-Dokument</h2>
             <form className="space-y-3" onSubmit={handleSubmit}>
               <Field
@@ -288,7 +288,7 @@ export function CreateLvDocumentButton({
                 <label className="space-y-1 text-sm">
                   <span className="text-muted-foreground">GAEB-Format</span>
                   <select
-                    className="w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm"
+                    className="border-input bg-background w-full rounded-md border px-3 py-1.5 text-sm"
                     onChange={(e) =>
                       setForm((p) => ({
                         ...p,
@@ -325,14 +325,14 @@ export function CreateLvDocumentButton({
               </div>
               <div className="flex justify-end gap-2 pt-2">
                 <button
-                  className="rounded-md px-3 py-1.5 text-sm hover:bg-accent"
+                  className="hover:bg-accent rounded-md px-3 py-1.5 text-sm"
                   onClick={() => setOpen(false)}
                   type="button"
                 >
                   Abbrechen
                 </button>
                 <button
-                  className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground disabled:opacity-50"
+                  className="bg-primary text-primary-foreground inline-flex items-center gap-2 rounded-md px-4 py-1.5 text-sm font-medium disabled:opacity-50"
                   disabled={pending}
                   type="submit"
                 >
@@ -373,7 +373,7 @@ function Field({
       </span>
       {textarea ? (
         <textarea
-          className="w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm"
+          className="border-input bg-background w-full rounded-md border px-3 py-1.5 text-sm"
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           rows={3}
@@ -381,7 +381,7 @@ function Field({
         />
       ) : (
         <input
-          className="w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm"
+          className="border-input bg-background w-full rounded-md border px-3 py-1.5 text-sm"
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           required={required}

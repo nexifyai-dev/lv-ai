@@ -135,8 +135,8 @@ export const systemPromptParts = ({
   const dynamicContent = `${requestPrompt}${contextSection}`;
 
   return [
-    { role: "system", content: stableContent },
-    { role: "system", content: dynamicContent },
+    { content: stableContent, role: "system" },
+    { content: dynamicContent, role: "system" },
   ];
 };
 

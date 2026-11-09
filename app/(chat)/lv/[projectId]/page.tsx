@@ -47,43 +47,43 @@ export default async function LvProjectPage({ params }: PageProps) {
   const documents = await getLvDocumentsByProject(projectId).catch(() => []);
   const formatEuro = (value: number) =>
     new Intl.NumberFormat("de-DE", {
-      style: "currency",
       currency: "EUR",
+      style: "currency",
     }).format(value);
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden">
-      <header className="flex items-center gap-3 border-b border-border/40 px-6 py-4">
+      <header className="border-border/40 flex items-center gap-3 border-b px-6 py-4">
         <Link
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          className="text-muted-foreground hover:text-foreground inline-flex items-center gap-2 text-sm transition-colors"
           href="/"
         >
           <ArrowLeftIcon className="size-4" />
           Zurück
         </Link>
         <div className="ml-2 flex items-center gap-2">
-          <FileTextIcon className="size-5 text-muted-foreground" />
+          <FileTextIcon className="text-muted-foreground size-5" />
           <h1 className="text-lg font-semibold">
             Leistungsverzeichnis · Projekt {projectId.slice(0, 8)}
           </h1>
         </div>
         <div className="ml-auto flex items-center gap-2">
           <Link
-            className="inline-flex items-center gap-1.5 rounded-md border border-border/60 px-3 py-1.5 text-sm transition-colors hover:bg-accent"
+            className="border-border/60 hover:bg-accent inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm transition-colors"
             href={`/lv/${projectId}/preisspiegel`}
           >
             <FileSpreadsheetIcon className="size-3.5" />
             Preisspiegel
           </Link>
           <Link
-            className="inline-flex items-center gap-1.5 rounded-md border border-border/60 px-3 py-1.5 text-sm transition-colors hover:bg-accent"
+            className="border-border/60 hover:bg-accent inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm transition-colors"
             href={`/lv/${projectId}/bieter`}
           >
             <ClipboardListIcon className="size-3.5" />
             Bieter
           </Link>
           <Link
-            className="inline-flex items-center gap-1.5 rounded-md border border-border/60 px-3 py-1.5 text-sm transition-colors hover:bg-accent"
+            className="border-border/60 hover:bg-accent inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm transition-colors"
             href={`/lv/${projectId}/plan`}
           >
             <RulerIcon className="size-3.5" />
@@ -137,7 +137,7 @@ async function DocumentSection({
       <div className="flex items-center justify-between gap-4">
         <div className="space-y-1">
           <h2 className="text-base font-medium">{document.titel}</h2>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <div className="text-muted-foreground flex items-center gap-2 text-xs">
             {document.gaebFormat && (
               <Badge variant="secondary">GAEB {document.gaebFormat}</Badge>
             )}
@@ -150,7 +150,7 @@ async function DocumentSection({
         </div>
         <div className="flex items-center gap-4">
           <div className="text-right">
-            <div className="text-xs text-muted-foreground">Gesamtsumme</div>
+            <div className="text-muted-foreground text-xs">Gesamtsumme</div>
             <div className="text-lg font-semibold tabular-nums">
               {formatEuro(sum)}
             </div>
@@ -158,14 +158,14 @@ async function DocumentSection({
           {positions.length > 0 && (
             <div className="flex items-center gap-2">
               <Link
-                className="inline-flex items-center gap-1.5 rounded-md border border-border/60 px-3 py-1.5 text-sm transition-colors hover:bg-accent"
+                className="border-border/60 hover:bg-accent inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm transition-colors"
                 href={`/lv/${projectId}/export?documentId=${document.id}&format=X83`}
               >
                 <DownloadIcon className="size-3.5" />
                 GAEB X83
               </Link>
               <Link
-                className="inline-flex items-center gap-1.5 rounded-md border border-border/60 px-3 py-1.5 text-sm transition-colors hover:bg-accent"
+                className="border-border/60 hover:bg-accent inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm transition-colors"
                 href={`/lv/${projectId}/export/pdf?documentId=${document.id}`}
               >
                 <PrinterIcon className="size-3.5" />
@@ -178,11 +178,11 @@ async function DocumentSection({
       </div>
 
       {positions.length === 0 ? (
-        <p className="rounded-md border border-dashed border-border/50 px-4 py-6 text-sm text-muted-foreground">
+        <p className="border-border/50 text-muted-foreground rounded-md border border-dashed px-4 py-6 text-sm">
           Keine Positionen vorhanden.
         </p>
       ) : (
-        <div className="rounded-md border border-border/40">
+        <div className="border-border/40 rounded-md border">
           <Table>
             <TableHeader>
               <TableRow>
@@ -202,7 +202,7 @@ async function DocumentSection({
                   <TableCell>
                     <div className="font-medium">{pos.kurztext}</div>
                     {pos.langtext && (
-                      <div className="mt-0.5 text-xs text-muted-foreground">
+                      <div className="text-muted-foreground mt-0.5 text-xs">
                         {pos.langtext}
                       </div>
                     )}
@@ -216,7 +216,7 @@ async function DocumentSection({
                   <TableCell className="text-right tabular-nums">
                     {pos.einheitspreis ?? "—"}
                   </TableCell>
-                  <TableCell className="text-right tabular-nums font-medium">
+                  <TableCell className="text-right font-medium tabular-nums">
                     {pos.gesamtpreis ?? "—"}
                   </TableCell>
                   <TableCell className="flex items-center gap-1">
@@ -236,10 +236,10 @@ async function DocumentSection({
 function EmptyState() {
   return (
     <div className="flex h-full flex-col items-center justify-center gap-3 text-center">
-      <FileTextIcon className="size-10 text-muted-foreground/50" />
+      <FileTextIcon className="text-muted-foreground/50 size-10" />
       <div>
         <p className="text-sm font-medium">Noch keine LV-Dokumente</p>
-        <p className="mt-1 text-xs text-muted-foreground">
+        <p className="text-muted-foreground mt-1 text-xs">
           Erstelle das erste Leistungsverzeichnis über den Chat oder einen
           GAEB-Import.
         </p>

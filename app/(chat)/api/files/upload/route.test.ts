@@ -42,8 +42,8 @@ function buildFormData(file: { name: string; type: string; content: string }) {
 
 function jsonRequest(body: FormData): Request {
   return new Request("http://localhost/api/files/upload", {
-    method: "POST",
     body,
+    method: "POST",
   });
 }
 
@@ -66,9 +66,9 @@ describe("/api/files/upload", () => {
     authMock.mockResolvedValue(null);
     const { POST } = await import("./route");
     const fd = buildFormData({
+      content: "%PDF-1.4 test",
       name: "test.pdf",
       type: "application/pdf",
-      content: "%PDF-1.4 test",
     });
     const res = await POST(jsonRequest(fd));
     expect(res.status).toBe(401);
@@ -78,8 +78,8 @@ describe("/api/files/upload", () => {
     authMock.mockResolvedValue({ user: { id: "u1" } });
     const { POST } = await import("./route");
     const req = new Request("http://localhost/api/files/upload", {
-      method: "POST",
       body: null,
+      method: "POST",
     });
     const res = await POST(req);
     expect(res.status).toBe(400);
@@ -89,9 +89,9 @@ describe("/api/files/upload", () => {
     authMock.mockResolvedValue({ user: { id: "u1" } });
     const { POST } = await import("./route");
     const fd = buildFormData({
+      content: "binary",
       name: "evil.exe",
       type: "application/x-msdownload",
-      content: "binary",
     });
     const res = await POST(jsonRequest(fd));
     expect(res.status).toBe(400);
@@ -122,14 +122,14 @@ describe("/api/files/upload", () => {
 
     const { POST } = await import("./route");
     const fd = buildFormData({
+      content: "%PDF-1.4 test",
       name: "plan.pdf",
       type: "application/pdf",
-      content: "%PDF-1.4 test",
     });
     const res = await POST(jsonRequest(fd));
     expect(res.status).toBe(200);
     const data = await res.json();
-    expect(data.url).toMatch(/^\/uploads\/lv-ai\//);
+    expect(data.url).toMatch(/^\/uploads\/lv-ai\//u);
     expect(data.pathname).toBe("plan.pdf");
     expect(data.contentType).toBe("application/pdf");
     expect(fsMocks.mkdir).toHaveBeenCalled();
@@ -140,15 +140,15 @@ describe("/api/files/upload", () => {
     authMock.mockResolvedValue({ user: { id: "u1" } });
     process.env.BLOB_READ_WRITE_TOKEN = "vercel-blob-token";
     putMock.mockResolvedValue({
-      url: "https://example.public.blob.vercel-storage.com/lv-ai/123-plan.pdf",
       pathname: "lv-ai/123-plan.pdf",
+      url: "https://example.public.blob.vercel-storage.com/lv-ai/123-plan.pdf",
     });
 
     const { POST } = await import("./route");
     const fd = buildFormData({
+      content: "%PDF-1.4 test",
       name: "plan.pdf",
       type: "application/pdf",
-      content: "%PDF-1.4 test",
     });
     const res = await POST(jsonRequest(fd));
     expect(res.status).toBe(200);
@@ -165,9 +165,9 @@ describe("/api/files/upload", () => {
 
     const { POST } = await import("./route");
     const fd = buildFormData({
+      content: '<?xml version="1.0"?><GAEB></GAEB>',
       name: "lv.xml",
       type: "application/xml",
-      content: '<?xml version="1.0"?><GAEB></GAEB>',
     });
     const res = await POST(jsonRequest(fd));
     expect(res.status).toBe(200);

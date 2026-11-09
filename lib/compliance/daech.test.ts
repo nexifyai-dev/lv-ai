@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
-  getComplianceForLand,
-  COMPLIANCE_DE,
   COMPLIANCE_AT,
   COMPLIANCE_CH,
+  COMPLIANCE_DE,
+  getComplianceForLand,
   getFristen,
   getRechtsgrundlage,
 } from "./daech";

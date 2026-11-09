@@ -11,8 +11,8 @@ const MIMO_BASE_URL =
 const MIMO_API_KEY = process.env.OPENAI_API_KEY || "";
 
 const mimoAI = createOpenAI({
-  baseURL: MIMO_BASE_URL,
   apiKey: MIMO_API_KEY,
+  baseURL: MIMO_BASE_URL,
 });
 
 // ─── Provider Export ─────────────────────────────────────────────────────────

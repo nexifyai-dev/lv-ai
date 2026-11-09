@@ -30,8 +30,8 @@ function PureCodeEditor({ content, onSaveContent, status }: EditorProps) {
       });
 
       editorRef.current = new EditorView({
-        state: startState,
         parent: containerRef.current,
+        state: startState,
       });
     }
 
@@ -103,12 +103,12 @@ function PureCodeEditor({ content, onSaveContent, status }: EditorProps) {
 
       if (status === "streaming" || currentContent !== content) {
         const transaction = editorRef.current.state.update({
+          annotations: [Transaction.remote.of(true)],
           changes: {
             from: 0,
-            to: currentContent.length,
             insert: content,
+            to: currentContent.length,
           },
-          annotations: [Transaction.remote.of(true)],
         });
 
         editorRef.current.dispatch(transaction);
@@ -127,7 +127,7 @@ function PureCodeEditor({ content, onSaveContent, status }: EditorProps) {
 
   return (
     <div
-      className="not-prose relative w-full min-h-[300px] pb-[calc(50dvh)]"
+      className="not-prose relative min-h-[300px] w-full pb-[calc(50dvh)]"
       ref={containerRef}
     />
   );

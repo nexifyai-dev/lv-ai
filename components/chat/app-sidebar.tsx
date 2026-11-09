@@ -2,11 +2,8 @@
 
 import {
   BookOpenIcon,
-  FileTextIcon,
-  MessageSquareIcon,
   PanelLeftIcon,
   PenSquareIcon,
-  SettingsIcon,
   TrashIcon,
   UploadIcon,
 } from "lucide-react";
@@ -73,18 +70,20 @@ export function AppSidebar({ user }: { user: User | undefined }) {
   return (
     <>
       <Sidebar collapsible="icon">
-        <SidebarHeader className="pb-0 pt-3">
+        <SidebarHeader className="pt-3 pb-0">
           <SidebarMenu>
             <SidebarMenuItem className="flex flex-row items-center justify-between">
               <div className="group/logo relative flex items-center justify-center">
                 <SidebarMenuButton
                   asChild
-                  className="size-8 !px-0 items-center justify-center group-data-[collapsible=icon]:group-hover/logo:opacity-0"
+                  className="size-8 items-center justify-center !px-0 group-data-[collapsible=icon]:group-hover/logo:opacity-0"
                   tooltip="LV.AI"
                 >
                   <Link href="/" onClick={() => setOpenMobile(false)}>
-                    <div className="size-6 rounded-md bg-primary flex items-center justify-center">
-                      <span className="text-primary-foreground font-bold text-[10px]">LV</span>
+                    <div className="bg-primary flex size-6 items-center justify-center rounded-md">
+                      <span className="text-primary-foreground text-[10px] font-bold">
+                        LV
+                      </span>
                     </div>
                   </Link>
                 </SidebarMenuButton>
@@ -103,7 +102,7 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                 </Tooltip>
               </div>
               <div className="group-data-[collapsible=icon]:hidden">
-                <SidebarTrigger className="text-sidebar-foreground/60 transition-colors duration-150 hover:text-sidebar-foreground" />
+                <SidebarTrigger className="text-sidebar-foreground/60 hover:text-sidebar-foreground transition-colors duration-150" />
               </div>
             </SidebarMenuItem>
           </SidebarMenu>
@@ -116,7 +115,7 @@ export function AppSidebar({ user }: { user: User | undefined }) {
               <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton
-                    className="h-8 rounded-lg border border-sidebar-border text-[13px] text-sidebar-foreground/70 transition-colors duration-150 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+                    className="border-sidebar-border text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground h-8 rounded-lg border text-[13px] transition-colors duration-150"
                     onClick={() => {
                       setOpenMobile(false);
                       router.push("/");
@@ -138,14 +137,14 @@ export function AppSidebar({ user }: { user: User | undefined }) {
 
           {/* Wissens-Bereich */}
           <SidebarGroup>
-            <SidebarGroupLabel className="text-[11px] uppercase tracking-wider text-sidebar-foreground/50">
+            <SidebarGroupLabel className="text-sidebar-foreground/50 text-[11px] tracking-wider uppercase">
               Wissen
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton
-                    className="h-8 rounded-lg text-[13px] text-sidebar-foreground/70 transition-colors duration-150 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+                    className="text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground h-8 rounded-lg text-[13px] transition-colors duration-150"
                     onClick={() => {
                       setOpenMobile(false);
                       router.push("/knowledge");
@@ -158,24 +157,27 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton
-                    className="h-8 rounded-lg text-[13px] text-sidebar-foreground/70 transition-colors duration-150 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+                    className="text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground h-8 rounded-lg text-[13px] transition-colors duration-150"
                     onClick={() => {
                       setOpenMobile(false);
                       // File Upload Dialog öffnen
                       const input = document.createElement("input");
                       input.type = "file";
                       input.multiple = true;
-                      input.accept = ".pdf,.doc,.docx,.xls,.xlsx,.gaeb,.xml,.txt,.csv";
+                      input.accept =
+                        ".pdf,.doc,.docx,.xls,.xlsx,.gaeb,.xml,.txt,.csv";
                       input.onchange = async (e) => {
                         const files = (e.target as HTMLInputElement).files;
-                        if (!files?.length) return;
+                        if (!files?.length) {
+                          return;
+                        }
                         for (const file of files) {
                           const formData = new FormData();
                           formData.append("file", file);
                           try {
                             const res = await fetch("/api/files/upload", {
-                              method: "POST",
                               body: formData,
+                              method: "POST",
                             });
                             if (res.ok) {
                               toast.success(`${file.name} hochgeladen`);
@@ -206,7 +208,7 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                 <SidebarMenu>
                   <SidebarMenuItem>
                     <SidebarMenuButton
-                      className="rounded-lg text-sidebar-foreground/40 transition-colors duration-150 hover:bg-destructive/10 hover:text-destructive"
+                      className="text-sidebar-foreground/40 hover:bg-destructive/10 hover:text-destructive rounded-lg transition-colors duration-150"
                       onClick={() => setShowDeleteAllDialog(true)}
                       tooltip="Alle löschen"
                     >
@@ -220,7 +222,7 @@ export function AppSidebar({ user }: { user: User | undefined }) {
           )}
         </SidebarContent>
 
-        <SidebarFooter className="border-t border-sidebar-border pt-2 pb-3">
+        <SidebarFooter className="border-sidebar-border border-t pt-2 pb-3">
           {user && <SidebarUserNav user={user} />}
         </SidebarFooter>
         <SidebarRail />

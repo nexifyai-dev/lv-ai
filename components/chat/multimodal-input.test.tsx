@@ -2,7 +2,8 @@ import { describe, expect, it } from "vitest";
 
 describe("Multimodal Input", () => {
   it("should have German placeholder text", () => {
-    const placeholder = "Fragen Sie mich alles zu LV, Ausschreibung, Vergabe...";
+    const placeholder =
+      "Fragen Sie mich alles zu LV, Ausschreibung, Vergabe...";
     expect(placeholder).toContain("LV");
     expect(placeholder).toContain("Ausschreibung");
   });

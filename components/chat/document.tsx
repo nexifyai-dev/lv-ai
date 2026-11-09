@@ -37,7 +37,7 @@ function PureDocumentToolResult({
 
   return (
     <button
-      className="flex w-fit cursor-pointer flex-row items-center gap-2 rounded-xl border bg-background px-3 py-2"
+      className="bg-background flex w-fit cursor-pointer flex-row items-center gap-2 rounded-xl border px-3 py-2"
       onClick={(event) => {
         if (isReadonly) {
           toast.error(
@@ -49,20 +49,20 @@ function PureDocumentToolResult({
         const rect = event.currentTarget.getBoundingClientRect();
 
         const boundingBox = {
-          top: rect.top,
-          left: rect.left,
-          width: rect.width,
           height: rect.height,
+          left: rect.left,
+          top: rect.top,
+          width: rect.width,
         };
 
         setArtifact((currentArtifact) => ({
-          documentId: result.id,
-          kind: result.kind,
-          content: currentArtifact.content,
-          title: result.title,
-          isVisible: true,
-          status: "idle",
           boundingBox,
+          content: currentArtifact.content,
+          documentId: result.id,
+          isVisible: true,
+          kind: result.kind,
+          status: "idle",
+          title: result.title,
         }));
       }}
       type="button"
@@ -115,16 +115,16 @@ function PureDocumentToolCall({
         const rect = event.currentTarget.getBoundingClientRect();
 
         const boundingBox = {
-          top: rect.top,
-          left: rect.left,
-          width: rect.width,
           height: rect.height,
+          left: rect.left,
+          top: rect.top,
+          width: rect.width,
         };
 
         setArtifact((currentArtifact) => ({
           ...currentArtifact,
-          isVisible: true,
           boundingBox,
+          isVisible: true,
         }));
       }}
       type="button"

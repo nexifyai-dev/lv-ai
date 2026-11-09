@@ -41,7 +41,7 @@ function esc(text: string | null | undefined): string {
     return "";
   }
   // pdf-lib kann nur ASCII/Latin1 — Umlaute bleiben, pdf-lib >=1.17 supported Unicode
-  return text.replace(/€/g, "EUR").substring(0, 200);
+  return text.replace(/€/gu, "EUR").substring(0, 200);
 }
 
 function euro(v: string | null): string {
@@ -53,17 +53,17 @@ function euro(v: string | null): string {
     return "—";
   }
   return new Intl.NumberFormat("de-DE", {
-    style: "currency",
     currency: "EUR",
     minimumFractionDigits: 2,
+    style: "currency",
   }).format(n);
 }
 
 function euroShort(v: number): string {
   return new Intl.NumberFormat("de-DE", {
-    style: "currency",
     currency: "EUR",
     minimumFractionDigits: 2,
+    style: "currency",
   }).format(v);
 }
 
@@ -91,69 +91,69 @@ export async function generateLvPdf(
   // ─── Deckblatt ──────────────────────────────────────────────────────────────
   y -= 40;
   page.drawText("LEISTUNGSVERZEICHNIS", {
+    color: rgb(0.1, 0.1, 0.1),
+    font: fontBold,
+    size: FONT_SIZE_TITLE + 4,
     x: MARGIN,
     y,
-    size: FONT_SIZE_TITLE + 4,
-    font: fontBold,
-    color: rgb(0.1, 0.1, 0.1),
   });
 
   y -= 32;
   page.drawText(esc(doc.titel), {
+    font: fontBold,
+    size: FONT_SIZE_TITLE,
     x: MARGIN,
     y,
-    size: FONT_SIZE_TITLE,
-    font: fontBold,
   });
 
   y -= 24;
   if (projekt) {
     page.drawText(`Projekt: ${esc(projekt.name)}`, {
+      color: rgb(0.35, 0.35, 0.35),
+      font,
+      size: FONT_SIZE_BODY + 1,
       x: MARGIN,
       y,
-      size: FONT_SIZE_BODY + 1,
-      font,
-      color: rgb(0.35, 0.35, 0.35),
     });
     y -= 18;
   }
 
   page.drawText(`Stand: ${new Date().toLocaleDateString("de-DE")} · LV.AI`, {
+    color: rgb(0.5, 0.5, 0.5),
+    font,
+    size: FONT_SIZE_BODY,
     x: MARGIN,
     y,
-    size: FONT_SIZE_BODY,
-    font,
-    color: rgb(0.5, 0.5, 0.5),
   });
 
   y -= 24;
   if (doc.gaebFormat) {
     page.drawText(`GAEB-Format: ${esc(doc.gaebFormat)}`, {
+      color: rgb(0.5, 0.5, 0.5),
+      font,
+      size: FONT_SIZE_BODY,
       x: MARGIN,
       y,
-      size: FONT_SIZE_BODY,
-      font,
-      color: rgb(0.5, 0.5, 0.5),
     });
     y -= 18;
   }
 
   page.drawText(`Positionen: ${positionen.length}`, {
+    color: rgb(0.5, 0.5, 0.5),
+    font,
+    size: FONT_SIZE_BODY,
     x: MARGIN,
     y,
-    size: FONT_SIZE_BODY,
-    font,
-    color: rgb(0.5, 0.5, 0.5),
   });
 
   if (summe > 0) {
     y -= 18;
     page.drawText(`Gesamtsumme: ${euroShort(summe)}`, {
+      color: rgb(0.1, 0.1, 0.1),
+      font: fontBold,
+      size: FONT_SIZE_BODY,
       x: MARGIN,
       y,
-      size: FONT_SIZE_BODY,
-      font: fontBold,
-      color: rgb(0.1, 0.1, 0.1),
     });
   }
 
@@ -171,18 +171,18 @@ export async function generateLvPdf(
   let x = MARGIN;
   for (let i = 0; i < headers.length; i++) {
     page.drawRectangle({
+      color: rgb(0.92, 0.92, 0.92),
+      height: HEADER_HEIGHT,
+      width: colWidths[i],
       x,
       y: y - HEADER_HEIGHT + 4,
-      width: colWidths[i],
-      height: HEADER_HEIGHT,
-      color: rgb(0.92, 0.92, 0.92),
     });
     page.drawText(headers[i], {
+      color: rgb(0.2, 0.2, 0.2),
+      font: fontBold,
+      size: FONT_SIZE_BODY - 1,
       x: i === 1 ? x + 3 : i >= 3 ? x + colWidths[i] - 4 : x + 3,
       y: y - HEADER_HEIGHT + 8,
-      size: FONT_SIZE_BODY - 1,
-      font: fontBold,
-      color: rgb(0.2, 0.2, 0.2),
     });
     x += colWidths[i];
   }
@@ -197,18 +197,18 @@ export async function generateLvPdf(
       let hx = MARGIN;
       for (let hi = 0; hi < headers.length; hi++) {
         page.drawRectangle({
+          color: rgb(0.92, 0.92, 0.92),
+          height: HEADER_HEIGHT,
+          width: colWidths[hi],
           x: hx,
           y: y - HEADER_HEIGHT + 4,
-          width: colWidths[hi],
-          height: HEADER_HEIGHT,
-          color: rgb(0.92, 0.92, 0.92),
         });
         page.drawText(headers[hi], {
+          color: rgb(0.2, 0.2, 0.2),
+          font: fontBold,
+          size: FONT_SIZE_BODY - 1,
           x: hi === 1 ? hx + 3 : hi >= 3 ? hx + colWidths[hi] - 4 : hx + 3,
           y: y - HEADER_HEIGHT + 8,
-          size: FONT_SIZE_BODY - 1,
-          font: fontBold,
-          color: rgb(0.2, 0.2, 0.2),
         });
         hx += colWidths[hi];
       }
@@ -219,10 +219,10 @@ export async function generateLvPdf(
 
     // OZ
     page.drawText(esc(pos.oz), {
+      font: fontBold,
+      size: FONT_SIZE_BODY,
       x: MARGIN + 3,
       y: rowY + 4,
-      size: FONT_SIZE_BODY,
-      font: fontBold,
     });
 
     // Kurztext
@@ -230,38 +230,40 @@ export async function generateLvPdf(
       ? `${esc(pos.kurztext)} · ${esc(pos.langtext)}`
       : esc(pos.kurztext);
     page.drawText(text.substring(0, 80), {
+      font,
+      size: FONT_SIZE_BODY,
       x: MARGIN + COL_OZ + 3,
       y: rowY + 4,
-      size: FONT_SIZE_BODY,
-      font,
     });
 
     // Menge (rechtsbündig)
     page.drawText(pos.menge ?? "—", {
+      font,
+      size: FONT_SIZE_BODY,
       x: MARGIN + COL_OZ + COL_TEXT + COL_MENGE - 4,
       y: rowY + 4,
-      size: FONT_SIZE_BODY,
-      font,
     });
 
     // Einheit
     page.drawText(esc(pos.einheit) || "—", {
+      font,
+      size: FONT_SIZE_BODY,
       x: MARGIN + COL_OZ + COL_TEXT + COL_MENGE + COL_EINHEIT - 4,
       y: rowY + 4,
-      size: FONT_SIZE_BODY,
-      font,
     });
 
     // Einheitspreis (rechtsbündig)
     page.drawText(euro(pos.einheitspreis), {
+      font,
+      size: FONT_SIZE_BODY,
       x: MARGIN + COL_OZ + COL_TEXT + COL_MENGE + COL_EINHEIT + COL_EP - 4,
       y: rowY + 4,
-      size: FONT_SIZE_BODY,
-      font,
     });
 
     // Gesamtpreis (rechtsbündig)
     page.drawText(euro(pos.gesamtpreis), {
+      font: fontBold,
+      size: FONT_SIZE_BODY,
       x:
         MARGIN +
         COL_OZ +
@@ -272,8 +274,6 @@ export async function generateLvPdf(
         COL_GP -
         4,
       y: rowY + 4,
-      size: FONT_SIZE_BODY,
-      font: fontBold,
     });
 
     y = rowY;
@@ -288,25 +288,27 @@ export async function generateLvPdf(
 
   // Trennlinie
   page.drawLine({
-    start: {
-      x: MARGIN + COL_OZ + COL_TEXT + COL_MENGE + COL_EINHEIT,
-      y: y + ROW_HEIGHT + 2,
-    },
+    color: rgb(0.3, 0.3, 0.3),
     end: {
       x: MARGIN + COL_OZ + COL_TEXT + COL_MENGE + COL_EINHEIT + COL_EP + COL_GP,
       y: y + ROW_HEIGHT + 2,
     },
-    color: rgb(0.3, 0.3, 0.3),
+    start: {
+      x: MARGIN + COL_OZ + COL_TEXT + COL_MENGE + COL_EINHEIT,
+      y: y + ROW_HEIGHT + 2,
+    },
   });
 
   page.drawText("Gesamtsumme (netto)", {
+    font: fontBold,
+    size: FONT_SIZE_BODY,
     x: MARGIN + 3,
     y: y + 4,
-    size: FONT_SIZE_BODY,
-    font: fontBold,
   });
 
   page.drawText(euroShort(summe), {
+    font: fontBold,
+    size: FONT_SIZE_BODY + 1,
     x:
       MARGIN +
       COL_OZ +
@@ -317,8 +319,6 @@ export async function generateLvPdf(
       COL_GP -
       4,
     y: y + 4,
-    size: FONT_SIZE_BODY + 1,
-    font: fontBold,
   });
 
   y -= 30;
@@ -330,25 +330,25 @@ export async function generateLvPdf(
     p.drawText(
       `Seite ${i + 1} / ${pages.length} · LV.AI · ${new Date().toLocaleDateString("de-DE")}`,
       {
+        color: rgb(0.5, 0.5, 0.5),
+        font,
+        size: FONT_SIZE_FOOTER,
         x: MARGIN,
         y: 30,
-        size: FONT_SIZE_FOOTER,
-        font,
-        color: rgb(0.5, 0.5, 0.5),
       }
     );
     p.drawText(`GAEB DA XML 3.3 · ${esc(doc.titel)}`, {
+      color: rgb(0.5, 0.5, 0.5),
+      font,
+      size: FONT_SIZE_FOOTER,
       x: MARGIN,
       y: 20,
-      size: FONT_SIZE_FOOTER,
-      font,
-      color: rgb(0.5, 0.5, 0.5),
     });
   }
 
   const bytes = await pdfDoc.save();
   const filename = `LV_${esc(doc.titel)
-    .replace(/[^a-zA-Z0-9äöüÄÖÜß\-_ ]/g, "_")
+    .replace(/[^a-zA-Z0-9äöüÄÖÜß\-_ ]/gu, "_")
     .substring(0, 50)
     .trim()}.pdf`;
 

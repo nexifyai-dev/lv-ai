@@ -46,11 +46,11 @@ export async function GET(
   }
 
   return new NextResponse(pdfBytes, {
-    status: 200,
     headers: {
-      "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename="${encodeURIComponent(filename)}"`,
       "Cache-Control": "no-store",
+      "Content-Disposition": `attachment; filename="${encodeURIComponent(filename)}"`,
+      "Content-Type": "application/pdf",
     },
+    status: 200,
   });
 }

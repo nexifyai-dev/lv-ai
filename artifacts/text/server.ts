@@ -9,20 +9,20 @@ export const textDocumentHandler = createDocumentHandler<"text">({
     let draftContent = "";
 
     const { fullStream } = streamText({
+      experimental_transform: smoothStream({ chunking: "word" }),
       model: getLanguageModel(modelId),
+      prompt: title,
       system:
         "Write about the given topic. Markdown is supported. Use headings wherever appropriate.",
-      experimental_transform: smoothStream({ chunking: "word" }),
-      prompt: title,
     });
 
     for await (const delta of fullStream) {
       if (delta.type === "text-delta") {
         draftContent += delta.text;
         dataStream.write({
-          type: "data-textDelta",
           data: delta.text,
           transient: true,
+          type: "data-textDelta",
         });
       }
     }
@@ -33,19 +33,19 @@ export const textDocumentHandler = createDocumentHandler<"text">({
     let draftContent = "";
 
     const { fullStream } = streamText({
-      model: getLanguageModel(modelId),
-      system: updateDocumentPrompt(document.content, "text"),
       experimental_transform: smoothStream({ chunking: "word" }),
+      model: getLanguageModel(modelId),
       prompt: description,
+      system: updateDocumentPrompt(document.content, "text"),
     });
 
     for await (const delta of fullStream) {
       if (delta.type === "text-delta") {
         draftContent += delta.text;
         dataStream.write({
-          type: "data-textDelta",
           data: delta.text,
           transient: true,
+          type: "data-textDelta",
         });
       }
     }

@@ -56,7 +56,7 @@ function PureEditor({
       const state = EditorState.create({
         doc: buildDocumentFromContent(content),
         plugins: [
-          ...exampleSetup({ schema: documentSchema, menuBar: false }),
+          ...exampleSetup({ menuBar: false, schema: documentSchema }),
           inputRules({
             rules: [
               headingRule(1),
@@ -72,7 +72,6 @@ function PureEditor({
       });
 
       editorRef.current = new EditorView(containerRef.current, {
-        state,
         handleDOMEvents: {
           click(_view, event) {
             const target = event.target as HTMLElement;
@@ -88,6 +87,7 @@ function PureEditor({
             return false;
           },
         },
+        state,
       });
     }
 
@@ -104,9 +104,9 @@ function PureEditor({
       editorRef.current.setProps({
         dispatchTransaction: (transaction) => {
           handleTransaction({
-            transaction,
             editorRef,
             onSaveContent,
+            transaction,
           });
         },
       });
@@ -182,9 +182,12 @@ function PureEditor({
     if (currentDecorations) {
       const newDecorations = DecorationSet.create(
         state.doc,
-        currentDecorations.find().filter((decoration: Decoration) => {
-          return decoration.spec.suggestionId !== activeSuggestion.id;
-        })
+        currentDecorations
+          .find()
+          .filter(
+            (decoration: Decoration) =>
+              decoration.spec.suggestionId !== activeSuggestion.id
+          )
       );
 
       const decorationTransaction = state.tr;

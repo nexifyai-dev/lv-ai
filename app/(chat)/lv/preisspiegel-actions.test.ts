@@ -10,8 +10,8 @@ vi.mock("next/cache", () => ({ revalidatePath: revalidatePathMock }));
 const parseX84Mock = vi.fn();
 const createPreisspiegelMock = vi.fn();
 vi.mock("@/lib/gaeb/preisspiegel", () => ({
-  parseX84Angebot: parseX84Mock,
   createPreisspiegel: createPreisspiegelMock,
+  parseX84Angebot: parseX84Mock,
 }));
 
 vi.mock("server-only", () => ({}));
@@ -19,16 +19,16 @@ vi.mock("server-only", () => ({}));
 const deleteOffersByProjectMock = vi.fn(async () => undefined);
 const createOfferMock = vi.fn(
   async (input: { bieter: string; projectId: string }) => ({
+    bieter: input.bieter,
     id: `offer-${input.bieter}`,
     projectId: input.projectId,
-    bieter: input.bieter,
     status: "eingereicht",
   })
 );
 const replaceOfferPositionsMock = vi.fn(async () => undefined);
 vi.mock("@/lib/db/lv-queries", () => ({
-  deleteOffersByProject: deleteOffersByProjectMock,
   createOffer: createOfferMock,
+  deleteOffersByProject: deleteOffersByProjectMock,
   replaceOfferPositions: replaceOfferPositionsMock,
 }));
 
@@ -45,20 +45,20 @@ function authedSession() {
 
 const mockAngebotA = {
   bieterName: "Bieter A",
-  positions: [],
   gesamtsumme: 10_000,
+  positions: [],
 };
 const mockAngebotB = {
   bieterName: "Bieter B",
-  positions: [],
   gesamtsumme: 12_000,
+  positions: [],
 };
 const mockPreisspiegel = {
-  positions: [],
-  bieter: [],
   ausreisser: [],
+  bieter: [],
   bieterCount: 2,
   positionCount: 0,
+  positions: [],
 };
 
 // ─── Tests ────────────────────────────────────────────────────────────────────
@@ -75,8 +75,8 @@ describe("generatePreisspiegelAction", () => {
     );
     await expect(
       generatePreisspiegelAction({
-        projectId: PROJECT_ID,
         fileUrls: [FILE_URL_A, FILE_URL_B],
+        projectId: PROJECT_ID,
       })
     ).rejects.toThrow();
   });
@@ -88,8 +88,8 @@ describe("generatePreisspiegelAction", () => {
     );
     await expect(
       generatePreisspiegelAction({
-        projectId: PROJECT_ID,
         fileUrls: [FILE_URL_A],
+        projectId: PROJECT_ID,
       })
     ).rejects.toThrow();
   });
@@ -101,8 +101,8 @@ describe("generatePreisspiegelAction", () => {
     );
     await expect(
       generatePreisspiegelAction({
-        projectId: PROJECT_ID,
         fileUrls: ["file:///etc/passwd", "javascript:alert(1)"],
+        projectId: PROJECT_ID,
       })
     ).rejects.toThrow();
   });
@@ -119,8 +119,8 @@ describe("generatePreisspiegelAction", () => {
     );
     await expect(
       generatePreisspiegelAction({
-        projectId: PROJECT_ID,
         fileUrls: [FILE_URL_A, FILE_URL_B],
+        projectId: PROJECT_ID,
       })
     ).rejects.toThrow();
   });
@@ -139,8 +139,8 @@ describe("generatePreisspiegelAction", () => {
       "./preisspiegel-actions"
     );
     const result = await generatePreisspiegelAction({
-      projectId: PROJECT_ID,
       fileUrls: [FILE_URL_A, FILE_URL_B],
+      projectId: PROJECT_ID,
     });
 
     expect(result.bieterCount).toBe(2);
@@ -174,8 +174,8 @@ describe("generatePreisspiegelAction", () => {
       "./preisspiegel-actions"
     );
     const result = await generatePreisspiegelAction({
-      projectId: PROJECT_ID,
       fileUrls: ["/uploads/fail.xml", FILE_URL_B, FILE_URL_A],
+      projectId: PROJECT_ID,
     });
 
     expect(result.bieterCount).toBe(2);
@@ -191,17 +191,17 @@ describe("generatePreisspiegelAction", () => {
       .mockResolvedValueOnce({ ok: true, text: async () => "xml-b" });
     const angebotMitPos = {
       bieterName: "Bieter X",
+      gesamtsumme: 2500,
       positions: [
         {
-          oz: "01.0010",
-          kurztext: "Aushub",
-          menge: "100",
           einheit: "m³",
           einheitspreis: "25.00",
           gesamtpreis: "2500.00",
+          kurztext: "Aushub",
+          menge: "100",
+          oz: "01.0010",
         },
       ],
-      gesamtsumme: 2500,
     };
     parseX84Mock
       .mockReturnValueOnce(angebotMitPos)
@@ -212,8 +212,8 @@ describe("generatePreisspiegelAction", () => {
       "./preisspiegel-actions"
     );
     await generatePreisspiegelAction({
-      projectId: PROJECT_ID,
       fileUrls: [FILE_URL_A, FILE_URL_B],
+      projectId: PROJECT_ID,
     });
 
     expect(replaceOfferPositionsMock).toHaveBeenCalledTimes(2);

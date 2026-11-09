@@ -173,16 +173,16 @@ describe("createPreisspiegel", () => {
       gesamtsumme: 11_440,
       positions: [
         {
-          oz: "1.6.10",
-          kurztext: "Wellrohr",
           einheitspreis: "12.50",
           gesamtpreis: "10000.00",
+          kurztext: "Wellrohr",
+          oz: "1.6.10",
         },
         {
-          oz: "4.1.50",
-          kurztext: "Beton",
           einheitspreis: "120.00",
           gesamtpreis: "1440.00",
+          kurztext: "Beton",
+          oz: "4.1.50",
         },
       ] as GaebPosition[],
     },
@@ -191,16 +191,16 @@ describe("createPreisspiegel", () => {
       gesamtsumme: 8760,
       positions: [
         {
-          oz: "1.6.10",
-          kurztext: "Wellrohr",
           einheitspreis: "9.00",
           gesamtpreis: "7200.00",
+          kurztext: "Wellrohr",
+          oz: "1.6.10",
         },
         {
-          oz: "4.1.50",
-          kurztext: "Beton",
           einheitspreis: "130.00",
           gesamtpreis: "1560.00",
+          kurztext: "Beton",
+          oz: "4.1.50",
         },
       ] as GaebPosition[],
     },
@@ -209,16 +209,16 @@ describe("createPreisspiegel", () => {
       gesamtsumme: 5500,
       positions: [
         {
-          oz: "1.6.10",
-          kurztext: "Wellrohr",
           einheitspreis: "5.00",
           gesamtpreis: "4000.00",
+          kurztext: "Wellrohr",
+          oz: "1.6.10",
         },
         {
-          oz: "4.1.50",
-          kurztext: "Beton",
           einheitspreis: "125.00",
           gesamtpreis: "1500.00",
+          kurztext: "Beton",
+          oz: "4.1.50",
         },
       ] as GaebPosition[],
     },
@@ -308,8 +308,8 @@ describe("createPreisspiegel", () => {
     const angebotOhneTotal: BieterAngebot = {
       bieterName: "Test",
       positions: [
-        { oz: "1.1", kurztext: "A", gesamtpreis: "500.00" },
-        { oz: "1.2", kurztext: "B", gesamtpreis: "300.00" },
+        { gesamtpreis: "500.00", kurztext: "A", oz: "1.1" },
+        { gesamtpreis: "300.00", kurztext: "B", oz: "1.2" },
       ] as GaebPosition[],
     };
     const result = createPreisspiegel([angebotOhneTotal]);
@@ -320,7 +320,7 @@ describe("createPreisspiegel", () => {
     const angebotDe: BieterAngebot = {
       bieterName: "DE-Bieter",
       positions: [
-        { oz: "1.1", kurztext: "Test", gesamtpreis: "1.234,56" },
+        { gesamtpreis: "1.234,56", kurztext: "Test", oz: "1.1" },
       ] as GaebPosition[],
     };
     const result = createPreisspiegel([angebotDe]);
@@ -331,8 +331,8 @@ describe("createPreisspiegel", () => {
     const angebot: BieterAngebot = {
       bieterName: "Test",
       positions: [
-        { oz: "1.1", kurztext: "Mit", gesamtpreis: "100" },
-        { oz: "1.2", kurztext: "Ohne" },
+        { gesamtpreis: "100", kurztext: "Mit", oz: "1.1" },
+        { kurztext: "Ohne", oz: "1.2" },
       ] as GaebPosition[],
     };
     const result = createPreisspiegel([angebot]);
@@ -350,7 +350,9 @@ describe("createPreisspiegel — Integration mit parseX84Angebot", () => {
     expect(b).not.toBeNull();
     expect(c).not.toBeNull();
 
-    const result = createPreisspiegel([a, b, c].filter(Boolean) as BieterAngebot[]);
+    const result = createPreisspiegel(
+      [a, b, c].filter(Boolean) as BieterAngebot[]
+    );
 
     expect(result.bieterCount).toBe(3);
     expect(result.positionCount).toBe(2);
