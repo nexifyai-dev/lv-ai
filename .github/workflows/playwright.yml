@@ -8,7 +8,10 @@ on:
 jobs:
   test:
     timeout-minutes: 30
-    runs-on: ubuntu-latest
+    # ubuntu-latest zeigt seit Oktober 2026 auf 26.04. Playwright 1.51 kann dort
+    # keine Browser installieren ("Playwright does not support chromium on
+    # ubuntu26.04-x64"). Deshalb fest auf 24.04 (von 1.51 unterstuetzt).
+    runs-on: ubuntu-24.04
     env:
       AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
       POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
