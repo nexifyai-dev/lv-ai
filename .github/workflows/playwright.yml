@@ -7,7 +7,7 @@ on:
 
 jobs:
   test:
-    timeout-minutes: 30
+    timeout-minutes: 45
     # ubuntu-latest zeigt seit Oktober 2026 auf 26.04. Playwright 1.51 kann dort
     # keine Browser installieren ("Playwright does not support chromium on
     # ubuntu26.04-x64"). Deshalb fest auf 24.04 (von 1.51 unterstuetzt).
@@ -63,7 +63,20 @@ jobs:
 
       - name: Install Playwright Browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: pnpm exec playwright install --with-deps chromium
+        timeout-minutes: 20
+        env:
+          # GitHub-Runner stehen bei Azure: der Default-CDN (cdn.playwright.dev)
+          # bleibt dort sporadisch bei ~50 % stehen und laeuft in den Job-Timeout.
+          PLAYWRIGHT_DOWNLOAD_HOST: https://playwright.azureedge.net
+          PLAYWRIGHT_DOWNLOAD_CONNECTION_TIMEOUT: "120000"
+        run: |
+          for i in 1 2 3; do
+            if pnpm exec playwright install --with-deps chromium; then exit 0; fi
+            echo "::warning::Chromium-Download Versuch $i fehlgeschlagen, neuer Versuch in 15s"
+            sleep 15
+          done
+          echo "::error::Chromium konnte nach 3 Versuchen nicht installiert werden"
+          exit 1
 
       - name: Run Playwright tests
         run: pnpm test
