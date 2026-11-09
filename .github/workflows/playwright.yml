@@ -62,8 +62,14 @@ jobs:
           key: ${{ runner.os }}-playwright-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Install Playwright Browsers
+        # Browser-Download haengt auf diesen Runnern sporadisch (siehe Lauf #68:
+        # 29 min bei ~50 % von cdn.playwright.dev, Job-Timeout). Der aktuelle
+        # Test-Schritt ruft `pnpm test` (vitest) auf und braucht Chromium gar
+        # nicht - bis die E2E-Suite hier wirklich laeuft, darf der Download den
+        # Job deshalb nicht rot machen.
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        timeout-minutes: 20
+        continue-on-error: true
+        timeout-minutes: 12
         env:
           # GitHub-Runner stehen bei Azure: der Default-CDN (cdn.playwright.dev)
           # bleibt dort sporadisch bei ~50 % stehen und laeuft in den Job-Timeout.
