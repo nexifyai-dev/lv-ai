@@ -256,15 +256,19 @@ describe("GAEB Export", () => {
     });
 
     it("setzt offerDate automatisch auf jetzt", () => {
-      const _before = new Date().toISOString().slice(0, 10);
+      const before = new Date().toISOString().slice(0, 10);
       const xml = exportGaebFromDb({
         format: "X83",
         positions: [{ kurztext: "T", oz: "1.1" }],
         projectName: "Test",
       });
-      const _after = new Date().toISOString().slice(0, 10);
-      // PrjDate sollte heutiges Datum enthalten
-      expect(xml).toMatch(/<PrjDate>2026-07-/u);
+      const after = new Date().toISOString().slice(0, 10);
+      // PrjDate muss das heutige Datum enthalten. before/after deckt den
+      // Tageswechsel waehrend des Aufrufs ab; ein fest verdrahtetes Datum
+      // liess den Test ab August 2026 fehlschlagen.
+      expect(
+        [before, after].some((day) => xml.includes(`<PrjDate>${day}`))
+      ).toBe(true);
     });
   });
 
