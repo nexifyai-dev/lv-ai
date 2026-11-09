@@ -1,9 +1,9 @@
 name: Playwright Tests
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
 
 jobs:
   test:
@@ -23,68 +23,38 @@ jobs:
         with:
           fetch-depth: 1
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-
       - name: Install pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
-          version: latest
+          # Version kommt aus packageManager in package.json - ein zusaetzliches
+          # `version:` wuerde hier als "Multiple versions of pnpm specified" brechen.
           run_install: false
 
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      - uses: actions/cache@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-          cache: "pnpm"
+          node-version: 22
+          cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Cache Playwright browsers
-        uses: actions/cache@v3
-        id: playwright-cache
-        with:
-          path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('**/pnpm-lock.yaml') }}
-
-      - name: Install Playwright Browsers
-        # Browser-Download haengt auf diesen Runnern sporadisch (siehe Lauf #68:
-        # 29 min bei ~50 % von cdn.playwright.dev, Job-Timeout). Der aktuelle
-        # Test-Schritt ruft `pnpm test` (vitest) auf und braucht Chromium gar
-        # nicht - bis die E2E-Suite hier wirklich laeuft, darf der Download den
-        # Job deshalb nicht rot machen.
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
+      # Der Browser-Download bleibt auf GitHub-Runnern sporadisch haengen
+      # (belegt: 29 min bei ~50 % von cdn.playwright.dev, danach Job-Timeout).
+      # Er laeuft deshalb mit hartem Kommando-Timeout und ist nicht fatal:
+      # der Test-Schritt ruft aktuell `pnpm test` (vitest) und braucht Chromium
+      # nicht. Ein Step-Timeout waere hier falsch - der macht den Job trotz
+      # continue-on-error rot.
+      - name: Install Playwright Browsers (optional)
         continue-on-error: true
-        timeout-minutes: 12
         env:
-          # GitHub-Runner stehen bei Azure: der Default-CDN (cdn.playwright.dev)
-          # bleibt dort sporadisch bei ~50 % stehen und laeuft in den Job-Timeout.
           PLAYWRIGHT_DOWNLOAD_HOST: https://playwright.azureedge.net
           PLAYWRIGHT_DOWNLOAD_CONNECTION_TIMEOUT: "120000"
         run: |
-          for i in 1 2 3; do
-            if pnpm exec playwright install --with-deps chromium; then exit 0; fi
-            echo "::warning::Chromium-Download Versuch $i fehlgeschlagen, neuer Versuch in 15s"
-            sleep 15
-          done
-          echo "::error::Chromium konnte nach 3 Versuchen nicht installiert werden"
-          exit 1
+          timeout --signal=KILL 300 pnpm exec playwright install --with-deps chromium \
+            || echo "::warning::Chromium-Installation abgebrochen (CDN/Netz) - Unit-Tests laufen ohne Browser"
 
-      - name: Run Playwright tests
+      - name: Run tests
         run: pnpm test
 
       - uses: actions/upload-artifact@v4
@@ -92,4 +62,5 @@ jobs:
         with:
           name: playwright-report
           path: playwright-report/
+          if-no-files-found: ignore
           retention-days: 7
