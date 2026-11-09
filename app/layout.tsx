@@ -8,10 +8,10 @@ import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://lv-ai.nexifyai.cloud"),
-  title: "LV.AI — Leistungsverzeichnis KI-Experte",
   description:
     "Autonomer KI-Experte für Leistungsverzeichnisse, Ausschreibung, Vergabe und Abrechnung im D/A/CH-Raum. GAEB DA XML, VOB, ÖNORM, SIA.",
+  metadataBase: new URL("https://lv-ai.nexifyai.cloud"),
+  title: "LV.AI — Leistungsverzeichnis KI-Experte",
 };
 
 export const viewport = {
@@ -19,14 +19,14 @@ export const viewport = {
 };
 
 const geist = Geist({
-  subsets: ["latin"],
   display: "swap",
+  subsets: ["latin"],
   variable: "--font-geist",
 });
 
 const geistMono = Geist_Mono({
-  subsets: ["latin"],
   display: "swap",
+  subsets: ["latin"],
   variable: "--font-geist-mono",
 });
 

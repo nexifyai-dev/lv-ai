@@ -32,7 +32,7 @@ const ozSchema = z
   .min(1, "OZ darf nicht leer sein.")
   .max(20, "OZ zu lang (max. 20 Zeichen).")
   .regex(
-    /^\d+(\.\d+)*$/,
+    /^\d+(\.\d+)*$/u,
     "OZ muss Ziffern mit Punkt-Trennung sein (z. B. 01.0020)."
   );
 
@@ -47,7 +47,7 @@ const decimalSchema = z
   .string()
   .optional()
   .refine(
-    (v) => !v || /^\d+(\.\d+)?$/.test(v),
+    (v) => !v || /^\d+(\.\d+)?$/u.test(v),
     "Muss eine Dezimalzahl sein (z. B. 100.5)."
   );
 
@@ -61,37 +61,37 @@ const positionstypSchema = z
   .optional();
 
 const createPositionSchema = z.object({
-  lvDocumentId: z.string().uuid("LV-Dokument-ID ungültig."),
-  oz: ozSchema,
-  kurztext: kurztextSchema,
-  langtext: langtextSchema,
-  menge: decimalSchema,
   einheit: einheitSchema,
   einheitspreis: decimalSchema,
   gesamtpreis: decimalSchema,
+  kurztext: kurztextSchema,
+  langtext: langtextSchema,
+  lvDocumentId: z.string().uuid("LV-Dokument-ID ungültig."),
+  menge: decimalSchema,
+  oz: ozSchema,
   positionstyp: positionstypSchema,
   sortierung: z.number().int().min(0).optional(),
 });
 
 const updatePositionSchema = z.object({
-  id: z.string().uuid(),
-  oz: ozSchema.optional(),
-  kurztext: kurztextSchema.optional(),
-  langtext: langtextSchema,
-  menge: decimalSchema,
   einheit: einheitSchema,
   einheitspreis: decimalSchema,
   gesamtpreis: decimalSchema,
+  id: z.string().uuid(),
+  kurztext: kurztextSchema.optional(),
+  langtext: langtextSchema,
+  menge: decimalSchema,
+  oz: ozSchema.optional(),
   positionstyp: positionstypSchema,
   sortierung: z.number().int().min(0).optional(),
 });
 
 const createDocumentSchema = z.object({
-  projectId: z.string().uuid("Projekt-ID ungültig."),
-  titel: z.string().min(1, "Titel darf nicht leer sein.").max(200),
   gaebFormat: z
     .enum(["X81", "X82", "X83", "X84", "X85", "X86", "X87", "X89"])
     .optional(),
+  projectId: z.string().uuid("Projekt-ID ungültig."),
+  titel: z.string().min(1, "Titel darf nicht leer sein.").max(200),
   version: z.string().max(20).optional(),
 });
 

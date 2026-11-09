@@ -21,7 +21,8 @@ async function requireSession() {
 
 // ─── Schemas ─────────────────────────────────────────────────────────────────
 const importSchema = z.object({
-  projectId: z.string().uuid("Projekt-ID ungültig."),
+  contentType: z.string().optional(),
+  fileName: z.string().min(1).max(200),
   fileUrl: z
     .string()
     .min(1, "Datei-URL fehlt.")
@@ -32,12 +33,11 @@ const importSchema = z.object({
         url.includes("vercel-storage.com"),
       "URL muss vom Upload-Endpoint stammen (/uploads/ oder HTTPS)."
     ),
-  fileName: z.string().min(1).max(200),
-  contentType: z.string().optional(),
-  titel: z.string().min(1, "Titel darf nicht leer sein.").max(200).optional(),
   gaebFormat: z
     .enum(["X81", "X82", "X83", "X84", "X85", "X86", "X87", "X89"])
     .optional(),
+  projectId: z.string().uuid("Projekt-ID ungültig."),
+  titel: z.string().min(1, "Titel darf nicht leer sein.").max(200).optional(),
 });
 
 type ImportInput = z.infer<typeof importSchema>;
@@ -117,7 +117,7 @@ export async function importLvFileAction(
     titel ??
     parseResult.gaebResult?.projectName ??
     parseResult.lvTextResult?.projectName ??
-    fileName.replace(/\.[^.]+$/, "");
+    fileName.replace(/\.[^.]+$/u, "");
 
   const resolvedGaebFormat =
     gaebFormat ??
@@ -135,9 +135,9 @@ export async function importLvFileAction(
       : undefined);
 
   const document = await createLvDocument({
+    gaebFormat: resolvedGaebFormat,
     projectId,
     titel: resolvedTitel,
-    gaebFormat: resolvedGaebFormat,
     version: "1.0",
   });
 
@@ -147,7 +147,7 @@ export async function importLvFileAction(
   const warnings: string[] = [];
 
   for (const pos of positions) {
-    const normalizedOz = pos.oz.replace(/\.{2,}/g, ".");
+    const normalizedOz = pos.oz.replace(/\.{2,}/gu, ".");
     if (!normalizedOz || normalizedOz.length > 20) {
       skipped++;
       warnings.push(`OZ ungültig übersprungen: "${pos.oz}"`);
@@ -156,14 +156,14 @@ export async function importLvFileAction(
 
     try {
       await createLvPosition({
-        lvDocumentId: document.id,
-        oz: normalizedOz,
-        kurztext: pos.kurztext.slice(0, 500),
-        langtext: pos.langtext?.slice(0, 2000),
-        menge: pos.menge,
         einheit: pos.einheit,
         einheitspreis: pos.einheitspreis,
         gesamtpreis: pos.gesamtpreis,
+        kurztext: pos.kurztext.slice(0, 500),
+        langtext: pos.langtext?.slice(0, 2000),
+        lvDocumentId: document.id,
+        menge: pos.menge,
+        oz: normalizedOz,
         positionstyp: pos.positionstyp ?? "standard",
         sortierung: imported,
       });

@@ -1,8 +1,6 @@
-import { compare } from "bcrypt-ts";
 import NextAuth, { type DefaultSession } from "next-auth";
 import type { DefaultJWT } from "next-auth/jwt";
 import Credentials from "next-auth/providers/credentials";
-import { DUMMY_PASSWORD } from "@/lib/constants";
 import { createGuestUser, getUser } from "@/lib/db/queries";
 import { authConfig } from "./auth.config";
 
@@ -17,8 +15,8 @@ declare module "next-auth" {
   }
 
   interface User {
-    id?: string;
     email?: string | null;
+    id?: string;
     type: UserType;
   }
 }
@@ -41,12 +39,27 @@ export const {
   signOut,
 } = NextAuth({
   ...authConfig,
+  callbacks: {
+    jwt({ token, user }) {
+      if (user) {
+        token.id = user.id as string;
+        token.type = user.type;
+      }
+
+      return token;
+    },
+    session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.id;
+        session.user.type = token.type;
+      }
+
+      return session;
+    },
+  },
   providers: [
     // Passwort-Gate — LV2026!! für Zugang
     Credentials({
-      credentials: {
-        password: { label: "Passwort", type: "password" },
-      },
       async authorize(credentials) {
         const password = String(credentials?.password ?? "");
 
@@ -67,33 +80,18 @@ export const {
 
         return null;
       },
+      credentials: {
+        password: { label: "Passwort", type: "password" },
+      },
     }),
     // Guest-Zugang (ohne Passwort)
     Credentials({
-      id: "guest",
-      credentials: {},
       async authorize() {
         const [guestUser] = await createGuestUser();
         return { ...guestUser, type: "guest" };
       },
+      credentials: {},
+      id: "guest",
     }),
   ],
-  callbacks: {
-    jwt({ token, user }) {
-      if (user) {
-        token.id = user.id as string;
-        token.type = user.type;
-      }
-
-      return token;
-    },
-    session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.id;
-        session.user.type = token.type;
-      }
-
-      return session;
-    },
-  },
 });

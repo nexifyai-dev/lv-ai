@@ -18,7 +18,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         strategy="lazyOnload"
       />
       <DataStreamProvider>
-        <Suspense fallback={<div className="flex h-dvh bg-sidebar" />}>
+        <Suspense fallback={<div className="bg-sidebar flex h-dvh" />}>
           <AuthShell>{children}</AuthShell>
         </Suspense>
       </DataStreamProvider>
@@ -34,7 +34,7 @@ async function AuthShell({ children }: { children: React.ReactNode }) {
   }
 
   // TypeScript: nach redirect() ist session.user garantiert definiert
-  const user = session!.user!;
+  const user = session.user;
   const cookieStore = await cookies();
   const isCollapsed = cookieStore.get("sidebar_state")?.value !== "true";
 

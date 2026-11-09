@@ -29,26 +29,26 @@ interface BieterClientProps {
 }
 
 const STATUS_LABEL: Record<BieterStatus, string> = {
-  offen: "Offen",
+  abgelehnt: "Abgelehnt",
+  ausgeschlossen: "Ausgeschlossen",
   eingereicht: "Eingereicht",
   gueltig: "Gültig",
+  offen: "Offen",
   unvollstaendig: "Unvollständig",
-  ausgeschlossen: "Ausgeschlossen",
   vergeben: "Zuschlag erteilt",
-  abgelehnt: "Abgelehnt",
 };
 
 const STATUS_VARIANT: Record<
   BieterStatus,
   "default" | "secondary" | "destructive" | "outline"
 > = {
-  offen: "outline",
+  abgelehnt: "outline",
+  ausgeschlossen: "destructive",
   eingereicht: "secondary",
   gueltig: "default",
+  offen: "outline",
   unvollstaendig: "secondary",
-  ausgeschlossen: "destructive",
   vergeben: "default",
-  abgelehnt: "outline",
 };
 
 const formatEuro = (v: string | null) => {
@@ -60,9 +60,9 @@ const formatEuro = (v: string | null) => {
     return "—";
   }
   return new Intl.NumberFormat("de-DE", {
-    style: "currency",
     currency: "EUR",
     minimumFractionDigits: 2,
+    style: "currency",
   }).format(n);
 };
 
@@ -104,11 +104,11 @@ export function BieterClient({ projectId }: BieterClientProps) {
     startTransition(async () => {
       try {
         await setBieterStatusAction({
+          auschlussGrund:
+            status === "ausgeschlossen" ? (begruendungText ?? null) : null,
           offerId,
           projectId,
           status,
-          auschlussGrund:
-            status === "ausgeschlossen" ? (begruendungText ?? null) : null,
           zuschlagBegruendung:
             status === "vergeben" ? (begruendungText ?? null) : null,
         });
@@ -126,7 +126,7 @@ export function BieterClient({ projectId }: BieterClientProps) {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-12 text-sm text-muted-foreground">
+      <div className="text-muted-foreground flex items-center justify-center py-12 text-sm">
         <Loader2Icon className="mr-2 size-4 animate-spin" />
         Bieter werden geladen…
       </div>
@@ -135,13 +135,13 @@ export function BieterClient({ projectId }: BieterClientProps) {
 
   if (offers.length === 0) {
     return (
-      <div className="mx-auto max-w-2xl rounded-xl border border-dashed border-border/50 p-8 text-center">
-        <ClipboardListIcon className="mx-auto mb-4 size-10 text-muted-foreground/50" />
+      <div className="border-border/50 mx-auto max-w-2xl rounded-xl border border-dashed p-8 text-center">
+        <ClipboardListIcon className="text-muted-foreground/50 mx-auto mb-4 size-10" />
         <p className="mb-1 text-sm font-medium">Keine Bieter erfasst</p>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-muted-foreground text-xs">
           Laden Sie zunächst GAEB X84-Angebote im{" "}
           <a
-            className="underline hover:text-foreground"
+            className="hover:text-foreground underline"
             href={`/lv/${projectId}/preisspiegel`}
           >
             Preisspiegel
@@ -163,7 +163,7 @@ export function BieterClient({ projectId }: BieterClientProps) {
             <p className="text-sm font-medium">
               Zuschlag erteilt an: {vergebenBieter.bieter}
             </p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-xs">
               {vergebenBieter.zuschlagBegruendung ??
                 "Keine Begründung erfasst."}
             </p>
@@ -173,7 +173,7 @@ export function BieterClient({ projectId }: BieterClientProps) {
 
       <section className="space-y-3">
         <h2 className="text-base font-medium">Bieter ({offers.length})</h2>
-        <div className="overflow-x-auto rounded-md border border-border/40">
+        <div className="border-border/40 overflow-x-auto rounded-md border">
           <Table>
             <TableHeader>
               <TableRow>
@@ -259,11 +259,11 @@ function BieterActions({
     );
   }
   if (status === "abgelehnt") {
-    return <span className="text-xs text-muted-foreground">Abgelehnt</span>;
+    return <span className="text-muted-foreground text-xs">Abgelehnt</span>;
   }
   if (status === "ausgeschlossen") {
     return (
-      <span className="text-xs text-destructive">
+      <span className="text-destructive text-xs">
         <ShieldAlertIcon className="mr-1 inline size-3" />
         Ausgeschlossen
       </span>
@@ -373,16 +373,16 @@ function BegruendungsForm({
   const actionStatus: BieterStatus = isZuschlag ? "vergeben" : "ausgeschlossen";
 
   return (
-    <div className="absolute right-0 top-full z-10 mt-1 w-64 rounded-lg border border-border bg-card p-3 shadow-lg">
+    <div className="border-border bg-card absolute top-full right-0 z-10 mt-1 w-64 rounded-lg border p-3 shadow-lg">
       <label
-        className="mb-1 block text-xs font-medium text-muted-foreground"
+        className="text-muted-foreground mb-1 block text-xs font-medium"
         htmlFor={`begruendung-${offer.id}`}
       >
         {label}
       </label>
       <input
         autoFocus
-        className="w-full rounded-md border border-input bg-background px-2 py-1.5 text-sm text-foreground outline-none focus-visible:border-ring"
+        className="border-input bg-background text-foreground focus-visible:border-ring w-full rounded-md border px-2 py-1.5 text-sm outline-none"
         disabled={disabled}
         id={`begruendung-${offer.id}`}
         onChange={(e) => onChange(e.target.value)}

@@ -51,8 +51,8 @@ export function PreisspiegelClient({ projectId }: PreisspiegelClientProps) {
       formData.append("file", file);
       try {
         const res = await fetch("/api/files/upload", {
-          method: "POST",
           body: formData,
+          method: "POST",
         });
         if (res.ok) {
           const data = await res.json();
@@ -79,8 +79,8 @@ export function PreisspiegelClient({ projectId }: PreisspiegelClientProps) {
     startTransition(async () => {
       try {
         const res = await generatePreisspiegelAction({
-          projectId,
           fileUrls: files.map((f) => f.url),
+          projectId,
         });
         setResult(res);
         toast.success(
@@ -101,16 +101,16 @@ export function PreisspiegelClient({ projectId }: PreisspiegelClientProps) {
   // ─── Render ───────────────────────────────────────────────────────────────
   return (
     <div className="flex h-dvh flex-col overflow-hidden">
-      <header className="flex items-center gap-3 border-b border-border/40 px-6 py-4">
+      <header className="border-border/40 flex items-center gap-3 border-b px-6 py-4">
         <Link
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          className="text-muted-foreground hover:text-foreground inline-flex items-center gap-2 text-sm transition-colors"
           href={`/lv/${projectId}`}
         >
           <ArrowLeftIcon className="size-4" />
           Zurück zum LV
         </Link>
         <div className="ml-2 flex items-center gap-2">
-          <FileSpreadsheetIcon className="size-5 text-muted-foreground" />
+          <FileSpreadsheetIcon className="text-muted-foreground size-5" />
           <h1 className="text-lg font-semibold">Preisspiegel</h1>
         </div>
       </header>
@@ -121,15 +121,15 @@ export function PreisspiegelClient({ projectId }: PreisspiegelClientProps) {
         ) : (
           <div className="mx-auto max-w-2xl space-y-6">
             {/* Upload-Bereich */}
-            <div className="rounded-xl border-2 border-dashed border-border/50 p-8 text-center">
-              <UploadIcon className="mx-auto mb-4 size-10 text-muted-foreground/50" />
+            <div className="border-border/50 rounded-xl border-2 border-dashed p-8 text-center">
+              <UploadIcon className="text-muted-foreground/50 mx-auto mb-4 size-10" />
               <p className="mb-1 text-sm font-medium">
                 Bieterangebote (GAEB X84) hochladen
               </p>
-              <p className="mb-4 text-xs text-muted-foreground">
+              <p className="text-muted-foreground mb-4 text-xs">
                 Mindestens 2 XML-Dateien für Preisvergleich
               </p>
-              <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90">
+              <label className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex cursor-pointer items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium">
                 <UploadIcon className="size-4" />
                 Dateien auswählen
                 <input
@@ -141,7 +141,7 @@ export function PreisspiegelClient({ projectId }: PreisspiegelClientProps) {
                 />
               </label>
               {isUploading && (
-                <div className="mt-3 text-sm text-muted-foreground">
+                <div className="text-muted-foreground mt-3 text-sm">
                   <Loader2Icon className="mr-2 inline size-4 animate-spin" />
                   Wird hochgeladen...
                 </div>
@@ -151,18 +151,18 @@ export function PreisspiegelClient({ projectId }: PreisspiegelClientProps) {
             {/* Datei-Liste */}
             {files.length > 0 && (
               <div className="space-y-2">
-                <h3 className="text-sm font-medium text-muted-foreground">
+                <h3 className="text-muted-foreground text-sm font-medium">
                   Hochgeladene Angebote ({files.length})
                 </h3>
                 {files.map((file, i) => (
                   <div
-                    className="flex items-center gap-3 rounded-lg border border-border/50 bg-card/50 p-3"
+                    className="border-border/50 bg-card/50 flex items-center gap-3 rounded-lg border p-3"
                     key={file.url}
                   >
-                    <FileSpreadsheetIcon className="size-5 text-muted-foreground" />
+                    <FileSpreadsheetIcon className="text-muted-foreground size-5" />
                     <span className="flex-1 truncate text-sm">{file.name}</span>
                     <button
-                      className="text-xs text-muted-foreground hover:text-destructive"
+                      className="text-muted-foreground hover:text-destructive text-xs"
                       onClick={() => removeFile(i)}
                       type="button"
                     >
@@ -171,7 +171,7 @@ export function PreisspiegelClient({ projectId }: PreisspiegelClientProps) {
                   </div>
                 ))}
                 <button
-                  className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground disabled:opacity-50"
+                  className="bg-primary text-primary-foreground mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium disabled:opacity-50"
                   disabled={files.length < 2 || pending}
                   onClick={handleGenerate}
                   type="button"
@@ -192,9 +192,9 @@ export function PreisspiegelClient({ projectId }: PreisspiegelClientProps) {
 function PreisspiegelResultView({ result }: { result: PreisspiegelResult }) {
   const formatEuro = (v: number) =>
     new Intl.NumberFormat("de-DE", {
-      style: "currency",
       currency: "EUR",
       minimumFractionDigits: 2,
+      style: "currency",
     }).format(v);
 
   const formatProzent = (v: number) => `${v > 0 ? "+" : ""}${v.toFixed(1)}%`;
@@ -204,7 +204,7 @@ function PreisspiegelResultView({ result }: { result: PreisspiegelResult }) {
       {/* Bieter-Ranking */}
       <section className="space-y-3">
         <h2 className="text-base font-medium">Bieter-Ranking</h2>
-        <div className="rounded-md border border-border/40">
+        <div className="border-border/40 rounded-md border">
           <Table>
             <TableHeader>
               <TableRow>
@@ -228,7 +228,7 @@ function PreisspiegelResultView({ result }: { result: PreisspiegelResult }) {
                   <TableCell className="text-right font-semibold tabular-nums">
                     {formatEuro(b.gesamtsumme)}
                   </TableCell>
-                  <TableCell className="text-right text-muted-foreground">
+                  <TableCell className="text-muted-foreground text-right">
                     {b.positionenMitPreis}/
                     {b.positionenMitPreis + b.positionenOhnePreis}
                   </TableCell>
@@ -243,21 +243,21 @@ function PreisspiegelResultView({ result }: { result: PreisspiegelResult }) {
       {result.ausreisser.length > 0 && (
         <section className="space-y-3">
           <h2 className="flex items-center gap-2 text-base font-medium">
-            <AlertTriangleIcon className="size-5 text-destructive" />
+            <AlertTriangleIcon className="text-destructive size-5" />
             Ausreißer ({result.ausreisser.length})
           </h2>
           <div className="space-y-2">
-            {result.ausreisser.map((a, i) => (
+            {result.ausreisser.map((a) => (
               <div
                 className={`flex items-start gap-3 rounded-lg border p-3 ${
                   a.verdacht === "unterkosten"
                     ? "border-destructive/50 bg-destructive/5"
                     : "border-amber-500/50 bg-amber-500/5"
                 }`}
-                key={`${a.oz}-${a.bieter}-${i}`}
+                key={`${a.oz}-${a.bieter}`}
               >
                 {a.verdacht === "unterkosten" ? (
-                  <TrendingDownIcon className="mt-0.5 size-5 text-destructive" />
+                  <TrendingDownIcon className="text-destructive mt-0.5 size-5" />
                 ) : (
                   <AlertTriangleIcon className="mt-0.5 size-5 text-amber-500" />
                 )}
@@ -277,7 +277,7 @@ function PreisspiegelResultView({ result }: { result: PreisspiegelResult }) {
                       {formatProzent(a.abweichungProzent)}
                     </Badge>
                   </div>
-                  <p className="mt-1 text-xs text-muted-foreground">
+                  <p className="text-muted-foreground mt-1 text-xs">
                     {a.hinweis}
                   </p>
                   <p className="mt-0.5 text-xs">
@@ -294,7 +294,7 @@ function PreisspiegelResultView({ result }: { result: PreisspiegelResult }) {
       {/* Positionen-Vergleich */}
       <section className="space-y-3">
         <h2 className="text-base font-medium">Positionen-Vergleich</h2>
-        <div className="overflow-x-auto rounded-md border border-border/40">
+        <div className="border-border/40 overflow-x-auto rounded-md border">
           <Table>
             <TableHeader>
               <TableRow>
@@ -316,7 +316,7 @@ function PreisspiegelResultView({ result }: { result: PreisspiegelResult }) {
                   <TableCell className="max-w-xs truncate text-sm">
                     {pos.kurztext}
                   </TableCell>
-                  <TableCell className="text-right text-xs text-muted-foreground">
+                  <TableCell className="text-muted-foreground text-right text-xs">
                     {pos.menge ?? "—"} {pos.einheit ?? ""}
                   </TableCell>
                   {result.bieter.map((b) => {
@@ -338,7 +338,7 @@ function PreisspiegelResultView({ result }: { result: PreisspiegelResult }) {
                       </TableCell>
                     );
                   })}
-                  <TableCell className="text-right tabular-nums text-muted-foreground">
+                  <TableCell className="text-muted-foreground text-right tabular-nums">
                     {pos.durchschnitt ? formatEuro(pos.durchschnitt) : "—"}
                   </TableCell>
                 </TableRow>
@@ -351,7 +351,7 @@ function PreisspiegelResultView({ result }: { result: PreisspiegelResult }) {
       {/* Neue Analyse */}
       <div className="text-center">
         <button
-          className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm hover:bg-accent"
+          className="border-border hover:bg-accent inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm"
           onClick={() => window.location.reload()}
           type="button"
         >

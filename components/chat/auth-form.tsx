@@ -13,12 +13,12 @@ export function AuthForm({
   return (
     <form action={action} className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <Label className="font-normal text-muted-foreground" htmlFor="password">
+        <Label className="text-muted-foreground font-normal" htmlFor="password">
           Zugangspasswort
         </Label>
         <Input
           autoFocus
-          className="h-10 rounded-lg border-border/50 bg-muted/50 text-sm transition-colors focus:border-foreground/20 focus:bg-muted"
+          className="border-border/50 bg-muted/50 focus:border-foreground/20 focus:bg-muted h-10 rounded-lg text-sm transition-colors"
           id="password"
           name="password"
           placeholder="••••••••"

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { suggestions, guestRegex, isTestEnvironment } from "./constants";
+import { guestRegex, isTestEnvironment, suggestions } from "./constants";
 
 describe("LV.AI Constants", () => {
   describe("suggestions", () => {
@@ -20,9 +20,7 @@ describe("LV.AI Constants", () => {
     });
 
     it("should include Preisspiegel comparison", () => {
-      const preisspiegel = suggestions.find((s) =>
-        s.includes("Preisspiegel")
-      );
+      const preisspiegel = suggestions.find((s) => s.includes("Preisspiegel"));
       expect(preisspiegel).toBeDefined();
     });
 

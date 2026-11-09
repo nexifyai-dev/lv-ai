@@ -36,11 +36,11 @@ function PureArtifactActions({
 
   const actionContext: ArtifactActionContext = {
     content: artifact.content,
-    handleVersionChange,
     currentVersionIndex,
+    handleVersionChange,
     isCurrentVersion,
-    mode,
     metadata,
+    mode,
     setMetadata,
   };
 
@@ -59,7 +59,7 @@ function PureArtifactActions({
             <TooltipTrigger asChild>
               <button
                 className={cn(
-                  "flex items-center justify-center rounded-full p-3 text-muted-foreground transition-all duration-150",
+                  "text-muted-foreground flex items-center justify-center rounded-full p-3 transition-all duration-150",
                   "hover:text-foreground",
                   "active:scale-95",
                   "disabled:pointer-events-none disabled:opacity-30",

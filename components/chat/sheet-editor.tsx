@@ -45,46 +45,48 @@ const PureSpreadsheetEditor = ({ content, saveContent }: SheetEditorProps) => {
 
   const columns = useMemo(() => {
     const rowNumberColumn = {
-      key: "rowNumber",
-      name: "",
-      frozen: true,
-      width: 50,
-      renderCell: ({ rowIdx }: { rowIdx: number }) => rowIdx + 1,
       cellClass: "border-t border-r dark:bg-neutral-950 dark:text-neutral-50",
+      frozen: true,
       headerCellClass:
         "border-t border-r dark:bg-neutral-900 dark:text-neutral-50",
+      key: "rowNumber",
+      name: "",
+      renderCell: ({ rowIdx }: { rowIdx: number }) => rowIdx + 1,
+      width: 50,
     };
 
     const dataColumns = Array.from({ length: MIN_COLS }, (_, i) => ({
-      key: i.toString(),
-      name: String.fromCharCode(65 + i),
-      renderEditCell: textEditor,
-      width: 120,
       cellClass: cn("border-t dark:bg-neutral-950 dark:text-neutral-50", {
         "border-l": i !== 0,
       }),
       headerCellClass: cn("border-t dark:bg-neutral-900 dark:text-neutral-50", {
         "border-l": i !== 0,
       }),
+      key: i.toString(),
+      name: String.fromCharCode(65 + i),
+      renderEditCell: textEditor,
+      width: 120,
     }));
 
     return [rowNumberColumn, ...dataColumns];
   }, []);
 
-  const initialRows = useMemo(() => {
-    return parseData.map((row, rowIndex) => {
-      const rowData: Record<string, string | number> = {
-        id: rowIndex,
-        rowNumber: rowIndex + 1,
-      };
+  const initialRows = useMemo(
+    () =>
+      parseData.map((row, rowIndex) => {
+        const rowData: Record<string, string | number> = {
+          id: rowIndex,
+          rowNumber: rowIndex + 1,
+        };
 
-      columns.slice(1).forEach((col, colIndex) => {
-        rowData[col.key] = row[colIndex] || "";
-      });
+        columns.slice(1).forEach((col, colIndex) => {
+          rowData[col.key] = row[colIndex] || "";
+        });
 
-      return rowData;
-    });
-  }, [parseData, columns]);
+        return rowData;
+      }),
+    [parseData, columns]
+  );
 
   const [localRows, setLocalRows] = useState(initialRows);
 
@@ -92,16 +94,14 @@ const PureSpreadsheetEditor = ({ content, saveContent }: SheetEditorProps) => {
     setLocalRows(initialRows);
   }, [initialRows]);
 
-  const generateCsv = (data: string[][]) => {
-    return unparse(data);
-  };
+  const generateCsv = (data: string[][]) => unparse(data);
 
   const handleRowsChange = (newRows: Record<string, string | number>[]) => {
     setLocalRows(newRows);
 
-    const updatedData = newRows.map((row) => {
-      return columns.slice(1).map((col) => String(row[col.key] ?? ""));
-    });
+    const updatedData = newRows.map((row) =>
+      columns.slice(1).map((col) => String(row[col.key] ?? ""))
+    );
 
     const newCsvContent = generateCsv(updatedData);
     saveContent(newCsvContent, true);

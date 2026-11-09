@@ -5,29 +5,31 @@
 export const MEMORY_SCOPE_PROJECT = "project";
 export const MEMORY_SCOPE_GLOBAL = "global";
 
-export type MemoryScope = typeof MEMORY_SCOPE_PROJECT | typeof MEMORY_SCOPE_GLOBAL;
+export type MemoryScope =
+  | typeof MEMORY_SCOPE_PROJECT
+  | typeof MEMORY_SCOPE_GLOBAL;
 
 export interface Mem0Config {
-  apiKey: string;
-  userId: string;
   agentId?: string;
+  apiKey: string;
   baseUrl?: string;
+  userId: string;
 }
 
 export interface MemoryEntry {
-  id: string;
   content: string;
-  scope: MemoryScope;
-  projectId?: string;
-  metadata?: Record<string, unknown>;
   createdAt: string;
+  id: string;
+  metadata?: Record<string, unknown>;
+  projectId?: string;
+  scope: MemoryScope;
 }
 
 export interface SearchOptions {
+  limit?: number;
+  projectId?: string;
   query: string;
   scope?: MemoryScope;
-  projectId?: string;
-  limit?: number;
 }
 
 export class Mem0Service {
@@ -41,8 +43,8 @@ export class Mem0Service {
 
   private getHeaders(): HeadersInit {
     return {
-      "Content-Type": "application/json",
       Authorization: `Token ${this.config.apiKey}`,
+      "Content-Type": "application/json",
     };
   }
 
@@ -58,7 +60,7 @@ export class Mem0Service {
     metadata?: Record<string, unknown>
   ): Promise<MemoryEntry> {
     const body: Record<string, unknown> = {
-      messages: [{ role: "user", content }],
+      messages: [{ content, role: "user" }],
       user_id: this.config.userId,
     };
 
@@ -75,23 +77,25 @@ export class Mem0Service {
     }
 
     const response = await fetch(`${this.baseUrl}/memories/`, {
-      method: "POST",
-      headers: this.getHeaders(),
       body: JSON.stringify(body),
+      headers: this.getHeaders(),
+      method: "POST",
     });
 
     if (!response.ok) {
-      throw new Error(`Mem0 remember failed: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `Mem0 remember failed: ${response.status} ${response.statusText}`
+      );
     }
 
     const result = await response.json();
     return {
-      id: result.id || crypto.randomUUID(),
       content,
-      scope,
-      projectId,
-      metadata,
       createdAt: new Date().toISOString(),
+      id: result.id || crypto.randomUUID(),
+      metadata,
+      projectId,
+      scope,
     };
   }
 
@@ -100,9 +104,9 @@ export class Mem0Service {
    */
   async search(options: SearchOptions): Promise<MemoryEntry[]> {
     const body: Record<string, unknown> = {
+      limit: options.limit || 10,
       query: options.query,
       user_id: this.config.userId,
-      limit: options.limit || 10,
     };
 
     if (options.scope === MEMORY_SCOPE_PROJECT && options.projectId) {
@@ -114,24 +118,30 @@ export class Mem0Service {
     }
 
     const response = await fetch(`${this.baseUrl}/search/`, {
-      method: "POST",
-      headers: this.getHeaders(),
       body: JSON.stringify(body),
+      headers: this.getHeaders(),
+      method: "POST",
     });
 
     if (!response.ok) {
-      throw new Error(`Mem0 search failed: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `Mem0 search failed: ${response.status} ${response.statusText}`
+      );
     }
 
     const result = await response.json();
     return (result.memories || []).map(
-      (m: { id: string; memory: string; metadata?: Record<string, unknown> }) => ({
-        id: m.id,
+      (m: {
+        id: string;
+        memory: string;
+        metadata?: Record<string, unknown>;
+      }) => ({
         content: m.memory,
-        scope: (m.metadata?.scope as MemoryScope) || MEMORY_SCOPE_GLOBAL,
-        projectId: options.projectId,
-        metadata: m.metadata,
         createdAt: new Date().toISOString(),
+        id: m.id,
+        metadata: m.metadata,
+        projectId: options.projectId,
+        scope: (m.metadata?.scope as MemoryScope) || MEMORY_SCOPE_GLOBAL,
       })
     );
   }
@@ -141,10 +151,10 @@ export class Mem0Service {
    */
   async getProjectMemories(projectId: string): Promise<MemoryEntry[]> {
     return this.search({
+      limit: 50,
+      projectId,
       query: "",
       scope: MEMORY_SCOPE_PROJECT,
-      projectId,
-      limit: 50,
     });
   }
 
@@ -153,9 +163,9 @@ export class Mem0Service {
    */
   async getGlobalMemories(): Promise<MemoryEntry[]> {
     return this.search({
+      limit: 50,
       query: "",
       scope: MEMORY_SCOPE_GLOBAL,
-      limit: 50,
     });
   }
 
@@ -164,12 +174,14 @@ export class Mem0Service {
    */
   async forget(memoryId: string): Promise<void> {
     const response = await fetch(`${this.baseUrl}/memories/${memoryId}/`, {
-      method: "DELETE",
       headers: this.getHeaders(),
+      method: "DELETE",
     });
 
     if (!response.ok) {
-      throw new Error(`Mem0 forget failed: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `Mem0 forget failed: ${response.status} ${response.statusText}`
+      );
     }
   }
 }

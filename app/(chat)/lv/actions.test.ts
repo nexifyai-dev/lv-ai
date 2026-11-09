@@ -22,9 +22,9 @@ const getDocMock = vi.fn();
 vi.mock("@/lib/db/lv-queries", () => ({
   createLvDocument: createDocMock,
   createLvPosition: createPosMock,
-  updateLvPosition: updatePosMock,
   deleteLvPosition: deletePosMock,
   getLvDocumentById: getDocMock,
+  updateLvPosition: updatePosMock,
 }));
 
 // ─── Helper ───────────────────────────────────────────────────────────────────
@@ -64,9 +64,9 @@ describe("LV-Server-Actions", () => {
       createDocMock.mockResolvedValue(fakeDoc);
       const { createLvDocumentAction } = await import("./actions");
       const result = await createLvDocumentAction({
+        gaebFormat: "X83",
         projectId: "00000000-0000-0000-0000-000000000001",
         titel: "Test-LV",
-        gaebFormat: "X83",
       });
       expect(result).toEqual(fakeDoc);
       expect(revalidatePathMock).toHaveBeenCalledWith(
@@ -93,9 +93,9 @@ describe("LV-Server-Actions", () => {
       const { createLvPositionAction } = await import("./actions");
       await expect(
         createLvPositionAction({
+          kurztext: "Boden aushuben",
           lvDocumentId: "00000000-0000-0000-0000-000000000002",
           oz: "not-numeric",
-          kurztext: "Boden aushuben",
         })
       ).rejects.toThrow();
     });
@@ -106,9 +106,9 @@ describe("LV-Server-Actions", () => {
       const { createLvPositionAction } = await import("./actions");
       await expect(
         createLvPositionAction({
+          kurztext: "Boden aushuben",
           lvDocumentId: "00000000-0000-0000-0000-000000000002",
           oz: "01.0010",
-          kurztext: "Boden aushuben",
         })
       ).rejects.toThrow("nicht gefunden");
     });
@@ -121,19 +121,19 @@ describe("LV-Server-Actions", () => {
       };
       const pos = {
         id: "pos-1",
+        kurztext: "Boden aushuben",
         lvDocumentId: "lv-1",
         oz: "01.0010",
-        kurztext: "Boden aushuben",
       };
       getDocMock.mockResolvedValue(doc);
       createPosMock.mockResolvedValue(pos);
       const { createLvPositionAction } = await import("./actions");
       const result = await createLvPositionAction({
-        lvDocumentId: "00000000-0000-0000-0000-000000000002",
-        oz: "01.0010",
-        kurztext: "Boden aushuben",
-        menge: "100.5",
         einheit: "m3",
+        kurztext: "Boden aushuben",
+        lvDocumentId: "00000000-0000-0000-0000-000000000002",
+        menge: "100.5",
+        oz: "01.0010",
       });
       expect(result).toEqual(pos);
       expect(revalidatePathMock).toHaveBeenCalledWith(
@@ -167,9 +167,9 @@ describe("LV-Server-Actions", () => {
       authedSession();
       const updated = {
         id: "00000000-0000-0000-0000-000000000005",
+        kurztext: "Geändert",
         lvDocumentId: "00000000-0000-0000-0000-000000000006",
         oz: "02.0010",
-        kurztext: "Geändert",
       };
       updatePosMock.mockResolvedValue(updated);
       getDocMock.mockResolvedValue({
@@ -179,8 +179,8 @@ describe("LV-Server-Actions", () => {
       const { updateLvPositionAction } = await import("./actions");
       const result = await updateLvPositionAction({
         id: updated.id,
-        oz: "02.0010",
         kurztext: "Geändert",
+        oz: "02.0010",
       });
       expect(result).toEqual(updated);
     });

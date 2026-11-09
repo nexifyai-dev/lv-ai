@@ -4,11 +4,6 @@ const base = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 export const authConfig = {
   basePath: "/api/auth",
-  trustHost: true,
-  pages: {
-    signIn: `${base}/login`,
-  },
-  providers: [],
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
@@ -34,4 +29,9 @@ export const authConfig = {
       return true;
     },
   },
+  pages: {
+    signIn: `${base}/login`,
+  },
+  providers: [],
+  trustHost: true,
 } satisfies NextAuthConfig;

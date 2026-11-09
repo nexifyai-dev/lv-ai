@@ -5,8 +5,8 @@ import { createDocumentHandler } from "@/lib/artifacts/server";
 
 function stripFences(code: string): string {
   return code
-    .replace(/^```[\w]*\n?/, "")
-    .replace(/\n?```\s*$/, "")
+    .replace(/^```[\w]*\n?/u, "")
+    .replace(/\n?```\s*$/u, "")
     .trim();
 }
 
@@ -17,17 +17,17 @@ export const codeDocumentHandler = createDocumentHandler<"code">({
 
     const { fullStream } = streamText({
       model: getLanguageModel(modelId),
-      system: `${codePrompt}\n\nOutput ONLY the code. No explanations, no markdown fences, no wrapping.`,
       prompt: title,
+      system: `${codePrompt}\n\nOutput ONLY the code. No explanations, no markdown fences, no wrapping.`,
     });
 
     for await (const delta of fullStream) {
       if (delta.type === "text-delta") {
         draftContent += delta.text;
         dataStream.write({
-          type: "data-codeDelta",
           data: stripFences(draftContent),
           transient: true,
+          type: "data-codeDelta",
         });
       }
     }
@@ -39,17 +39,17 @@ export const codeDocumentHandler = createDocumentHandler<"code">({
 
     const { fullStream } = streamText({
       model: getLanguageModel(modelId),
-      system: `${updateDocumentPrompt(document.content, "code")}\n\nOutput ONLY the complete updated code. No explanations, no markdown fences, no wrapping.`,
       prompt: description,
+      system: `${updateDocumentPrompt(document.content, "code")}\n\nOutput ONLY the complete updated code. No explanations, no markdown fences, no wrapping.`,
     });
 
     for await (const delta of fullStream) {
       if (delta.type === "text-delta") {
         draftContent += delta.text;
         dataStream.write({
-          type: "data-codeDelta",
           data: stripFences(draftContent),
           transient: true,
+          type: "data-codeDelta",
         });
       }
     }

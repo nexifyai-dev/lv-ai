@@ -25,16 +25,18 @@ async function requireSession() {
 
 // ─── Valid-Status-Übergänge (VOB/A § 17) ────────────────────────────────────
 const STATUS_FLOW: Record<BieterStatus, BieterStatus[]> = {
-  offen: ["eingereicht"],
+  abgelehnt: [],
+  ausgeschlossen: [],
   eingereicht: ["gueltig", "unvollstaendig", "ausgeschlossen"],
   gueltig: ["vergeben", "abgelehnt", "ausgeschlossen"],
+  offen: ["eingereicht"],
   unvollstaendig: ["eingereicht"],
-  ausgeschlossen: [],
   vergeben: [],
-  abgelehnt: [],
 };
 
 const bieterStatusSchema = z.object({
+  auschlussGrund: z.string().max(500).nullable().optional(),
+  bemerkungen: z.string().max(1000).nullable().optional(),
   offerId: z.string().uuid("Angebot-ID ungültig."),
   projectId: z.string().uuid("Projekt-ID ungültig."),
   status: z.enum([
@@ -46,9 +48,7 @@ const bieterStatusSchema = z.object({
     "vergeben",
     "abgelehnt",
   ] as const),
-  auschlussGrund: z.string().max(500).nullable().optional(),
   zuschlagBegruendung: z.string().max(500).nullable().optional(),
-  bemerkungen: z.string().max(1000).nullable().optional(),
 });
 
 type BieterStatusInput = z.infer<typeof bieterStatusSchema>;
@@ -97,8 +97,8 @@ export async function setBieterStatusAction(
   }
 
   const patch: Parameters<typeof updateOfferStatus>[1] = {
-    status,
     bemerkungen,
+    status,
   };
 
   if (status === "ausgeschlossen") {

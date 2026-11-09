@@ -88,7 +88,7 @@ describe("LvTextParser", () => {
       const pos = result.positions.find((p) => p.oz === "1.6.10");
       expect(pos).toBeDefined();
       expect(pos?.menge).toBe("800,000");
-      expect(pos?.einheit).toMatch(/^m$/i);
+      expect(pos?.einheit).toMatch(/^m$/iu);
     });
 
     it("erkennt Einheiten m³, St, m²", () => {
@@ -96,15 +96,15 @@ describe("LvTextParser", () => {
       const m3Pos = result.positions.find((p) => p.oz === "4.1.50");
       const stPos = result.positions.find((p) => p.oz === "4.6.430");
       const m2Pos = result.positions.find((p) => p.oz === "5..40");
-      expect(m3Pos?.einheit).toMatch(/m³/i);
-      expect(stPos?.einheit).toMatch(/St/i);
-      expect(m2Pos?.einheit).toMatch(/m²/i);
+      expect(m3Pos?.einheit).toMatch(/m³/iu);
+      expect(stPos?.einheit).toMatch(/St/iu);
+      expect(m2Pos?.einheit).toMatch(/m²/iu);
     });
 
     it("überspringt Summenzeilen", () => {
       const result = parseLvText(SAMPLE_LV_TEXT);
       const sumPositions = result.positions.filter((p) =>
-        /Summe/i.test(p.kurztext)
+        /Summe/iu.test(p.kurztext)
       );
       expect(sumPositions).toHaveLength(0);
     });
@@ -148,7 +148,7 @@ OZ Leistungsbeschreibung Menge ME
 100,000 m`;
       const result = parseLvText(text);
       const headerPositions = result.positions.filter((p) =>
-        /Druckdatum|Projekt:|^LV/i.test(p.kurztext)
+        /Druckdatum|Projekt:|^LV/iu.test(p.kurztext)
       );
       expect(headerPositions).toHaveLength(0);
     });

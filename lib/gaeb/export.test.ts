@@ -8,29 +8,29 @@ import {
 // ─── Fixtures ────────────────────────────────────────────────────────────────
 const samplePositions = [
   {
-    oz: "1.6.10",
+    einheit: "m",
     kurztext: "Kunststoff-Wellrohr M 25 Beton",
     langtext: "Isolierstoffrohr DIN VDE 0605, Nenngröße M 25",
     menge: "800.000",
-    einheit: "m",
+    oz: "1.6.10",
   },
   {
-    oz: "4.1.50",
-    kurztext: "Stahlbeton, Frostschutzschürze, C20/25",
-    menge: "12.000",
     einheit: "m3",
     einheitspreis: "120.50",
     gesamtpreis: "1446.00",
+    kurztext: "Stahlbeton, Frostschutzschürze, C20/25",
+    menge: "12.000",
+    oz: "4.1.50",
   },
 ];
 
 const baseProjectInfo = {
-  projectName: "026339 Rohbauarbeiten KiTa Liebigstraße",
+  clientCity: "Ratingen",
   clientName: "Stadt Ratingen",
   clientStreet: "Poststraße 21",
-  clientCity: "Ratingen",
   clientZip: "40878",
   land: "DE" as const,
+  projectName: "026339 Rohbauarbeiten KiTa Liebigstraße",
 };
 
 // ─── Tests ───────────────────────────────────────────────────────────────────
@@ -39,8 +39,8 @@ describe("GAEB Export", () => {
   describe("exportGaebXml — X83 (Angebotsaufforderung)", () => {
     const input: GaebExportInput = {
       format: "X83",
-      projectInfo: baseProjectInfo,
       positions: samplePositions,
+      projectInfo: baseProjectInfo,
     };
 
     it("erzeugt valide XML-Deklaration", () => {
@@ -100,8 +100,8 @@ describe("GAEB Export", () => {
     it("escaped XML-Sonderzeichen in Kurztext", () => {
       const xml = exportGaebXml({
         format: "X83",
+        positions: [{ kurztext: "Boden < 5cm & > 3cm", oz: "1.1" }],
         projectInfo: baseProjectInfo,
-        positions: [{ oz: "1.1", kurztext: "Boden < 5cm & > 3cm" }],
       });
       expect(xml).toContain("&lt; 5cm &amp; &gt; 3cm");
       expect(xml).not.toContain("< 5cm & > 3cm");
@@ -112,8 +112,8 @@ describe("GAEB Export", () => {
     it("nutzt DA81 Namespace", () => {
       const xml = exportGaebXml({
         format: "X81",
-        projectInfo: baseProjectInfo,
         positions: samplePositions,
+        projectInfo: baseProjectInfo,
       });
       expect(xml).toContain('xmlns="http://www.gaeb.de/GAEB_DA_XML/DA81/3.3"');
     });
@@ -122,13 +122,13 @@ describe("GAEB Export", () => {
   describe("exportGaebXml — X84 (Angebotsabgabe)", () => {
     const x84Input: GaebExportInput = {
       format: "X84",
+      positions: samplePositions,
       projectInfo: {
         ...baseProjectInfo,
         bidderName: "Bauunternehmen GmbH",
-        totalNet: "45000.00",
         offerDate: "2026-07-05T10:00:00Z",
+        totalNet: "45000.00",
       },
-      positions: samplePositions,
     };
 
     it("enthält Bieterpreise (UP und TP)", () => {
@@ -153,8 +153,8 @@ describe("GAEB Export", () => {
       expect(() =>
         exportGaebXml({
           format: "X84",
-          projectInfo: baseProjectInfo,
           positions: samplePositions,
+          projectInfo: baseProjectInfo,
         })
       ).toThrow("bidderName");
     });
@@ -164,8 +164,8 @@ describe("GAEB Export", () => {
     it("nutzt CHF für Schweiz", () => {
       const xml = exportGaebXml({
         format: "X83",
-        projectInfo: { ...baseProjectInfo, land: "CH" },
         positions: samplePositions,
+        projectInfo: { ...baseProjectInfo, land: "CH" },
       });
       expect(xml).toContain("<LotCur>CHF</LotCur>");
     });
@@ -173,8 +173,8 @@ describe("GAEB Export", () => {
     it("nutzt EUR für Österreich", () => {
       const xml = exportGaebXml({
         format: "X83",
-        projectInfo: { ...baseProjectInfo, land: "AT" },
         positions: samplePositions,
+        projectInfo: { ...baseProjectInfo, land: "AT" },
       });
       expect(xml).toContain("<LotCur>EUR</LotCur>");
     });
@@ -185,8 +185,8 @@ describe("GAEB Export", () => {
       expect(() =>
         exportGaebXml({
           format: "X99" as any,
-          projectInfo: baseProjectInfo,
           positions: samplePositions,
+          projectInfo: baseProjectInfo,
         })
       ).toThrow("X81-X86");
     });
@@ -195,8 +195,8 @@ describe("GAEB Export", () => {
       expect(() =>
         exportGaebXml({
           format: "X83",
-          projectInfo: { ...baseProjectInfo, projectName: "" },
           positions: samplePositions,
+          projectInfo: { ...baseProjectInfo, projectName: "" },
         })
       ).toThrow("Projektname");
     });
@@ -205,8 +205,8 @@ describe("GAEB Export", () => {
       expect(() =>
         exportGaebXml({
           format: "X83",
-          projectInfo: baseProjectInfo,
           positions: [],
+          projectInfo: baseProjectInfo,
         })
       ).toThrow("Keine Positionen");
     });
@@ -215,8 +215,8 @@ describe("GAEB Export", () => {
       expect(() =>
         exportGaebXml({
           format: "X83",
+          positions: [{ kurztext: "Test", oz: "" }],
           projectInfo: baseProjectInfo,
-          positions: [{ oz: "", kurztext: "Test" }],
         })
       ).toThrow("Ordnungszahl");
     });
@@ -225,8 +225,8 @@ describe("GAEB Export", () => {
       expect(() =>
         exportGaebXml({
           format: "X83",
+          positions: [{ kurztext: "", oz: "1.1" }],
           projectInfo: baseProjectInfo,
-          positions: [{ oz: "1.1", kurztext: "" }],
         })
       ).toThrow("Kurztext");
     });
@@ -236,18 +236,18 @@ describe("GAEB Export", () => {
     it("konvertiert DB-Positionen (null→undefined) und exportiert", () => {
       const xml = exportGaebFromDb({
         format: "X83",
-        projectName: "Test-LV",
         positions: [
           {
-            oz: "1.1",
-            kurztext: "Test",
-            langtext: null,
-            menge: "100",
             einheit: "m",
             einheitspreis: null,
             gesamtpreis: null,
+            kurztext: "Test",
+            langtext: null,
+            menge: "100",
+            oz: "1.1",
           },
         ],
+        projectName: "Test-LV",
       });
       expect(xml).toContain("Test-LV");
       expect(xml).toContain("1.1");
@@ -259,31 +259,31 @@ describe("GAEB Export", () => {
       const _before = new Date().toISOString().slice(0, 10);
       const xml = exportGaebFromDb({
         format: "X83",
+        positions: [{ kurztext: "T", oz: "1.1" }],
         projectName: "Test",
-        positions: [{ oz: "1.1", kurztext: "T" }],
       });
       const _after = new Date().toISOString().slice(0, 10);
       // PrjDate sollte heutiges Datum enthalten
-      expect(xml).toMatch(/<PrjDate>2026-07-/);
+      expect(xml).toMatch(/<PrjDate>2026-07-/u);
     });
   });
 
   describe("exportGaebXml — X82 (Kostenanschlag)", () => {
     const x82Pos = [
       {
-        oz: "01.0010",
-        kurztext: "Aushub",
-        menge: "100",
         einheit: "m3",
         einheitspreis: "25.00",
+        kurztext: "Aushub",
+        menge: "100",
+        oz: "01.0010",
       },
     ];
 
     it("nutzt DA82 Namespace", () => {
       const xml = exportGaebXml({
         format: "X82",
-        projectInfo: baseProjectInfo,
         positions: x82Pos,
+        projectInfo: baseProjectInfo,
       });
       expect(xml).toContain('xmlns="http://www.gaeb.de/GAEB_DA_XML/DA82/3.3"');
     });
@@ -291,8 +291,8 @@ describe("GAEB Export", () => {
     it("enthält EP (UP) aber keinen GP (TP)", () => {
       const xml = exportGaebXml({
         format: "X82",
-        projectInfo: baseProjectInfo,
         positions: x82Pos,
+        projectInfo: baseProjectInfo,
       });
       expect(xml).toContain("<UP>25.00</UP>");
       expect(xml).not.toContain("<TP>");
@@ -302,23 +302,23 @@ describe("GAEB Export", () => {
   describe("exportGaebXml — X85 (Nebenangebot)", () => {
     const x85Pos = [
       {
-        oz: "01.0050",
-        kurztext: "Alternativ",
-        menge: "1",
         einheit: "Stk",
         einheitspreis: "25.00",
         gesamtpreis: "25.00",
+        kurztext: "Alternativ",
+        menge: "1",
+        oz: "01.0050",
       },
     ];
 
     it("nutzt DA85 Namespace", () => {
       const xml = exportGaebXml({
         format: "X85",
+        positions: x85Pos,
         projectInfo: {
           ...baseProjectInfo,
           bidderName: "Alternativ-Bieter GmbH",
         },
-        positions: x85Pos,
       });
       expect(xml).toContain('xmlns="http://www.gaeb.de/GAEB_DA_XML/DA85/3.3"');
     });
@@ -326,8 +326,8 @@ describe("GAEB Export", () => {
     it("enthält EP+GP und Offer-Block", () => {
       const xml = exportGaebXml({
         format: "X85",
-        projectInfo: { ...baseProjectInfo, bidderName: "Alt-Bieter" },
         positions: x85Pos,
+        projectInfo: { ...baseProjectInfo, bidderName: "Alt-Bieter" },
       });
       expect(xml).toContain("<UP>25.00</UP>");
       expect(xml).toContain("<TP>25.00</TP>");
@@ -338,8 +338,8 @@ describe("GAEB Export", () => {
       expect(() =>
         exportGaebXml({
           format: "X85",
-          projectInfo: baseProjectInfo,
           positions: x85Pos,
+          projectInfo: baseProjectInfo,
         })
       ).toThrow("bidderName");
     });
@@ -348,19 +348,19 @@ describe("GAEB Export", () => {
   describe("exportGaebXml — X86 (Auftrags-LV)", () => {
     const x86Pos = [
       {
-        oz: "01.0010",
-        kurztext: "Auftrags-LV",
-        menge: "100",
         einheit: "m3",
         einheitspreis: "25.00",
+        kurztext: "Auftrags-LV",
+        menge: "100",
+        oz: "01.0010",
       },
     ];
 
     it("nutzt DA86 Namespace", () => {
       const xml = exportGaebXml({
         format: "X86",
-        projectInfo: baseProjectInfo,
         positions: x86Pos,
+        projectInfo: baseProjectInfo,
       });
       expect(xml).toContain('xmlns="http://www.gaeb.de/GAEB_DA_XML/DA86/3.3"');
     });
@@ -368,8 +368,8 @@ describe("GAEB Export", () => {
     it("enthält EP (UP) aber keinen GP (TP)", () => {
       const xml = exportGaebXml({
         format: "X86",
-        projectInfo: baseProjectInfo,
         positions: x86Pos,
+        projectInfo: baseProjectInfo,
       });
       expect(xml).toContain("<UP>25.00</UP>");
       expect(xml).not.toContain("<TP>");
@@ -381,8 +381,8 @@ describe("GAEB Export", () => {
       expect(() =>
         exportGaebXml({
           format: "X83",
-          projectInfo: baseProjectInfo,
           positions: [],
+          projectInfo: baseProjectInfo,
         })
       ).toThrow("Keine Positionen");
     });

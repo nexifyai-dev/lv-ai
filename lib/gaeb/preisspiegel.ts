@@ -14,46 +14,46 @@ import { GaebParser, type GaebPosition } from "./parser";
 
 export interface BieterAngebot {
   bieterName: string;
-  positions: GaebPosition[]; // X84-parste Positionen mit einheitspreis/gesamtpreis
   gesamtsumme?: number;
+  positions: GaebPosition[]; // X84-parste Positionen mit einheitspreis/gesamtpreis
 }
 
 export interface PreisspiegelPosition {
-  oz: string;
+  abweichung?: number; // % Abweichung vom Durchschnitt (für Ausreißer-Erkennung)
+  durchschnitt?: number;
+  einheit?: string;
+  hoechstpreis?: { bieter: string; gp: number };
   kurztext: string;
   menge?: string;
-  einheit?: string;
+  oz: string;
   preise: Record<string, { ep?: number; gp?: number }>; // bieterName → {ep, gp}
   tiefstpreis?: { bieter: string; gp: number };
-  hoechstpreis?: { bieter: string; gp: number };
-  durchschnitt?: number;
-  abweichung?: number; // % Abweichung vom Durchschnitt (für Ausreißer-Erkennung)
 }
 
 export interface PreisspiegelAusreisser {
-  oz: string;
-  bieter: string;
-  gp: number;
-  durchschnitt: number;
   abweichungProzent: number;
-  verdacht: "unterkosten" | "ueberkosten" | "ok";
+  bieter: string;
+  durchschnitt: number;
+  gp: number;
   hinweis: string;
+  oz: string;
+  verdacht: "unterkosten" | "ueberkosten" | "ok";
 }
 
 export interface PreisspiegelBieter {
-  name: string;
   gesamtsumme: number;
-  rang: number; // 1 = günstigster
+  name: string;
   positionenMitPreis: number;
   positionenOhnePreis: number;
+  rang: number; // 1 = günstigster
 }
 
 export interface PreisspiegelResult {
-  positions: PreisspiegelPosition[];
-  bieter: PreisspiegelBieter[];
   ausreisser: PreisspiegelAusreisser[];
+  bieter: PreisspiegelBieter[];
   bieterCount: number;
   positionCount: number;
+  positions: PreisspiegelPosition[];
 }
 
 // ─── Parsing: X84 XML → BieterAngebot ────────────────────────────────────────
@@ -76,8 +76,8 @@ export function parseX84Angebot(xml: string): BieterAngebot | null {
     const itemMatch = xml.match(itemRegex);
     const itemXml = itemMatch?.[1] ?? "";
 
-    const upMatch = itemXml.match(/<UP>([^<]+)<\/UP>/i);
-    const tpMatch = itemXml.match(/<TP>([^<]+)<\/TP>/i);
+    const upMatch = itemXml.match(/<UP>([^<]+)<\/UP>/iu);
+    const tpMatch = itemXml.match(/<TP>([^<]+)<\/TP>/iu);
 
     return {
       ...pos,
@@ -88,23 +88,23 @@ export function parseX84Angebot(xml: string): BieterAngebot | null {
 
   // Bieter-Name aus GAEB-XML extrahieren (PrtType BI)
   const bieterMatch = xml.match(
-    /<PrtType>BI<\/PrtType>[\s\S]*?<PrtName>([^<]+)<\/PrtName>/i
+    /<PrtType>BI<\/PrtType>[\s\S]*?<PrtName>([^<]+)<\/PrtName>/iu
   );
   const bieterName = bieterMatch?.[1]?.trim() ?? "Unbekannter Bieter";
 
   // Gesamtsumme aus Offer-Block
-  const totalMatch = xml.match(/<OfferTotal>([^<]+)<\/OfferTotal>/i);
+  const totalMatch = xml.match(/<OfferTotal>([^<]+)<\/OfferTotal>/iu);
   const gesamtsumme = totalMatch ? parseGermanNumber(totalMatch[1]) : undefined;
 
   return {
     bieterName,
-    positions,
     gesamtsumme,
+    positions,
   };
 }
 
 function escapeRegex(s: string): string {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return s.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
 }
 
 // ─── Preisspiegel-Generierung ────────────────────────────────────────────────
@@ -114,11 +114,11 @@ export function createPreisspiegel(
 ): PreisspiegelResult {
   if (angebote.length === 0) {
     return {
-      positions: [],
-      bieter: [],
       ausreisser: [],
+      bieter: [],
       bieterCount: 0,
       positionCount: 0,
+      positions: [],
     };
   }
 
@@ -179,14 +179,14 @@ export function createPreisspiegel(
     const durchschnitt = sum / gpWerte.length;
 
     const spiegelPos: PreisspiegelPosition = {
-      oz,
+      durchschnitt,
+      einheit: basePos.einheit,
+      hoechstpreis,
       kurztext: basePos.kurztext,
       menge: basePos.menge,
-      einheit: basePos.einheit,
+      oz,
       preise,
       tiefstpreis,
-      hoechstpreis,
-      durchschnitt,
     };
     positions.push(spiegelPos);
 
@@ -198,23 +198,23 @@ export function createPreisspiegel(
       // VOB/A § 16: Verdacht bei > 20% unter Durchschnitt
       if (abweichung < -20) {
         ausreisser.push({
-          oz,
-          bieter: gpWert.bieter,
-          gp: gpWert.gp,
-          durchschnitt,
           abweichungProzent: abweichung,
-          verdacht: "unterkosten",
+          bieter: gpWert.bieter,
+          durchschnitt,
+          gp: gpWert.gp,
           hinweis: `§ 16 VOB/A: Preis ${abweichung.toFixed(1)}% unter Durchschnitt — mögliches Unterkostenangebot. Prüfung der Einstandpreise erforderlich.`,
+          oz,
+          verdacht: "unterkosten",
         });
       } else if (abweichung > 30) {
         ausreisser.push({
-          oz,
-          bieter: gpWert.bieter,
-          gp: gpWert.gp,
-          durchschnitt,
           abweichungProzent: abweichung,
-          verdacht: "ueberkosten",
+          bieter: gpWert.bieter,
+          durchschnitt,
+          gp: gpWert.gp,
           hinweis: `Preis ${abweichung.toFixed(1)}% über Durchschnitt — ungewöhnlich teuer. Prüfung empfohlen.`,
+          oz,
+          verdacht: "ueberkosten",
         });
       }
     }
@@ -233,11 +233,11 @@ export function createPreisspiegel(
     const positionenOhnePreis = a.positions.length - positionenMitPreis;
 
     return {
-      name: a.bieterName,
       gesamtsumme,
-      rang: 0, // wird nach Sortierung gesetzt
+      name: a.bieterName,
       positionenMitPreis,
       positionenOhnePreis,
+      rang: 0, // wird nach Sortierung gesetzt
     };
   });
 
@@ -247,11 +247,11 @@ export function createPreisspiegel(
   });
 
   return {
-    positions,
-    bieter,
     ausreisser,
+    bieter,
     bieterCount: angebote.length,
     positionCount: positions.length,
+    positions,
   };
 }
 
@@ -261,11 +261,11 @@ function parseGermanNumber(value: string): number {
   if (!value) {
     return 0;
   }
-  const cleaned = value.trim().replace(/\s/g, "");
+  const cleaned = value.trim().replace(/\s/gu, "");
   // Deutsche Notation: 1.234,56 → 1234.56
   if (cleaned.includes(",") && cleaned.includes(".")) {
     // Punkt = Tausender, Komma = Dezimal
-    return Number.parseFloat(cleaned.replace(/\./g, "").replace(",", "."));
+    return Number.parseFloat(cleaned.replace(/\./gu, "").replace(",", "."));
   }
   // Nur Komma → deutsche Dezimal
   if (cleaned.includes(",")) {

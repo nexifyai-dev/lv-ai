@@ -37,21 +37,21 @@ function authedSession() {
 function makeTextResult(positions: any[], format = "lv-text") {
   return {
     format,
-    lvTextResult:
-      format === "lv-text"
-        ? {
-            success: true,
-            positions,
-            hinweistexte: [],
-            warnings: [],
-          }
-        : undefined,
     gaebResult:
       format === "gaeb-xml"
         ? {
-            success: true,
             positions,
             projectName: "GAEB-Projekt",
+            success: true,
+          }
+        : undefined,
+    lvTextResult:
+      format === "lv-text"
+        ? {
+            hinweistexte: [],
+            positions,
+            success: true,
+            warnings: [],
           }
         : undefined,
   };
@@ -69,9 +69,9 @@ describe("importLvFileAction", () => {
     const { importLvFileAction } = await import("./import-actions");
     await expect(
       importLvFileAction({
-        projectId: PROJECT_ID,
-        fileUrl: FILE_URL,
         fileName: "test.xml",
+        fileUrl: FILE_URL,
+        projectId: PROJECT_ID,
       })
     ).rejects.toThrow("anmelden");
   });
@@ -81,9 +81,9 @@ describe("importLvFileAction", () => {
     const { importLvFileAction } = await import("./import-actions");
     await expect(
       importLvFileAction({
-        projectId: PROJECT_ID,
-        fileUrl: "https://evil.com/file.xml",
         fileName: "test.xml",
+        fileUrl: "https://evil.com/file.xml",
+        projectId: PROJECT_ID,
       })
     ).rejects.toThrow();
   });
@@ -99,9 +99,9 @@ describe("importLvFileAction", () => {
     // prüfen nur, dass ein Fehler geworfen wird, nicht die Substring-Message.
     await expect(
       importLvFileAction({
-        projectId: PROJECT_ID,
-        fileUrl: FILE_URL,
         fileName: "empty.xml",
+        fileUrl: FILE_URL,
+        projectId: PROJECT_ID,
       })
     ).rejects.toThrow();
   });
@@ -116,9 +116,9 @@ describe("importLvFileAction", () => {
     const { importLvFileAction } = await import("./import-actions");
     await expect(
       importLvFileAction({
-        projectId: PROJECT_ID,
-        fileUrl: FILE_URL,
         fileName: "test.txt",
+        fileUrl: FILE_URL,
+        projectId: PROJECT_ID,
       })
     ).rejects.toThrow();
   });
@@ -133,9 +133,9 @@ describe("importLvFileAction", () => {
     const { importLvFileAction } = await import("./import-actions");
     await expect(
       importLvFileAction({
-        projectId: PROJECT_ID,
-        fileUrl: FILE_URL,
         fileName: "test.xml",
+        fileUrl: FILE_URL,
+        projectId: PROJECT_ID,
       })
     ).rejects.toThrow();
   });
@@ -147,12 +147,12 @@ describe("importLvFileAction", () => {
       text: async () => "fake content",
     });
     const positions = [
-      { oz: "1.6.10", kurztext: "Wellrohr M25", menge: "800", einheit: "m" },
+      { einheit: "m", kurztext: "Wellrohr M25", menge: "800", oz: "1.6.10" },
       {
-        oz: "4.1.50",
+        einheit: "m³",
         kurztext: "Stahlbeton C20/25",
         menge: "12",
-        einheit: "m³",
+        oz: "4.1.50",
       },
     ];
     parseLvContentMock.mockResolvedValue(makeTextResult(positions, "lv-text"));
@@ -161,9 +161,9 @@ describe("importLvFileAction", () => {
 
     const { importLvFileAction } = await import("./import-actions");
     const result = await importLvFileAction({
-      projectId: PROJECT_ID,
-      fileUrl: FILE_URL,
       fileName: "test.txt",
+      fileUrl: FILE_URL,
+      projectId: PROJECT_ID,
     });
 
     expect(result.documentId).toBe(DOC_ID);
@@ -171,9 +171,9 @@ describe("importLvFileAction", () => {
     expect(result.positionCount).toBe(2);
     expect(result.skippedPositions).toBe(0);
     expect(createDocMock).toHaveBeenCalledWith({
+      gaebFormat: undefined,
       projectId: PROJECT_ID,
       titel: "test", // fileName ohne Extension
-      gaebFormat: undefined,
       version: "1.0",
     });
     expect(createPosMock).toHaveBeenCalledTimes(2);
@@ -187,7 +187,7 @@ describe("importLvFileAction", () => {
       text: async () => "fake",
     });
     const positions = [
-      { oz: "5..40", kurztext: "Mauerwerk", menge: "716", einheit: "m²" },
+      { einheit: "m²", kurztext: "Mauerwerk", menge: "716", oz: "5..40" },
     ];
     parseLvContentMock.mockResolvedValue(makeTextResult(positions, "lv-text"));
     createDocMock.mockResolvedValue({ id: DOC_ID, projectId: PROJECT_ID });
@@ -195,9 +195,9 @@ describe("importLvFileAction", () => {
 
     const { importLvFileAction } = await import("./import-actions");
     await importLvFileAction({
-      projectId: PROJECT_ID,
-      fileUrl: FILE_URL,
       fileName: "test.txt",
+      fileUrl: FILE_URL,
+      projectId: PROJECT_ID,
     });
 
     expect(createPosMock).toHaveBeenCalledWith(
@@ -210,8 +210,8 @@ describe("importLvFileAction", () => {
     fetchMock.mockResolvedValue({ ok: true, text: async () => "fake" });
     const longOz = "1.2.3.4.5.6.7.8.9.10.11.12.13.14.15.16.17.18.19.20.21";
     const positions = [
-      { oz: longOz, kurztext: "Bad", menge: "1", einheit: "St" },
-      { oz: "1.10", kurztext: "Good", menge: "10", einheit: "m" },
+      { einheit: "St", kurztext: "Bad", menge: "1", oz: longOz },
+      { einheit: "m", kurztext: "Good", menge: "10", oz: "1.10" },
     ];
     parseLvContentMock.mockResolvedValue(makeTextResult(positions, "lv-text"));
     createDocMock.mockResolvedValue({ id: DOC_ID, projectId: PROJECT_ID });
@@ -219,9 +219,9 @@ describe("importLvFileAction", () => {
 
     const { importLvFileAction } = await import("./import-actions");
     const result = await importLvFileAction({
-      projectId: PROJECT_ID,
-      fileUrl: FILE_URL,
       fileName: "test.txt",
+      fileUrl: FILE_URL,
+      projectId: PROJECT_ID,
     });
 
     expect(result.positionCount).toBe(1);
@@ -233,15 +233,15 @@ describe("importLvFileAction", () => {
     authedSession();
     fetchMock.mockResolvedValue({ ok: true, text: async () => "fake" });
     const positions = [
-      { oz: "01.0010", kurztext: "Boden", menge: "100", einheit: "m³" },
+      { einheit: "m³", kurztext: "Boden", menge: "100", oz: "01.0010" },
     ];
     parseLvContentMock.mockResolvedValue({
       format: "gaeb-xml",
       gaebResult: {
-        success: true,
+        gaebFormat: "X83",
         positions,
         projectName: "GAEB-Testprojekt",
-        gaebFormat: "X83",
+        success: true,
       },
     });
     createDocMock.mockResolvedValue({ id: DOC_ID, projectId: PROJECT_ID });
@@ -249,15 +249,15 @@ describe("importLvFileAction", () => {
 
     const { importLvFileAction } = await import("./import-actions");
     await importLvFileAction({
-      projectId: PROJECT_ID,
-      fileUrl: FILE_URL,
       fileName: "x83.xml",
+      fileUrl: FILE_URL,
+      projectId: PROJECT_ID,
     });
 
     expect(createDocMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        titel: "GAEB-Testprojekt",
         gaebFormat: "X83",
+        titel: "GAEB-Testprojekt",
       })
     );
   });
@@ -267,7 +267,7 @@ describe("importLvFileAction", () => {
     fetchMock.mockResolvedValue({ ok: true, text: async () => "fake" });
     parseLvContentMock.mockResolvedValue(
       makeTextResult(
-        [{ oz: "1.1", kurztext: "Test", menge: "1", einheit: "St" }],
+        [{ einheit: "St", kurztext: "Test", menge: "1", oz: "1.1" }],
         "gaeb-xml"
       )
     );
@@ -276,9 +276,9 @@ describe("importLvFileAction", () => {
 
     const { importLvFileAction } = await import("./import-actions");
     const result = await importLvFileAction({
-      projectId: PROJECT_ID,
-      fileUrl: FILE_URL,
       fileName: "test.xml",
+      fileUrl: FILE_URL,
+      projectId: PROJECT_ID,
     });
     expect(result.documentId).toBe(DOC_ID);
     expect(result.format).toBe("gaeb-xml");

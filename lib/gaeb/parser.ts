@@ -14,24 +14,24 @@ export const GAEB_FORMATS: Record<string, string> = {
 };
 
 export interface GaebPosition {
-  oz: string; // Ordnungszahl (z.B. 01.0020)
-  kurztext: string;
-  langtext?: string;
-  menge?: string;
   einheit?: string;
   einheitspreis?: string;
   gesamtpreis?: string;
+  kurztext: string;
+  langtext?: string;
+  menge?: string;
+  oz: string; // Ordnungszahl (z.B. 01.0020)
   positionstyp?: "standard" | "alternativ" | "nachtrag";
 }
 
 export interface GaebParseResult {
-  success: boolean;
-  projectName?: string;
-  projectDescription?: string;
+  error?: string;
   gaebFormat?: string;
   positions: GaebPosition[];
-  error?: string;
+  projectDescription?: string;
+  projectName?: string;
   rawXml?: string;
+  success: boolean;
 }
 
 export class GaebParser {
@@ -40,7 +40,7 @@ export class GaebParser {
    */
   detectFormat(xml: string): string | null {
     // Suche nach DA81, DA82, DA83, DA84, DA85, DA86, DA87, DA89 im Namespace
-    const match = xml.match(/GAEB_DA_XML\/DA(\d{2})/);
+    const match = xml.match(/GAEB_DA_XML\/DA(\d{2})/u);
     if (match) {
       return `X${match[1]}`;
     }
@@ -58,19 +58,19 @@ export class GaebParser {
       // zurückgibt und somit ein "leeres aber gültiges" Resultat entstünde.
       if (typeof xml !== "string" || xml.trim().length === 0) {
         return {
-          success: false,
-          positions: [],
           error: "Eingabe ist leer oder kein String.",
+          positions: [],
           rawXml: xml,
+          success: false,
         };
       }
-      if (!/<GAEB[\s>]/i.test(xml)) {
+      if (!/<GAEB[\s>]/iu.test(xml)) {
         return {
-          success: false,
-          positions: [],
           error:
             "Kein GAEB-Wurzelelement gefunden — Eingabe ist kein GAEB DA XML.",
+          positions: [],
           rawXml: xml,
+          success: false,
         };
       }
 
@@ -87,19 +87,19 @@ export class GaebParser {
       const positions = this.extractPositionsFromXml(xml);
 
       return {
-        success: true,
-        projectName,
-        projectDescription,
         gaebFormat: gaebFormat || undefined,
         positions,
+        projectDescription,
+        projectName,
+        success: true,
       };
     } catch (error) {
       return {
-        success: false,
-        positions: [],
         error:
           error instanceof Error ? error.message : "Unbekannter Parser-Fehler",
+        positions: [],
         rawXml: xml,
+        success: false,
       };
     }
   }
@@ -108,7 +108,7 @@ export class GaebParser {
    * Extrahiert den Inhalt eines XML-Tags.
    */
   private extractTag(xml: string, tagName: string): string | null {
-    const regex = new RegExp(`<${tagName}[^>]*>([^<]*)<\\/${tagName}>`, "i");
+    const regex = new RegExp(`<${tagName}[^>]*>([^<]*)<\\/${tagName}>`, "iu");
     const match = xml.match(regex);
     return match ? match[1].trim() : null;
   }
@@ -120,7 +120,7 @@ export class GaebParser {
     const positions: GaebPosition[] = [];
 
     // Finde alle Item-Elemente
-    const itemRegex = /<Item[^>]*>([\s\S]*?)<\/Item>/gi;
+    const itemRegex = /<Item[^>]*>([\s\S]*?)<\/Item>/giu;
     let itemMatch = itemRegex.exec(xml);
 
     while (itemMatch !== null) {
@@ -135,11 +135,11 @@ export class GaebParser {
 
       if (oz || kurztext) {
         positions.push({
-          oz,
+          einheit,
           kurztext,
           langtext,
           menge,
-          einheit,
+          oz,
           positionstyp: "standard",
         });
       }
@@ -206,11 +206,11 @@ ${positionsXml}
 
   private escapeXml(text: string): string {
     return text
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&apos;");
+      .replace(/&/gu, "&amp;")
+      .replace(/</gu, "&lt;")
+      .replace(/>/gu, "&gt;")
+      .replace(/"/gu, "&quot;")
+      .replace(/'/gu, "&apos;");
   }
 }
 

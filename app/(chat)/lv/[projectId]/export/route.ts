@@ -55,16 +55,16 @@ export async function GET(
   try {
     xml = exportGaebFromDb({
       format,
-      projectName: document.titel,
       positions: positions.map((p) => ({
-        oz: p.oz,
-        kurztext: p.kurztext,
-        langtext: p.langtext,
-        menge: p.menge,
         einheit: p.einheit,
         einheitspreis: p.einheitspreis,
         gesamtpreis: p.gesamtpreis,
+        kurztext: p.kurztext,
+        langtext: p.langtext,
+        menge: p.menge,
+        oz: p.oz,
       })),
+      projectName: document.titel,
     });
   } catch (err) {
     return new ChatbotError(
@@ -73,15 +73,15 @@ export async function GET(
     ).toResponse();
   }
 
-  const safeName = document.titel.replace(/[^a-zA-Z0-9äöüÄÖÜß._-]/g, "_");
+  const safeName = document.titel.replace(/[^a-zA-Z0-9äöüÄÖÜß._-]/gu, "_");
   const filename = `GAEB_${format}_${safeName}.xml`;
 
   return new NextResponse(xml, {
-    status: 200,
     headers: {
-      "Content-Type": "application/xml; charset=utf-8",
-      "Content-Disposition": `attachment; filename="${filename}"`,
       "Cache-Control": "no-store",
+      "Content-Disposition": `attachment; filename="${filename}"`,
+      "Content-Type": "application/xml; charset=utf-8",
     },
+    status: 200,
   });
 }

@@ -30,7 +30,6 @@ async function requireSession() {
 
 // ─── Schema ──────────────────────────────────────────────────────────────────
 const preisspiegelSchema = z.object({
-  projectId: z.string().uuid("Projekt-ID ungültig."),
   fileUrls: z
     .array(
       z
@@ -46,6 +45,7 @@ const preisspiegelSchema = z.object({
     )
     .min(2, "Mindestens 2 Bieterangebote erforderlich.")
     .max(10, "Maximal 10 Bieterangebote pro Preisspiegel."),
+  projectId: z.string().uuid("Projekt-ID ungültig."),
 });
 
 type PreisspiegelInput = z.infer<typeof preisspiegelSchema>;
@@ -112,25 +112,25 @@ export async function generatePreisspiegelAction(
   const offerIds: Record<string, string> = {};
   for (const angebot of angebote) {
     const gesamtsumme =
-      angebot.gesamtsumme !== undefined
-        ? angebot.gesamtsumme.toFixed(2)
-        : undefined;
+      angebot.gesamtsumme === undefined
+        ? undefined
+        : angebot.gesamtsumme.toFixed(2);
     const row = await createOffer({
-      projectId,
       bieter: angebot.bieterName,
-      gesamtsumme,
       eingereichtAm: new Date(),
+      gesamtsumme,
+      projectId,
     });
     offerIds[angebot.bieterName] = row.id;
     await replaceOfferPositions(
       row.id,
       angebot.positions.map((p) => ({
-        oz: p.oz,
-        kurztext: p.kurztext,
-        menge: p.menge,
         einheit: p.einheit,
         einheitspreis: p.einheitspreis,
         gesamtpreis: p.gesamtpreis,
+        kurztext: p.kurztext,
+        menge: p.menge,
+        oz: p.oz,
       }))
     );
   }

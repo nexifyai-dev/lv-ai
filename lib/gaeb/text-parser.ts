@@ -22,36 +22,36 @@ import type { GaebParseResult, GaebPosition } from "./parser";
 export { GAEB_FORMATS } from "./parser";
 
 export interface LvTextParseResult {
-  success: boolean;
-  projectName?: string;
   auftraggeber?: string;
-  positions: GaebPosition[];
-  hinweistexte: string[];
-  warnings: string[];
   error?: string;
+  hinweistexte: string[];
+  positions: GaebPosition[];
+  projectName?: string;
+  success: boolean;
+  warnings: string[];
 }
 
 // ─── OZ-Pattern ──────────────────────────────────────────────────────────────
 // OZ kann sein: 1.6.10, 4.1.50, 5..40 (double-dot Tippfehler aus Sample),
 // 01.0020 (GAEB-Stil). Wir akzeptieren N[.N]* mit 1-4 Segmenten und
 // tolerieren bis zu 2 aufeinanderfolgende Punkte (Tippfehler in echten LVs).
-const _OZ_PATTERN = /(\d{1,4}(?:\.{1,2}\d{1,4}){0,4})/;
+const _OZ_PATTERN = /(\d{1,4}(?:\.{1,2}\d{1,4}){0,4})/u;
 
 // Menge: Deutsche Notation 800,000 oder internationale 800.000 oder 800
 // Akzeptiert bis zu 3 Nachkommastellen, optionales Tausendertrennzeichen.
 const _MENGE_PATTERN =
-  /^(\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{1,3})?|\d+(?:[.,]\d{1,3})?)$/;
+  /^(\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{1,3})?|\d+(?:[.,]\d{1,3})?)$/u;
 
 // ME: m, m², m³, kg, t, St, Stk, PSCH, lfm, h, d — typische AVA-Einheiten.
 // Reihenfolge ist wichtig: m³/m² müssen VOR m stehen, sonst matched m zuerst
 // und schneidet das ³/² ab.
-const _EINHEIT_PATTERN = /^(m³|m²|m|qm|kg|t|St\.?|Stk\.?|PSCH|lfm|h|d)$/i;
+const _EINHEIT_PATTERN = /^(m³|m²|m|qm|kg|t|St\.?|Stk\.?|PSCH|lfm|h|d)$/iu;
 
 // Summenzeile: "Summe 1.6. Leerrohrverkabelung Ortbeton ........................."
-const SUMME_PATTERN = /^Summe\s+/i;
+const SUMME_PATTERN = /^Summe\s+/iu;
 
 // Hinweistext-Marker
-const HINWEIS_PATTERN = /^Hinweistext$/i;
+const HINWEIS_PATTERN = /^Hinweistext$/iu;
 
 export class LvTextParser {
   /**
@@ -63,9 +63,9 @@ export class LvTextParser {
   parse(text: string): LvTextParseResult {
     if (typeof text !== "string" || text.trim().length === 0) {
       return {
-        success: false,
-        positions: [],
         hinweistexte: [],
+        positions: [],
+        success: false,
         warnings: ["Eingabe ist leer oder kein String."],
       };
     }
@@ -80,8 +80,8 @@ export class LvTextParser {
 
     // Zeilen normalisieren: CRLF → LF, Tabs → Leerzeichen
     const lines = text
-      .replace(/\r\n/g, "\n")
-      .replace(/\t/g, " ")
+      .replace(/\r\n/gu, "\n")
+      .replace(/\t/gu, " ")
       .split("\n")
       .map((l) => l.trim());
 
@@ -108,11 +108,11 @@ export class LvTextParser {
       if (currentOz && currentKurztext) {
         const langtext = currentLangtext.join(" ").trim();
         positions.push({
-          oz: currentOz,
+          einheit: currentEinheit,
           kurztext: currentKurztext,
           langtext: langtext || undefined,
           menge: currentMenge,
-          einheit: currentEinheit,
+          oz: currentOz,
           positionstyp: "standard",
         });
       }
@@ -158,16 +158,16 @@ export class LvTextParser {
       }
 
       // Seiten-Header überspringen (Druckdatum, Projekt-Zeile)
-      if (/^Druckdatum:/i.test(line) || /^Seite:\s*\d+/i.test(line)) {
+      if (/^Druckdatum:/iu.test(line) || /^Seite:\s*\d+/iu.test(line)) {
         continue;
       }
-      if (/^Projekt:\s+/i.test(line) || /^LV:\s+/i.test(line)) {
+      if (/^Projekt:\s+/iu.test(line) || /^LV:\s+/iu.test(line)) {
         continue;
       }
-      if (/^OZ\s+Leistungsbeschreibung/i.test(line)) {
+      if (/^OZ\s+Leistungsbeschreibung/iu.test(line)) {
         continue;
       }
-      if (/^in EUR/i.test(line)) {
+      if (/^in EUR/iu.test(line)) {
         continue;
       }
 
@@ -215,11 +215,11 @@ export class LvTextParser {
     }
 
     return {
-      success: positions.length > 0,
-      projectName,
       auftraggeber,
-      positions,
       hinweistexte,
+      positions,
+      projectName,
+      success: positions.length > 0,
       warnings,
     };
   }
@@ -236,7 +236,7 @@ export class LvTextParser {
   } | null {
     // OZ muss am Zeilenanfang stehen; toleriert bis zu 2 aufeinanderfolgende
     // Punkte (Tippfehler wie "5..40" in echten LVs).
-    const ozMatch = line.match(/^(\d{1,4}(?:\.{1,2}\d{1,4}){0,4})\s+(.+)$/);
+    const ozMatch = line.match(/^(\d{1,4}(?:\.{1,2}\d{1,4}){0,4})\s+(.+)$/u);
     if (!ozMatch) {
       return null;
     }
@@ -245,7 +245,7 @@ export class LvTextParser {
     const rest = ozMatch[2].trim();
 
     // Summenzeile ausschließen ("Summe 1.6. ..." matcht sonst)
-    if (/^Summe\s/i.test(rest)) {
+    if (/^Summe\s/iu.test(rest)) {
       return null;
     }
 
@@ -253,15 +253,15 @@ export class LvTextParser {
     // Format: "Kurztext ... 800,000 m"
     // Reihenfolge im Regex: m³/m² VOR m, damit sie nicht abgeschnitten werden.
     const mengeEndMatch = rest.match(
-      /^(.+?)\s+(\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{1,3})?|\d+(?:[.,]\d{1,3})?)\s+(m³|m²|m|qm|kg|t|St\.?|Stk\.?|PSCH|lfm|h|d)$/i
+      /^(.+?)\s+(\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{1,3})?|\d+(?:[.,]\d{1,3})?)\s+(m³|m²|m|qm|kg|t|St\.?|Stk\.?|PSCH|lfm|h|d)$/iu
     );
 
     if (mengeEndMatch) {
       return {
-        oz,
+        einheit: mengeEndMatch[3],
         kurztext: mengeEndMatch[1].trim(),
         menge: mengeEndMatch[2],
-        einheit: mengeEndMatch[3],
+        oz,
       };
     }
 
@@ -270,8 +270,8 @@ export class LvTextParser {
       return null;
     }
     return {
-      oz,
       kurztext: rest,
+      oz,
     };
   }
 
@@ -283,12 +283,12 @@ export class LvTextParser {
     // Reihenfolge: m³/m² VOR m. Kein \b-Word-Boundary, weil Unicode-Einheiten
     // (m², m³) sonst abgeschnitten werden.
     const match = line.match(
-      /^(\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{1,3})?|\d+(?:[.,]\d{1,3})?)\s+(m³|m²|m|qm|kg|t|St\.?|Stk\.?|PSCH|lfm|h|d)(?:\s|$)/i
+      /^(\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{1,3})?|\d+(?:[.,]\d{1,3})?)\s+(m³|m²|m|qm|kg|t|St\.?|Stk\.?|PSCH|lfm|h|d)(?:\s|$)/iu
     );
     if (!match) {
       return null;
     }
-    return { menge: match[1], einheit: match[2] };
+    return { einheit: match[2], menge: match[1] };
   }
 
   private isPositionLine(line: string): boolean {
@@ -296,12 +296,12 @@ export class LvTextParser {
   }
 
   private extractProjectName(text: string): string | undefined {
-    const match = text.match(/^Projekt:\s*(.+)$/m);
+    const match = text.match(/^Projekt:\s*(.+)$/mu);
     return match?.[1]?.trim();
   }
 
   private extractAuftraggeber(text: string): string | undefined {
-    const match = text.match(/Auftraggeber:\s*(.+?)(?:\n|$)/m);
+    const match = text.match(/Auftraggeber:\s*(.+?)(?:\n|$)/mu);
     return match?.[1]?.trim();
   }
 }
@@ -324,7 +324,7 @@ export function detectLvFormat(content: string): LvFormat {
   }
 
   // GAEB XML: hat <GAEB>-Wurzelelement
-  if (/<GAEB[\s>]/i.test(content)) {
+  if (/<GAEB[\s>]/iu.test(content)) {
     return "gaeb-xml";
   }
 

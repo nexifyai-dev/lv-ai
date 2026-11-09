@@ -88,8 +88,8 @@ export async function POST(request: Request) {
     const userType: UserType = session.user.type;
 
     const messageCount = await getMessageCountByUserId({
-      id: session.user.id,
       differenceInHours: 1,
+      id: session.user.id,
     });
 
     if (messageCount > entitlementsByUserType[userType].maxMessagesPerHour) {
@@ -110,8 +110,8 @@ export async function POST(request: Request) {
     } else if (message?.role === "user") {
       await saveChat({
         id,
-        userId: session.user.id,
         title: "New chat",
+        userId: session.user.id,
         visibility: selectedVisibilityType,
       });
       titlePromise = generateTitleFromUserMessage({ message });
@@ -158,22 +158,22 @@ export async function POST(request: Request) {
     const { longitude, latitude, city, country } = geolocation(request);
 
     const requestHints: RequestHints = {
-      longitude,
-      latitude,
       city,
       country,
+      latitude,
+      longitude,
     };
 
     if (message?.role === "user") {
       await saveMessages({
         messages: [
           {
-            chatId: id,
-            id: message.id,
-            role: "user",
-            parts: message.parts,
             attachments: [],
+            chatId: id,
             createdAt: new Date(),
+            id: message.id,
+            parts: message.parts,
+            role: "user",
           },
         ],
       });
@@ -199,17 +199,8 @@ export async function POST(request: Request) {
         : modelMessages;
 
     const stream = createUIMessageStream({
-      originalMessages: isToolApprovalFlow ? uiMessages : undefined,
       execute: async ({ writer: dataStream }) => {
         const result = streamText({
-          model: getLanguageModel(chatModel),
-          system: systemPromptParts({ requestHints, supportsTools }),
-          messages: truncatedMessages,
-          stopWhen: stepCountIs(5),
-          // Token-Optimierung T19: Output-Limit verhindert Endlos-Antworten.
-          // Chat: 2000 Token (~1500 Wörter), LV-Generierung via Tool läuft
-          // separat mit eigenem Limit in den Tool-Definitionen.
-          maxOutputTokens: 2000,
           experimental_activeTools:
             isReasoningModel && !supportsTools
               ? []
@@ -219,32 +210,40 @@ export async function POST(request: Request) {
                   "updateDocument",
                   "requestSuggestions",
                 ],
+          experimental_telemetry: {
+            functionId: "stream-text",
+            isEnabled: isProductionEnvironment,
+          },
+          // Token-Optimierung T19: Output-Limit verhindert Endlos-Antworten.
+          // Chat: 2000 Token (~1500 Wörter), LV-Generierung via Tool läuft
+          // separat mit eigenem Limit in den Tool-Definitionen.
+          maxOutputTokens: 2000,
+          messages: truncatedMessages,
+          model: getLanguageModel(chatModel),
           providerOptions: {
             ...(modelConfig?.reasoningEffort && {
               openai: { reasoningEffort: modelConfig.reasoningEffort },
             }),
           },
+          stopWhen: stepCountIs(5),
+          system: systemPromptParts({ requestHints, supportsTools }),
           tools: {
             createDocument: createDocument({
-              session,
               dataStream,
               modelId: chatModel,
+              session,
             }),
             editDocument: editDocument({ dataStream, session }),
-            updateDocument: updateDocument({
-              session,
-              dataStream,
-              modelId: chatModel,
-            }),
             requestSuggestions: requestSuggestions({
-              session,
               dataStream,
               modelId: chatModel,
+              session,
             }),
-          },
-          experimental_telemetry: {
-            isEnabled: isProductionEnvironment,
-            functionId: "stream-text",
+            updateDocument: updateDocument({
+              dataStream,
+              modelId: chatModel,
+              session,
+            }),
           },
         });
 
@@ -255,7 +254,7 @@ export async function POST(request: Request) {
         if (titlePromise) {
           try {
             const title = await titlePromise;
-            dataStream.write({ type: "data-chat-title", data: title });
+            dataStream.write({ data: title, type: "data-chat-title" });
             updateChatTitleById({ chatId: id, title });
           } catch (_) {
             /* non-fatal */
@@ -263,6 +262,12 @@ export async function POST(request: Request) {
         }
       },
       generateId: generateUUID,
+      onError: (error) => {
+        if (error instanceof Error && error.message?.includes("rate limit")) {
+          return "Rate-Limit erreicht. Bitte warten Sie einen Moment und versuchen Sie es erneut.";
+        }
+        return "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.";
+      },
       onFinish: async ({ messages: finishedMessages }) => {
         if (isToolApprovalFlow) {
           for (const finishedMsg of finishedMessages) {
@@ -276,12 +281,12 @@ export async function POST(request: Request) {
               await saveMessages({
                 messages: [
                   {
-                    id: finishedMsg.id,
-                    role: finishedMsg.role,
-                    parts: finishedMsg.parts,
-                    createdAt: new Date(),
                     attachments: [],
                     chatId: id,
+                    createdAt: new Date(),
+                    id: finishedMsg.id,
+                    parts: finishedMsg.parts,
+                    role: finishedMsg.role,
                   },
                 ],
               });
@@ -290,26 +295,20 @@ export async function POST(request: Request) {
         } else if (finishedMessages.length > 0) {
           await saveMessages({
             messages: finishedMessages.map((currentMessage) => ({
-              id: currentMessage.id,
-              role: currentMessage.role,
-              parts: currentMessage.parts,
-              createdAt: new Date(),
               attachments: [],
               chatId: id,
+              createdAt: new Date(),
+              id: currentMessage.id,
+              parts: currentMessage.parts,
+              role: currentMessage.role,
             })),
           });
         }
       },
-      onError: (error) => {
-        if (error instanceof Error && error.message?.includes("rate limit")) {
-          return "Rate-Limit erreicht. Bitte warten Sie einen Moment und versuchen Sie es erneut.";
-        }
-        return "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.";
-      },
+      originalMessages: isToolApprovalFlow ? uiMessages : undefined,
     });
 
     return createUIMessageStreamResponse({
-      stream,
       async consumeSseStream({ stream: sseStream }) {
         if (!process.env.REDIS_URL) {
           return;
@@ -318,7 +317,7 @@ export async function POST(request: Request) {
           const streamContext = getStreamContext();
           if (streamContext) {
             const streamId = generateId();
-            await createStreamId({ streamId, chatId: id });
+            await createStreamId({ chatId: id, streamId });
             await streamContext.createNewResumableStream(
               streamId,
               () => sseStream
@@ -328,6 +327,7 @@ export async function POST(request: Request) {
           /* non-critical */
         }
       },
+      stream,
     });
   } catch (error) {
     if (error instanceof ChatbotError) {

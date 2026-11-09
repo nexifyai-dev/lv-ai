@@ -37,24 +37,24 @@ export function SidebarUserNav({ user }: { user: User }) {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             {status === "loading" ? (
-              <SidebarMenuButton className="h-10 justify-between rounded-lg bg-transparent text-sidebar-foreground/50 transition-colors duration-150 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
+              <SidebarMenuButton className="text-sidebar-foreground/50 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground h-10 justify-between rounded-lg bg-transparent transition-colors duration-150">
                 <div className="flex flex-row items-center gap-2">
-                  <div className="size-6 animate-pulse rounded-full bg-sidebar-foreground/10" />
-                  <span className="animate-pulse rounded-md bg-sidebar-foreground/10 text-transparent text-[13px]">
+                  <div className="bg-sidebar-foreground/10 size-6 animate-pulse rounded-full" />
+                  <span className="bg-sidebar-foreground/10 animate-pulse rounded-md text-[13px] text-transparent">
                     Laden...
                   </span>
                 </div>
-                <div className="animate-spin text-sidebar-foreground/50">
+                <div className="text-sidebar-foreground/50 animate-spin">
                   <LoaderIcon />
                 </div>
               </SidebarMenuButton>
             ) : (
               <SidebarMenuButton
-                className="h-8 px-2 rounded-lg bg-transparent text-sidebar-foreground/70 transition-colors duration-150 hover:text-sidebar-foreground data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                className="text-sidebar-foreground/70 hover:text-sidebar-foreground data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground h-8 rounded-lg bg-transparent px-2 transition-colors duration-150"
                 data-testid="user-nav-button"
               >
                 <div
-                  className="size-5 shrink-0 rounded-full ring-1 ring-sidebar-border/50"
+                  className="ring-sidebar-border/50 size-5 shrink-0 rounded-full ring-1"
                   style={{
                     background: `linear-gradient(135deg, oklch(0.35 0.08 ${emailToHue(user.email ?? "")}), oklch(0.25 0.05 ${emailToHue(user.email ?? "") + 40}))`,
                   }}
@@ -62,12 +62,12 @@ export function SidebarUserNav({ user }: { user: User }) {
                 <span className="truncate text-[13px]" data-testid="user-email">
                   {user?.email || "LV.AI Nutzer"}
                 </span>
-                <ChevronUp className="ml-auto size-3.5 text-sidebar-foreground/50" />
+                <ChevronUp className="text-sidebar-foreground/50 ml-auto size-3.5" />
               </SidebarMenuButton>
             )}
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-(--radix-popper-anchor-width) rounded-lg border border-border/60 bg-card/95 backdrop-blur-xl shadow-[var(--shadow-float)]"
+            className="border-border/60 bg-card/95 w-(--radix-popper-anchor-width) rounded-lg border shadow-[var(--shadow-float)] backdrop-blur-xl"
             data-testid="user-nav-menu"
             side="top"
           >
@@ -80,12 +80,12 @@ export function SidebarUserNav({ user }: { user: User }) {
             >
               {resolvedTheme === "light" ? (
                 <>
-                  <MoonIcon className="size-4 mr-2" />
+                  <MoonIcon className="mr-2 size-4" />
                   Dunkelmodus
                 </>
               ) : (
                 <>
-                  <SunIcon className="size-4 mr-2" />
+                  <SunIcon className="mr-2 size-4" />
                   Hellmodus
                 </>
               )}
@@ -97,9 +97,9 @@ export function SidebarUserNav({ user }: { user: User }) {
                 onClick={() => {
                   if (status === "loading") {
                     toast({
-                      type: "error",
                       description:
                         "Authentifizierung wird geprüft, bitte erneut versuchen!",
+                      type: "error",
                     });
                     return;
                   }
@@ -110,7 +110,7 @@ export function SidebarUserNav({ user }: { user: User }) {
                 }}
                 type="button"
               >
-                <LogOutIcon className="size-4 mr-2" />
+                <LogOutIcon className="mr-2 size-4" />
                 Abmelden
               </button>
             </DropdownMenuItem>

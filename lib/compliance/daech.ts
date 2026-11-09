@@ -5,23 +5,23 @@
 export type Land = "DE" | "AT" | "CH";
 
 export interface ComplianceConfig {
+  atv: string; // Allgemeine Technische Vertragsbedingungen
+  eRechnung: string[];
+  fristen: FristConfig[];
+  kostengliederung: string;
   land: Land;
   name: string;
+  positionstexte: Positionsvorlage[];
+  sprache: string;
   vergaberecht: string;
   vertragsrecht: string;
-  atv: string; // Allgemeine Technische Vertragsbedingungen
-  kostengliederung: string;
-  eRechnung: string[];
   waehrung: string;
-  sprache: string;
-  fristen: FristConfig[];
-  positionstexte: Positionsvorlage[];
 }
 
 export interface FristConfig {
+  beschreibung: string;
   name: string;
   tage: number;
-  beschreibung: string;
 }
 
 export interface Positionsvorlage {
@@ -37,130 +37,130 @@ export interface Positionsvorlage {
 // ─── DE — VOB/A+B+C, DIN 276 ────────────────────────────────────────────────
 
 export const COMPLIANCE_DE: ComplianceConfig = {
-  land: "DE",
-  name: "VOB/A+B+C (Vergabe- und Vertragsordnung für Bauleistungen)",
-  vergaberecht: "VOB/A 2019 — Vergabe von Bauleistungen",
-  vertragsrecht: "VOB/B 2016 — Allgemeine Vertragsbedingungen",
   atv: "VOB/C — Allgemeine Technische Vertragsbedingungen (DIN 18299 ff.)",
-  kostengliederung: "DIN 276:2018 — Kosten im Bauwesen",
   eRechnung: ["XRechnung 3.0", "ZUGFeRD 2.1"],
-  waehrung: "EUR",
-  sprache: "de-DE",
   fristen: [
     {
+      beschreibung: "§ 10 Abs. 1 VOB/A — Frist für Angebotsabgabe",
       name: "Angebotsfrist (Mindestfrist öffentliche Ausschreibung nach VOB/A § 10)",
       tage: 35,
-      beschreibung: "§ 10 Abs. 1 VOB/A — Frist für Angebotsabgabe",
     },
     {
+      beschreibung: "§ 10 Abs. 2 VOB/A",
       name: "Angebotsfrist (Mindestfrist beschränkte Ausschreibung nach VOB/A § 10)",
       tage: 25,
-      beschreibung: "§ 10 Abs. 2 VOB/A",
     },
     {
+      beschreibung: "§ 14 VOB/A — Standard-Bindefrist",
       name: "Angebotsbindefrist",
       tage: 60,
-      beschreibung: "§ 14 VOB/A — Standard-Bindefrist",
     },
     {
+      beschreibung: "§ 13 Abs. 4 VOB/B — Allgemeine Gewährleistungsfrist",
       name: "Gewährleistungsfrist",
       tage: 730, // 2 Jahre
-      beschreibung: "§ 13 Abs. 4 VOB/B — Allgemeine Gewährleistungsfrist",
     },
     {
+      beschreibung: "§ 16 Abs. 1 VOB/B — Fälligkeit von Abschlagszahlungen",
       name: "Abschlagsrechnung Fälligkeit",
       tage: 14,
-      beschreibung: "§ 16 Abs. 1 VOB/B — Fälligkeit von Abschlagszahlungen",
     },
     {
+      beschreibung: "§ 16 Abs. 3 VOB/B — Prüfungsfrist für Schlussrechnungen",
       name: "Schlussrechnung Prüffrist",
       tage: 30,
-      beschreibung: "§ 16 Abs. 3 VOB/B — Prüfungsfrist für Schlussrechnungen",
     },
   ],
+  kostengliederung: "DIN 276:2018 — Kosten im Bauwesen",
+  land: "DE",
+  name: "VOB/A+B+C (Vergabe- und Vertragsordnung für Bauleistungen)",
   positionstexte: [],
+  sprache: "de-DE",
+  vergaberecht: "VOB/A 2019 — Vergabe von Bauleistungen",
+  vertragsrecht: "VOB/B 2016 — Allgemeine Vertragsbedingungen",
+  waehrung: "EUR",
 };
 
 // ─── AT — ÖNORM B2110/B2111 ─────────────────────────────────────────────────
 
 export const COMPLIANCE_AT: ComplianceConfig = {
-  land: "AT",
-  name: "ÖNORM B2110/B2111 (Österreichische Norm)",
-  vergaberecht: "ÖNORM B2110:2013 — Ausschreibung, Angebot und Vergabe",
-  vertragsrecht: "ÖNORM B2111:2013 — Werkvertragsnorm",
   atv: "ÖNORM B2110 Anhang C — Technische Vertragsbedingungen",
-  kostengliederung: "ÖNORM B 1801-1 — Kostenermittlung",
   eRechnung: ["ebInterface 5.0", "ZUGFeRD 2.1"],
-  waehrung: "EUR",
-  sprache: "de-AT",
   fristen: [
     {
+      beschreibung: "ÖNORM B2110 Punkt 5.3",
       name: "Angebotsfrist (Mindestfrist nach ÖNORM B2110)",
       tage: 30,
-      beschreibung: "ÖNORM B2110 Punkt 5.3",
     },
     {
+      beschreibung: "ÖNORM B 2110 Punkt 6.1",
       name: "Angebotsbindefrist",
       tage: 90,
-      beschreibung: "ÖNORM B 2110 Punkt 6.1",
     },
     {
+      beschreibung: "ÖNORM B 2111 Punkt 8.3",
       name: "Gewährleistungsfrist",
       tage: 730, // 2 Jahre
-      beschreibung: "ÖNORM B 2111 Punkt 8.3",
     },
     {
+      beschreibung: "ÖNORM B 2111 Punkt 9.2",
       name: "Rechnung Prüffrist",
       tage: 30,
-      beschreibung: "ÖNORM B 2111 Punkt 9.2",
     },
   ],
+  kostengliederung: "ÖNORM B 1801-1 — Kostenermittlung",
+  land: "AT",
+  name: "ÖNORM B2110/B2111 (Österreichische Norm)",
   positionstexte: [],
+  sprache: "de-AT",
+  vergaberecht: "ÖNORM B2110:2013 — Ausschreibung, Angebot und Vergabe",
+  vertragsrecht: "ÖNORM B2111:2013 — Werkvertragsnorm",
+  waehrung: "EUR",
 };
 
 // ─── CH — SIA 118/102 ───────────────────────────────────────────────────────
 
 export const COMPLIANCE_CH: ComplianceConfig = {
-  land: "CH",
-  name: "SIA 118/102 (Schweizer Norm)",
-  vergaberecht: "SIA 118 — Allgemeine Bedingungen für Bauarbeiten",
-  vertragsrecht: "SIA 102 — Werkvertrag",
   atv: "SIA 118 Teil C — Technische Bestimmungen",
-  kostengliederung: "SIA 416 — Baukostenplanung",
   eRechnung: ["ZUGFeRD 2.1", "Swiss QR-Rechnung"],
-  waehrung: "CHF",
-  sprache: "de-CH",
   fristen: [
     {
+      beschreibung: "SIA 118 Punkt 5.2",
       name: "Angebotsfrist",
       tage: 30,
-      beschreibung: "SIA 118 Punkt 5.2",
     },
     {
+      beschreibung: "SIA 118 Punkt 6.1",
       name: "Angebotsbindefrist",
       tage: 90,
-      beschreibung: "SIA 118 Punkt 6.1",
     },
     {
+      beschreibung: "SIA 102 Punkt 172",
       name: "Gewährleistungsfrist",
       tage: 730, // 2 Jahre
-      beschreibung: "SIA 102 Punkt 172",
     },
     {
+      beschreibung: "SIA 102 Punkt 156",
       name: "Rechnung Prüffrist",
       tage: 30,
-      beschreibung: "SIA 102 Punkt 156",
     },
   ],
+  kostengliederung: "SIA 416 — Baukostenplanung",
+  land: "CH",
+  name: "SIA 118/102 (Schweizer Norm)",
   positionstexte: [],
+  sprache: "de-CH",
+  vergaberecht: "SIA 118 — Allgemeine Bedingungen für Bauarbeiten",
+  vertragsrecht: "SIA 102 — Werkvertrag",
+  waehrung: "CHF",
 };
 
 // ─── Compliance-Service ──────────────────────────────────────────────────────
 
 const COMPLIANCE_BY_LAND: Record<Land, ComplianceConfig> = {
-  DE: COMPLIANCE_DE,
   AT: COMPLIANCE_AT,
   CH: COMPLIANCE_CH,
+  DE: COMPLIANCE_DE,
 };
 
 export function getComplianceForLand(land: string): ComplianceConfig {

@@ -74,8 +74,8 @@ describe("GET /lv/[projectId]/export", () => {
     authedSession();
     getDocMock.mockResolvedValue({
       id: DOC_ID,
-      titel: "Test",
       projectId: "anderes-projekt",
+      titel: "Test",
     });
     const { GET } = await import("./route");
     const [req, ctx] = makeRequest({ documentId: DOC_ID });
@@ -87,8 +87,8 @@ describe("GET /lv/[projectId]/export", () => {
     authedSession();
     getDocMock.mockResolvedValue({
       id: DOC_ID,
-      titel: "Test-LV",
       projectId: PROJECT_ID,
+      titel: "Test-LV",
     });
     getPosMock.mockResolvedValue([]);
     const { GET } = await import("./route");
@@ -101,11 +101,11 @@ describe("GET /lv/[projectId]/export", () => {
     authedSession();
     getDocMock.mockResolvedValue({
       id: DOC_ID,
-      titel: "Rohbau KiTa",
       projectId: PROJECT_ID,
+      titel: "Rohbau KiTa",
     });
     getPosMock.mockResolvedValue([
-      { oz: "1.1", kurztext: "Test", menge: "100", einheit: "m" },
+      { einheit: "m", kurztext: "Test", menge: "100", oz: "1.1" },
     ]);
     exportMock.mockReturnValue('<?xml version="1.0"?><GAEB>test</GAEB>');
 
@@ -125,10 +125,10 @@ describe("GET /lv/[projectId]/export", () => {
     authedSession();
     getDocMock.mockResolvedValue({
       id: DOC_ID,
-      titel: "Test",
       projectId: PROJECT_ID,
+      titel: "Test",
     });
-    getPosMock.mockResolvedValue([{ oz: "1", kurztext: "T" }]);
+    getPosMock.mockResolvedValue([{ kurztext: "T", oz: "1" }]);
     exportMock.mockReturnValue("<GAEB/>");
 
     const { GET } = await import("./route");
@@ -144,10 +144,10 @@ describe("GET /lv/[projectId]/export", () => {
     authedSession();
     getDocMock.mockResolvedValue({
       id: DOC_ID,
-      titel: "Test",
       projectId: PROJECT_ID,
+      titel: "Test",
     });
-    getPosMock.mockResolvedValue([{ oz: "1", kurztext: "T" }]);
+    getPosMock.mockResolvedValue([{ kurztext: "T", oz: "1" }]);
     exportMock.mockReturnValue("<GAEB X84/>");
 
     const { GET } = await import("./route");
@@ -165,10 +165,10 @@ describe("GET /lv/[projectId]/export", () => {
     authedSession();
     getDocMock.mockResolvedValue({
       id: DOC_ID,
-      titel: "Test",
       projectId: PROJECT_ID,
+      titel: "Test",
     });
-    getPosMock.mockResolvedValue([{ oz: "1", kurztext: "T" }]);
+    getPosMock.mockResolvedValue([{ kurztext: "T", oz: "1" }]);
     exportMock.mockImplementation(() => {
       throw new Error("bidderName fehlt");
     });

@@ -23,7 +23,7 @@ function PureChatHeader({
   }
 
   return (
-    <header className="sticky top-0 flex h-14 items-center gap-2 bg-sidebar px-3">
+    <header className="bg-sidebar sticky top-0 flex h-14 items-center gap-2 px-3">
       <Button
         className="md:hidden"
         onClick={toggleSidebar}
@@ -33,14 +33,11 @@ function PureChatHeader({
         <PanelLeftIcon className="size-4" />
       </Button>
 
-      <Link
-        className="flex items-center gap-2 md:hidden"
-        href="/"
-      >
-        <div className="size-7 rounded-md bg-primary flex items-center justify-center">
-          <span className="text-primary-foreground font-bold text-xs">LV</span>
+      <Link className="flex items-center gap-2 md:hidden" href="/">
+        <div className="bg-primary flex size-7 items-center justify-center rounded-md">
+          <span className="text-primary-foreground text-xs font-bold">LV</span>
         </div>
-        <span className="font-semibold text-sm">LV.AI</span>
+        <span className="text-sm font-semibold">LV.AI</span>
       </Link>
 
       {!isReadonly && (
@@ -53,10 +50,10 @@ function PureChatHeader({
   );
 }
 
-export const ChatHeader = memo(PureChatHeader, (prevProps, nextProps) => {
-  return (
+export const ChatHeader = memo(
+  PureChatHeader,
+  (prevProps, nextProps) =>
     prevProps.chatId === nextProps.chatId &&
     prevProps.selectedVisibilityType === nextProps.selectedVisibilityType &&
     prevProps.isReadonly === nextProps.isReadonly
-  );
-});
+);

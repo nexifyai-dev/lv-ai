@@ -4,20 +4,20 @@ vi.mock("server-only", () => ({}));
 
 const mocks = vi.hoisted(() => {
   const makeThenable = () => ({
+    limit: vi.fn(() => makeThenable()),
+    orderBy: vi.fn(() => makeThenable()),
     // biome-ignore lint/suspicious/noThenProperty: Thenable-Mock braucht `then` für await
     then: vi.fn((resolve: any) => Promise.resolve([]).then(resolve)),
     where: vi.fn(() => makeThenable()),
-    orderBy: vi.fn(() => makeThenable()),
-    limit: vi.fn(() => makeThenable()),
   });
 
   const chain = makeThenable();
 
   const selectSpy = vi.fn(() => ({
     from: vi.fn(() => chain),
-    where: vi.fn(() => chain),
-    orderBy: vi.fn(() => chain),
     limit: vi.fn(() => chain),
+    orderBy: vi.fn(() => chain),
+    where: vi.fn(() => chain),
   }));
 
   const insertSpy = vi.fn(() => ({
@@ -38,15 +38,15 @@ const mocks = vi.hoisted(() => {
     where: vi.fn(async () => undefined),
   }));
 
-  return { selectSpy, insertSpy, updateSpy, deleteSpy, chain };
+  return { chain, deleteSpy, insertSpy, selectSpy, updateSpy };
 });
 
 vi.mock("drizzle-orm/postgres-js", () => ({
   drizzle: () => ({
-    select: mocks.selectSpy,
-    insert: mocks.insertSpy,
-    update: mocks.updateSpy,
     delete: mocks.deleteSpy,
+    insert: mocks.insertSpy,
+    select: mocks.selectSpy,
+    update: mocks.updateSpy,
   }),
 }));
 
@@ -89,9 +89,9 @@ describe("Offer-Queries", () => {
 
   it("createOffer gibt neue Offer-Row zurück", async () => {
     const mockRow = {
+      bieter: "Bauhaus GmbH",
       id: "offer-1",
       projectId: "p1",
-      bieter: "Bauhaus GmbH",
       status: "eingereicht",
     };
     mocks.insertSpy.mockReturnValueOnce({
@@ -100,8 +100,8 @@ describe("Offer-Queries", () => {
       })),
     } as any);
     const result = await createOffer({
-      projectId: "p1",
       bieter: "Bauhaus GmbH",
+      projectId: "p1",
     });
     expect(result).toEqual(mockRow);
   });
@@ -111,7 +111,7 @@ describe("Offer-Queries", () => {
       throw new Error("DB down");
     });
     await expect(
-      createOffer({ projectId: "p1", bieter: "X" })
+      createOffer({ bieter: "X", projectId: "p1" })
     ).rejects.toThrow();
   });
 
@@ -141,8 +141,8 @@ describe("Offer-Queries", () => {
 
   it("replaceOfferPositions löscht alte und fügt neue Positionen ein", async () => {
     await replaceOfferPositions("offer-1", [
-      { oz: "01.0010", kurztext: "Aushub" },
-      { oz: "01.0020", kurztext: "Beton" },
+      { kurztext: "Aushub", oz: "01.0010" },
+      { kurztext: "Beton", oz: "01.0020" },
     ]);
     expect(mocks.deleteSpy).toHaveBeenCalled();
     expect(mocks.insertSpy).toHaveBeenCalled();

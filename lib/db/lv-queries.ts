@@ -89,10 +89,10 @@ export async function createLvDocument(input: {
     const [row] = await db
       .insert(lvDocument)
       .values({
+        gaebFormat: input.gaebFormat,
         id,
         projectId: input.projectId,
         titel: input.titel,
-        gaebFormat: input.gaebFormat,
         version: input.version,
       })
       .returning();
@@ -141,15 +141,15 @@ export async function createLvPosition(input: {
     const [row] = await db
       .insert(lvPosition)
       .values({
-        id,
-        lvDocumentId: input.lvDocumentId,
-        oz: input.oz,
-        kurztext: input.kurztext,
-        langtext: input.langtext,
-        menge: input.menge,
         einheit: input.einheit,
         einheitspreis: input.einheitspreis,
         gesamtpreis: input.gesamtpreis,
+        id,
+        kurztext: input.kurztext,
+        langtext: input.langtext,
+        lvDocumentId: input.lvDocumentId,
+        menge: input.menge,
+        oz: input.oz,
         positionstyp: input.positionstyp ?? "standard",
         sortierung: input.sortierung ?? 0,
       })
@@ -295,13 +295,13 @@ export async function createOffer(input: {
     const [row] = await db
       .insert(offer)
       .values({
-        id,
-        projectId: input.projectId,
+        bemerkungen: input.bemerkungen,
         bieter: input.bieter,
+        eingereichtAm: input.eingereichtAm,
         gaebSourceId: input.gaebSourceId,
         gesamtsumme: input.gesamtsumme,
-        bemerkungen: input.bemerkungen,
-        eingereichtAm: input.eingereichtAm,
+        id,
+        projectId: input.projectId,
         status: "eingereicht",
       })
       .returning();
@@ -378,13 +378,13 @@ export async function replaceOfferPositions(
     }
     await db.insert(offerPosition).values(
       positions.map((p, i) => ({
-        offerId,
-        oz: p.oz,
-        kurztext: p.kurztext,
-        menge: p.menge,
         einheit: p.einheit,
         einheitspreis: p.einheitspreis,
         gesamtpreis: p.gesamtpreis,
+        kurztext: p.kurztext,
+        menge: p.menge,
+        offerId,
+        oz: p.oz,
         sortierung: p.sortierung ?? i,
       }))
     );
